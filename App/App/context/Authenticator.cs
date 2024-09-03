@@ -2,11 +2,6 @@
 
 internal class Authenticator
 {
-    public Authenticator()
-    {
-        
-    }
-
     public static async Task<bool> AuthenticateAsync()
     {
         string token = TokenService.LoadToken();
