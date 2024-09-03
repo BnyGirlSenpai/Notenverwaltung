@@ -13,17 +13,13 @@ namespace NotenverwaltungsApp.App.utils
         {
             var tokenData = JsonSerializer.Deserialize<TokenData>(tokenJson);
 
-            if (tokenData == null)
+            if (tokenData != null)
             {
-                throw new ArgumentException("Invalid token data");
-            }
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("u3rZ8BaR5WzCnP7GdT3JPEFbL0hG5lWm5F0q9PT0Ri8=\r\n"));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            // Define your secret key (in a real application, store this securely)
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("u3rZ8BaR5WzCnP7GdT3JPEFbL0hG5lWm5F0q9PT0Ri8=\r\n"));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
+                var claims = new[]
+                {
                 new Claim("FirstName", tokenData.FirstName),
                 new Claim("LastName", tokenData.LastName),
                 new Claim("UserId", tokenData.UserId),
@@ -31,14 +27,17 @@ namespace NotenverwaltungsApp.App.utils
                 new Claim("Message", tokenData.Message)
             };
 
-            var token = new JwtSecurityToken(
-                issuer: "yourdomain.com",
-                audience: "yourdomain.com",
-                claims: claims,
-                expires: DateTime.Now.AddMonths(3),  
-                signingCredentials: credentials);
+                var token = new JwtSecurityToken(
+                    issuer: "yourdomain.com",
+                    audience: "yourdomain.com",
+                    claims: claims,
+                    expires: DateTime.Now.AddMonths(3),
+                    signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+            throw new ArgumentException("Invalid token data");
         }
     }
 
