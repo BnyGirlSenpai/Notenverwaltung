@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using NotenverwaltungsApp.App.utils;
+﻿using NotenverwaltungsApp.App.utils;
 using System;
 using System.IO;
 
