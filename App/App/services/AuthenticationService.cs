@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace NotenverwaltungsApp.App.services
+namespace App.App.services
 {
     internal class AuthenticationService
     {

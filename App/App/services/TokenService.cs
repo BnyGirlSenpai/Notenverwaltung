@@ -1,8 +1,8 @@
-﻿using NotenverwaltungsApp.App.utils;
+﻿using App.App.utils;
 using System;
 using System.IO;
 
-namespace NotenverwaltungsApp.App.services
+namespace App.App.services
 {
     internal class TokenService
     {

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
-namespace NotenverwaltungsApp.App.utils
+namespace App.App.utils
 {
     internal class TokenGenerator
     {

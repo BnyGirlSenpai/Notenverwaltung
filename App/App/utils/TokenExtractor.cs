@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 
-namespace NotenverwaltungsApp.App.utils
+namespace App.App.utils
 {
     internal class TokenExtractor
     {
@@ -26,7 +26,7 @@ namespace NotenverwaltungsApp.App.utils
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = false, 
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey))
                 };

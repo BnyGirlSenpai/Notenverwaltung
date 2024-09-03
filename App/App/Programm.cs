@@ -1,5 +1,5 @@
-﻿using NotenverwaltungsApp.App.services;
-using NotenverwaltungsApp.App.utils;
+﻿using App.App.services;
+using App.App.utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -118,7 +118,7 @@ internal class Program
         }
     }
 
-    static int ShowMenu(string header,string[] options)
+    static int ShowMenu(string header, string[] options)
     {
         int selectedIndex = 0;
         ConsoleKeyInfo keyInfo;
@@ -127,7 +127,7 @@ internal class Program
         {
             Console.Clear();
             Console.WriteLine(header);
-            Console.WriteLine(new string('-', header.Length)); 
+            Console.WriteLine(new string('-', header.Length));
             for (int i = 0; i < options.Length; i++)
             {
                 if (i == selectedIndex)

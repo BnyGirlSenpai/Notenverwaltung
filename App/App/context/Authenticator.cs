@@ -1,11 +1,8 @@
-﻿using NotenverwaltungsApp.App.services;
+﻿using App.App.services;
 using System;
 using System.Threading.Tasks;
-<<<<<<< HEAD:App/context/Authenticator.cs
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-=======
->>>>>>> 9cc59d4096c30fb1d4c196abfbd5453342357e52:App/App/context/Authenticator.cs
 
 internal class Authenticator
 {
