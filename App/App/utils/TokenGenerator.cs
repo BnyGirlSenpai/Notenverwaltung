@@ -30,7 +30,7 @@ namespace App.App.utils
                     issuer: "yourdomain.com",
                     audience: "yourdomain.com",
                     claims: claims,
-                    expires: DateTime.Now.AddMonths(3),
+                    expires: DateTime.Now.AddYears(1),
                     signingCredentials: credentials);
 
                 return new JwtSecurityTokenHandler().WriteToken(token);

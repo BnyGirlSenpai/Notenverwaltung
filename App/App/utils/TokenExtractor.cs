@@ -5,14 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace App.App.utils
 {
-    internal class TokenExtractor
+    internal class TokenExtractor(string secretKey)
     {
-        private readonly string _secretKey;
-
-        public TokenExtractor(string secretKey)
-        {
-            _secretKey = secretKey;
-        }
+        private readonly string _secretKey = secretKey;
 
         public string ExtractUserInfoFromToken(string token)
         {
@@ -30,9 +25,8 @@ namespace App.App.utils
                 };
 
                 var principal = handler.ValidateToken(token, validationParameters, out var securityToken);
-                var jwtToken = securityToken as JwtSecurityToken;
 
-                if (jwtToken == null)
+                if (securityToken is not JwtSecurityToken jwtToken)
                 {
                     Console.WriteLine("Invalid token.");
                     return "Invalid token.";

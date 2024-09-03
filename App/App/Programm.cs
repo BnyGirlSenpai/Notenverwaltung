@@ -36,8 +36,8 @@ internal class Program
     {
         while (true)
         {
-            int selectedIndex = ShowMenu(header, new string[]
-            {
+            int selectedIndex = ShowMenu(header,
+            [
                 "Option 1: Get Notes for User",
                 "Option 2: Get Notes for Course",
                 "Option 3: Get Notes for Date and Lesson",
@@ -45,7 +45,7 @@ internal class Program
                 "Option 5: Get Attendance for Lesson",
                 "Option 6: Get All Courses",
                 "Option 7: Logout"
-            });
+            ]);
 
             switch (selectedIndex)
             {
@@ -85,12 +85,12 @@ internal class Program
     {
         while (true)
         {
-            int selectedIndex = ShowMenu(header, new string[]
-            {
+            int selectedIndex = ShowMenu(header,
+            [
                 "Option 1: Get Notes for User",
                 "Option 2: Get Attendance for User",
                 "Option 3: Logout"
-            });
+            ]);
 
             switch (selectedIndex)
             {
@@ -245,8 +245,7 @@ internal class Program
 
     private static async Task<bool> LoginAsync()
     {
-        var authenticator = new Authenticator();
-        bool authenticated = await authenticator.AuthenticateAsync();
+        bool authenticated = await Authenticator.AuthenticateAsync();
 
         return authenticated;
     }

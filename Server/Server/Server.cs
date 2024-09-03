@@ -6,13 +6,11 @@ namespace NotenverwaltungsApp.Server
     internal class Server
     {
         private readonly HttpListener _listener;
-        private readonly RequestHandler _requestHandler;
 
         public Server()
         {
             _listener = new HttpListener();
             _listener.Prefixes.Add("http://localhost:5000/");
-            _requestHandler = new RequestHandler(); 
         }
 
         public async Task StartServerAsync()

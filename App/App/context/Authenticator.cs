@@ -7,7 +7,7 @@ internal class Authenticator
         
     }
 
-    public async Task<bool> AuthenticateAsync()
+    public static async Task<bool> AuthenticateAsync()
     {
         string token = TokenService.LoadToken();
         bool authenticated = false;
