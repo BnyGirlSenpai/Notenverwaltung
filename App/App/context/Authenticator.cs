@@ -1,9 +1,6 @@
 ﻿using NotenverwaltungsApp.App.services;
 using System;
 using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using Mysqlx.Session;
 
 internal class Authenticator
 {
