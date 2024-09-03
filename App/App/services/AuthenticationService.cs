@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace App.App.services
+﻿namespace App.App.services
 {
     internal class AuthenticationService
     {
@@ -12,11 +7,11 @@ namespace App.App.services
         public static async Task<string> AuthenticateUserCredentials(string username, string password)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/auth/login");
-            request.Content = new FormUrlEncodedContent(new[]
-            {
+            request.Content = new FormUrlEncodedContent(
+            [
                 new KeyValuePair<string, string>("username", username),
                 new KeyValuePair<string, string>("password", password)
-            });
+            ]);
 
             try
             {

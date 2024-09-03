@@ -1,6 +1,4 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;

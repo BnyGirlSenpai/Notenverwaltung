@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,7 +8,7 @@ namespace App.App.utils
 {
     internal class TokenGenerator
     {
-        public string GenerateJwtToken(string tokenJson)
+        public static string GenerateJwtToken(string tokenJson)
         {
             var tokenData = JsonSerializer.Deserialize<TokenData>(tokenJson);
 

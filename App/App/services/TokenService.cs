@@ -1,6 +1,4 @@
 ﻿using App.App.utils;
-using System;
-using System.IO;
 
 namespace App.App.services
 {
@@ -12,8 +10,7 @@ namespace App.App.services
         {
             try
             {
-                var tokenGenerator = new TokenGenerator();
-                string jwtToken = tokenGenerator.GenerateJwtToken(tokenJson);
+                string jwtToken = TokenGenerator.GenerateJwtToken(tokenJson);
                 File.WriteAllText(TokenFilePath, jwtToken);
             }
             catch (IOException ex)

@@ -1,12 +1,7 @@
 ﻿using NotenverwaltungsApp.Server.controllers;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
-
 
 namespace Server.Server.routes
 {

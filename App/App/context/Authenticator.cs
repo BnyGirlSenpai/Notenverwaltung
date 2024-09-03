@@ -1,8 +1,4 @@
 ﻿using App.App.services;
-using System;
-using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 
 internal class Authenticator
 {
@@ -61,7 +57,7 @@ internal class Authenticator
         return true;
     }
 
-    private bool RetryAuthentication()
+    private static bool RetryAuthentication()
     {
         Console.WriteLine("Möchten Sie es erneut versuchen? (y/n)");
         var retry = Console.ReadLine();
