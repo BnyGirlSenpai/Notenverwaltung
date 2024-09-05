@@ -1,7 +1,7 @@
-﻿using App.App.services;
+﻿using App.App.repositorys;
+using App.App.services;
 using App.App.utils;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 internal class Program
 {
@@ -288,15 +288,6 @@ internal class Program
         Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
     }
 
-    public class Course
-    {
-        [JsonPropertyName("courseCode")]
-        public string CourseCode { get; set; }
-
-        [JsonPropertyName("courseName")]
-        public string CourseName { get; set; }
-    }
-
     static async Task<string> GetAllCourses(string userId)
     {
         Console.WriteLine("Fetching all courses...");
@@ -316,7 +307,7 @@ internal class Program
                 response.EnsureSuccessStatusCode();
 
                 var responseData = await response.Content.ReadAsStringAsync();
-                var courses = JsonSerializer.Deserialize<List<Course>>(responseData);
+                var courses = JsonSerializer.Deserialize<List<CourseRepository>>(responseData);
 
                 string formattedCourses = "All Courses:\n";
                 foreach (var course in courses)
@@ -353,5 +344,5 @@ internal class Program
         {
             Console.WriteLine($"Fehler bei der Abmeldung: {ex.Message}");
         }
-    }
+    } 
 }
