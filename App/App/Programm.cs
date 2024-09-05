@@ -10,12 +10,12 @@ internal class Program
 
         if (isAuthenticated)
         {
-            var (role, firstName, lastName) = await GetUserInfo();
+            var (role, firstName, lastName, userId) = await GetUserInfo();
             string header = $"Logged in as: {firstName} {lastName} ({role})";
 
             if (role == "Teacher")
             {
-                await ShowTeacherMenu(header);
+                await ShowTeacherMenu(header, userId);
             }
             else if (role == "Student")
             {
@@ -32,7 +32,7 @@ internal class Program
         }
     }
 
-    private static async Task ShowTeacherMenu(string header)
+    private static async Task ShowTeacherMenu(string header , string userId)
     {
         while (true)
         {
@@ -50,22 +50,30 @@ internal class Program
             switch (selectedIndex)
             {
                 case 0:
-                    await GetNotesForUser();
+                    Console.WriteLine("Vorname:");
+                    var firstName = Console.ReadLine();
+                    Console.WriteLine("Nachname:");
+                    var lastName = Console.ReadLine();
+
+                    await GetNotesForUser(userId, firstName, lastName);
                     break;
                 case 1:
-                    await GetNotesForCourse();
+                    Console.WriteLine("Course Code:");
+                    var courseCode = Console.ReadLine();
+
+                    await GetNotesForCourse(courseCode);
                     break;
                 case 2:
-                    await GetNotesForDateAndLesson();
+                    await GetNotesForDateAndLesson(userId);
                     break;
                 case 3:
-                    await GetAttendanceForUser();
+                    await GetAttendanceForUser(userId);
                     break;
                 case 4:
-                    await GetAttendanceForLesson();
+                    await GetAttendanceForLesson(userId);
                     break;
                 case 5:
-                    await GetAllCourses();
+                    await GetAllCourses(userId);
                     break;
                 case 6:
                     await LogoutAsync();
@@ -86,20 +94,12 @@ internal class Program
         while (true)
         {
             int selectedIndex = ShowMenu(header,
-            [
-                "Option 1: Get Notes for User",
-                "Option 2: Get Attendance for User",
+            [       
                 "Option 3: Logout"
             ]);
 
             switch (selectedIndex)
             {
-                case 0:
-                    await GetNotesForUser();
-                    break;
-                case 1:
-                    await GetAttendanceForUser();
-                    break;
                 case 2:
                     await LogoutAsync();
                     Console.WriteLine("You have been logged out. Exiting the program...");
@@ -156,7 +156,7 @@ internal class Program
         return selectedIndex;
     }
 
-    private static async Task<(string role, string firstName, string lastName)> GetUserInfo()
+    private static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
     {
         string token = TokenService.LoadToken();
         string secretKey = "u3rZ8BaR5WzCnP7GdT3JPEFbL0hG5lWm5F0q9PT0Ri8=\r\n";
@@ -172,46 +172,96 @@ internal class Program
                 userInfo.TryGetValue("FirstName", out JsonElement firstNameElement);
                 userInfo.TryGetValue("LastName", out JsonElement lastNameElement);
                 userInfo.TryGetValue("Role", out JsonElement roleElement);
+                userInfo.TryGetValue("UserId", out JsonElement userIdElement);
 
+                string userId = userIdElement.GetString();
                 string role = roleElement.GetString();
                 string firstName = firstNameElement.GetString();
                 string lastName = lastNameElement.GetString();
 
+                Console.WriteLine($"User information:{userId}");
                 Console.WriteLine($"Name: {firstName} {lastName}");
                 Console.WriteLine($"Logged in as {role}");
 
-                return (role, firstName, lastName);
+                return (role, firstName, lastName, userId);
             }
             else
             {
                 Console.WriteLine("Failed to parse user information.");
-                return (string.Empty, string.Empty, string.Empty);
+                return (string.Empty, string.Empty, string.Empty, string.Empty);
             }
         }
         catch (JsonException ex)
         {
             Console.WriteLine($"Error parsing user information: {ex.Message}");
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
     }
 
-    static async Task GetNotesForUser()
+    static async Task<string> GetNotesForUser(string userId, string firstName, string lastName)
     {
-        Console.WriteLine("Fetching notes for user...");
-        // Simulate fetching notes for user.
-        await Task.Delay(1000);
-        Console.WriteLine("Notes for user: [Example Note Data]");
+        Console.WriteLine($"Fetching notes for {firstName} {lastName}...");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/notes")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("firstName", firstName),
+                new KeyValuePair<string, string>("lastName", lastName)
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            {
+                var response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Notes for {firstName} {lastName}: {responseData}");
+                return responseData;
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
     }
 
-    static async Task GetNotesForCourse()
+    static async Task<string> GetNotesForCourse(string courseCode)
     {
         Console.WriteLine("Fetching notes for course...");
-        // Simulate fetching notes for a course.
-        await Task.Delay(1000);
-        Console.WriteLine("Notes for course: [Example Note Data]");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/course")
+        {
+            Content = new FormUrlEncodedContent(
+             [
+                 new KeyValuePair<string, string>("courseCode", courseCode),
+             ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            {
+                var response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Course {courseCode}: {responseData}");
+                return responseData;
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
     }
 
-    static async Task GetNotesForDateAndLesson()
+    static async Task GetNotesForDateAndLesson(string userId)
     {
         Console.WriteLine("Fetching notes for a specific date and lesson...");
         // Simulate fetching notes for a date and lesson.
@@ -219,7 +269,7 @@ internal class Program
         Console.WriteLine("Notes for date and lesson: [Example Note Data]");
     }
 
-    static async Task GetAttendanceForUser()
+    static async Task GetAttendanceForUser(string userId)
     {
         Console.WriteLine("Fetching attendance for user...");
         // Simulate fetching attendance for a user.
@@ -227,7 +277,7 @@ internal class Program
         Console.WriteLine("Attendance for user: [Example Attendance Data]");
     }
 
-    static async Task GetAttendanceForLesson()
+    static async Task GetAttendanceForLesson(string userId)
     {
         Console.WriteLine("Fetching attendance for lesson...");
         // Simulate fetching attendance for a lesson.
@@ -235,7 +285,7 @@ internal class Program
         Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
     }
 
-    static async Task GetAllCourses()
+    static async Task GetAllCourses(string userId)
     {
         Console.WriteLine("Fetching all courses...");
         // Simulate fetching all courses.
