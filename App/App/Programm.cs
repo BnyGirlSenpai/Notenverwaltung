@@ -1,6 +1,7 @@
 ﻿using App.App.services;
 using App.App.utils;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 internal class Program
 {
@@ -61,7 +62,7 @@ internal class Program
                     Console.WriteLine("Course Code:");
                     var courseCode = Console.ReadLine();
 
-                    await GetNotesForCourse(courseCode);
+                    await GetNotesForCourse(userId, courseCode);
                     break;
                 case 2:
                     await GetNotesForDateAndLesson(userId);
@@ -206,6 +207,7 @@ internal class Program
         {
             Content = new FormUrlEncodedContent(
             [
+                new KeyValuePair<string, string>("userId", userId),
                 new KeyValuePair<string, string>("firstName", firstName),
                 new KeyValuePair<string, string>("lastName", lastName)
             ])
@@ -230,7 +232,7 @@ internal class Program
         }
     }
 
-    static async Task<string> GetNotesForCourse(string courseCode)
+    static async Task<string> GetNotesForCourse(string userId, string courseCode)
     {
         Console.WriteLine("Fetching notes for course...");
 
@@ -238,7 +240,8 @@ internal class Program
         {
             Content = new FormUrlEncodedContent(
              [
-                 new KeyValuePair<string, string>("courseCode", courseCode),
+                new KeyValuePair<string, string>("courseCode", courseCode),
+                new KeyValuePair<string, string>("userId", userId)
              ])
         };
 
@@ -285,12 +288,51 @@ internal class Program
         Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
     }
 
-    static async Task GetAllCourses(string userId)
+    public class Course
+    {
+        [JsonPropertyName("courseCode")]
+        public string CourseCode { get; set; }
+
+        [JsonPropertyName("courseName")]
+        public string CourseName { get; set; }
+    }
+
+    static async Task<string> GetAllCourses(string userId)
     {
         Console.WriteLine("Fetching all courses...");
-        // Simulate fetching all courses.
-        await Task.Delay(1000);
-        Console.WriteLine("All courses: [Example Course Data]");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/AllCourses")
+        {
+            Content = new FormUrlEncodedContent(
+             [
+                 new KeyValuePair<string, string>("userId", userId),
+             ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            {
+                var response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                var courses = JsonSerializer.Deserialize<List<Course>>(responseData);
+
+                string formattedCourses = "All Courses:\n";
+                foreach (var course in courses)
+                {
+                    formattedCourses += $"- {course.CourseCode}: {course.CourseName}\n";
+                }
+
+                Console.WriteLine(formattedCourses);
+                return formattedCourses;
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
     }
 
     private static async Task<bool> LoginAsync()

@@ -14,7 +14,9 @@ namespace Server.Server.handler
                     await AuthApi.HandleAsync(context);
                     break;
 
-                // Handle other routes here...
+                case "/api/AllCourses":
+                    await CourseApi.HandleAsync(context);
+                    break;
 
                 default:
                     string responseString = "Endpoint not found.";
