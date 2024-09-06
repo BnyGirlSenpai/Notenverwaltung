@@ -40,11 +40,42 @@ namespace Server.Server.routes
                         statusCode = 400;
                     }
                 }
+
+                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/students")
+                {
+
+                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
+                    var body = await reader.ReadToEndAsync();
+
+                    var formData = ParseFormData(body);
+
+                    if (formData.TryGetValue("courseCode", out string courseCode))
+                    {
+
+                        var students = CourseController.GetStudentsByCourse(courseCode);
+
+                        if (students != null && students.Count > 0)
+                        {
+                            responseString = JsonSerializer.Serialize(students);
+                        }
+                        else
+                        {
+                            responseString = JsonSerializer.Serialize(new { message = "No users found." });
+                            statusCode = 404;
+                        }
+                    }
+                    else
+                    {
+                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
+                        statusCode = 400;
+                    }
+                }
                 else
                 {
                     responseString = JsonSerializer.Serialize(new { message = "Endpoint not found." });
                     statusCode = 404;
                 }
+
             }
             catch (Exception ex)
             {

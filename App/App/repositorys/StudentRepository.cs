@@ -4,10 +4,10 @@ namespace App.App.repositorys
 {
     internal class StudentRepository
     {
-        [JsonPropertyName("firstName")]
+        [JsonPropertyName("firstname")]
         public string FirstName { get; set; }
 
-        [JsonPropertyName("lastName")]
+        [JsonPropertyName("lastname")]
         public string LastName { get; set; }
 
         [JsonPropertyName("userId")]

@@ -85,7 +85,7 @@ namespace NotenverwaltungsApp.Server.controllers
                     var connection = db.GetConnection();
 
                     string query = @"
-                        SELECT u.firstname, u.lastname, u.user_id
+                        SELECT u.first_name, u.last_name, u.user_id
                         FROM enrollments e
                         JOIN users u ON e.student_id = u.user_id
                         WHERE e.course_code = @CourseCode";
@@ -104,16 +104,17 @@ namespace NotenverwaltungsApp.Server.controllers
                     {
                         var student = new Student
                         {
-                            FirstName = reader["firstname"].ToString() ?? "Unknown",
-                            LastName = reader["lastname"].ToString() ?? "Unknown",
+                            FirstName = reader["first_name"].ToString() ?? "Unknown",
+                            LastName = reader["last_name"].ToString() ?? "Unknown",
                             UserId = reader["user_id"].ToString() ?? "Unknown",
                         };
                         students.Add(student);
+
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error fetching courses: {ex.Message}");
+                    Console.WriteLine($"[ERROR] Error fetching students: {ex.Message}");
                 }
                 finally
                 {
@@ -123,6 +124,5 @@ namespace NotenverwaltungsApp.Server.controllers
 
             return students;
         }
-
     }
 }

@@ -18,6 +18,10 @@ namespace Server.Server.handler
                     await CourseApi.HandleAsync(context);
                     break;
 
+                case "/api/students":
+                    await CourseApi.HandleAsync(context);
+                    break;
+
                 default:
                     string responseString = "Endpoint not found.";
                     int statusCode = 404; 

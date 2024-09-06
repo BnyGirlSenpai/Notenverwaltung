@@ -184,8 +184,40 @@ internal class Program
                 var selectedCourse = courses[selectedIndex];
                 Console.WriteLine($"{selectedCourse}");
 
-                await GetAllStudentsForCourse(userId, selectedCourse.CourseCode);
-                await GetAllLessonsForCourse(userId, selectedCourse.CourseCode);
+                var students = await GetAllStudentsForCourse(userId, selectedCourse.CourseCode);
+                if (students != null && students.Count > 0)
+                {
+                    var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
+                    studentOptions.Add($"{studentOptions.Count + 1}. Return to Course Menu");
+
+                    while (true)
+                    {
+                        int studentSelection = ShowMenu("Select a student:", [.. studentOptions]);
+
+                        if (studentSelection >= 0 && studentSelection < students.Count)
+                        {
+                            var selectedStudent = students[studentSelection];
+                            Console.WriteLine($"Selected Student: {selectedStudent.FirstName} {selectedStudent.LastName}");
+                        }
+                        else if (studentSelection == students.Count)
+                        {
+                            break; 
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid selection. Please try again.");
+                        }
+
+                        Console.WriteLine("\nPress any key to return to the menu...");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No students found for this course.");
+                }
+
+                //await GetAllLessonsForCourse(userId, selectedCourse.CourseCode);
             }
             else if (selectedIndex == courses.Count - 1)
             {
@@ -200,7 +232,6 @@ internal class Program
             Console.ReadKey();
         }
     }
-
 
 
     static async Task<List<CourseRepository>> GetAllCourses(string userId)
@@ -282,7 +313,6 @@ internal class Program
 
             var responseData = await response.Content.ReadAsStringAsync();
             var students = JsonSerializer.Deserialize<List<StudentRepository>>(responseData);
-
             return students;
         }
         catch (HttpRequestException e)
