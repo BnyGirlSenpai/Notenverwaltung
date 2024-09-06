@@ -68,13 +68,18 @@ internal class Program
                     await GetNotesForDateAndLesson(userId);
                     break;
                 case 3:
-                    await GetAttendanceForUser(userId);
+                    Console.WriteLine("Vorname:");
+                    firstName = Console.ReadLine();
+                    Console.WriteLine("Nachname:");
+                    lastName = Console.ReadLine();
+
+                    await GetAttendanceForUser(userId, firstName, lastName);
                     break;
                 case 4:
                     await GetAttendanceForLesson(userId);
                     break;
                 case 5:
-                    await GetAllCourses(userId);
+                    await ShowCourseMenu(header, userId);
                     break;
                 case 6:
                     await LogoutAsync();
@@ -157,6 +162,138 @@ internal class Program
         return selectedIndex;
     }
 
+    private static async Task ShowCourseMenu(string header, string userId)
+    {
+        var courses = await GetAllCourses(userId);
+
+        if (courses == null || courses.Count == 0)
+        {
+            Console.WriteLine("No courses available or an error occurred.");
+            return;
+        }
+
+        var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
+        courseOptions.Add("Return to Previous Menu");
+
+        while (true)
+        {
+            int selectedIndex = ShowMenu(header, [.. courseOptions]);
+
+            if (selectedIndex >= 0 && selectedIndex < courses.Count - 1)
+            {
+                var selectedCourse = courses[selectedIndex];
+                Console.WriteLine($"{selectedCourse}");
+
+                await GetAllStudentsForCourse(userId, selectedCourse.CourseCode);
+                await GetAllLessonsForCourse(userId, selectedCourse.CourseCode);
+            }
+            else if (selectedIndex == courses.Count - 1)
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection.");
+            }
+
+            Console.WriteLine("\nPress any key to return to the menu...");
+            Console.ReadKey();
+        }
+    }
+
+
+
+    static async Task<List<CourseRepository>> GetAllCourses(string userId)
+    {
+        Console.WriteLine("Fetching all courses...");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/courses")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("userId", userId),
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var courses = JsonSerializer.Deserialize<List<CourseRepository>>(responseData);
+
+            return courses;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
+
+    static async Task<List<LessonRepository>> GetAllLessonsForCourse(string userId, string courseCode)
+    {
+        Console.WriteLine("Fetching all lessons...");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/lessons")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("userId", userId),
+                new KeyValuePair<string, string>("courseCode", courseCode)
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var lessons = JsonSerializer.Deserialize<List<LessonRepository>>(responseData);
+
+            return lessons;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
+    
+    static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseCode)
+    {
+        Console.WriteLine("Fetching all students...");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/students")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("userId", userId),
+                new KeyValuePair<string, string>("courseCode", courseCode),
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var students = JsonSerializer.Deserialize<List<StudentRepository>>(responseData);
+
+            return students;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
+   
+
+
     private static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
     {
         string token = TokenService.LoadToken();
@@ -175,10 +312,10 @@ internal class Program
                 userInfo.TryGetValue("Role", out JsonElement roleElement);
                 userInfo.TryGetValue("UserId", out JsonElement userIdElement);
 
-                string userId = userIdElement.GetString();
-                string role = roleElement.GetString();
-                string firstName = firstNameElement.GetString();
-                string lastName = lastNameElement.GetString();
+                string userId = userIdElement.GetString() ?? "Unknown"; 
+                string firstName = firstNameElement.GetString() ?? "Unknown";
+                string lastName = lastNameElement.GetString() ?? "Unknown";
+                string role = roleElement.GetString() ?? "Unknown";
 
                 Console.WriteLine($"User information:{userId}");
                 Console.WriteLine($"Name: {firstName} {lastName}");
@@ -272,31 +409,18 @@ internal class Program
         Console.WriteLine("Notes for date and lesson: [Example Note Data]");
     }
 
-    static async Task GetAttendanceForUser(string userId)
+    private static async Task<string> GetAttendanceForUser(string userId, string firstName, string lastName)
     {
-        Console.WriteLine("Fetching attendance for user...");
-        // Simulate fetching attendance for a user.
-        await Task.Delay(1000);
-        Console.WriteLine("Attendance for user: [Example Attendance Data]");
-    }
+        Console.WriteLine($"Attendance for {firstName} {lastName}...");
 
-    static async Task GetAttendanceForLesson(string userId)
-    {
-        Console.WriteLine("Fetching attendance for lesson...");
-        // Simulate fetching attendance for a lesson.
-        await Task.Delay(1000);
-        Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
-    }
-
-    static async Task<string> GetAllCourses(string userId)
-    {
-        Console.WriteLine("Fetching all courses...");
-        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/AllCourses")
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/attendance")
         {
             Content = new FormUrlEncodedContent(
-             [
-                 new KeyValuePair<string, string>("userId", userId),
-             ])
+            [
+                new KeyValuePair<string, string>("userId", userId),
+                new KeyValuePair<string, string>("firstName", firstName),
+                new KeyValuePair<string, string>("lastName", lastName)
+            ])
         };
 
         try
@@ -307,16 +431,8 @@ internal class Program
                 response.EnsureSuccessStatusCode();
 
                 var responseData = await response.Content.ReadAsStringAsync();
-                var courses = JsonSerializer.Deserialize<List<CourseRepository>>(responseData);
-
-                string formattedCourses = "All Courses:\n";
-                foreach (var course in courses)
-                {
-                    formattedCourses += $"- {course.CourseCode}: {course.CourseName}\n";
-                }
-
-                Console.WriteLine(formattedCourses);
-                return formattedCourses;
+                Console.WriteLine($"Notes for {firstName} {lastName}: {responseData}");
+                return responseData;
             }
         }
         catch (HttpRequestException e)
@@ -325,6 +441,15 @@ internal class Program
             return null;
         }
     }
+
+    static async Task GetAttendanceForLesson(string userId)
+    {
+        Console.WriteLine("Fetching attendance for lesson...");
+        // Simulate fetching attendance for a lesson.
+        await Task.Delay(1000);
+        Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
+    }
+
 
     private static async Task<bool> LoginAsync()
     {

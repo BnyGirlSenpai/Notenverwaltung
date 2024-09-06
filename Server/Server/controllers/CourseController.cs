@@ -13,6 +13,17 @@ namespace NotenverwaltungsApp.Server.controllers
             public string CourseName { get; set; }
         }
 
+        public class Student
+        {
+            [JsonPropertyName("firstname")]
+            public string FirstName { get; set; }
+            [JsonPropertyName("lastname")]
+            public string LastName { get; set; }
+
+            [JsonPropertyName("userId")]
+            public string UserId { get; set; }
+        }
+
         public static List<Course> GetCoursesByTeacher(string teacherId)
         {
             var courses = new List<Course>();
@@ -43,8 +54,8 @@ namespace NotenverwaltungsApp.Server.controllers
                     {
                         var course = new Course
                         {
-                            CourseCode = reader["course_code"].ToString(),
-                            CourseName = reader["course_name"].ToString()
+                            CourseCode = reader["course_code"].ToString() ?? "Unknown",
+                            CourseName = reader["course_name"].ToString() ?? "Unknown",
                         };
                         courses.Add(course);
                     }
@@ -61,5 +72,57 @@ namespace NotenverwaltungsApp.Server.controllers
 
             return courses;
         }
+
+        public static List<Student> GetStudentsByCourse(string courseCode)
+        {
+            var students = new List<Student>();
+
+            using var db = new Database(DatabaseType.SQLite);
+            {
+                try
+                {
+                    db.Connect_to_Database();
+                    var connection = db.GetConnection();
+
+                    string query = @"
+                        SELECT u.firstname, u.lastname, u.user_id
+                        FROM enrollments e
+                        JOIN users u ON e.student_id = u.user_id
+                        WHERE e.course_code = @CourseCode";
+
+                    using var command = connection.CreateCommand();
+                    command.CommandText = query;
+
+                    var courseCodeParameter = command.CreateParameter();
+                    courseCodeParameter.ParameterName = "@CourseCode";
+                    courseCodeParameter.Value = courseCode;
+                    command.Parameters.Add(courseCodeParameter);
+
+                    using var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var student = new Student
+                        {
+                            FirstName = reader["firstname"].ToString() ?? "Unknown",
+                            LastName = reader["lastname"].ToString() ?? "Unknown",
+                            UserId = reader["user_id"].ToString() ?? "Unknown",
+                        };
+                        students.Add(student);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching courses: {ex.Message}");
+                }
+                finally
+                {
+                    db.Close_Connection();
+                }
+            }
+
+            return students;
+        }
+
     }
 }

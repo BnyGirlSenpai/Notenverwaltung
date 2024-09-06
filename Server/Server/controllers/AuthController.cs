@@ -44,10 +44,10 @@ namespace NotenverwaltungsApp.Server.controllers
                     if (reader.Read())
                     {
                         isAuthenticated = true;
-                        userId = reader["user_id"].ToString();
-                        firstName = reader["first_name"].ToString();
-                        lastName = reader["last_name"].ToString();
-                        userRole = reader["role_name"].ToString();
+                        userId = reader["user_id"].ToString() ?? "Unknown";
+                        firstName = reader["first_name"].ToString() ?? "Unknown";
+                        lastName = reader["last_name"].ToString() ?? "Unknown";
+                        userRole = reader["role_name"].ToString() ?? "Unknown";
                     }
                 }
                 catch (Exception ex)

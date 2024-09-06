@@ -14,7 +14,7 @@ namespace Server.Server.routes
 
             try
             {
-                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/AllCourses")
+                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/courses")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();

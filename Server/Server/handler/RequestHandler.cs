@@ -14,7 +14,7 @@ namespace Server.Server.handler
                     await AuthApi.HandleAsync(context);
                     break;
 
-                case "/api/AllCourses":
+                case "/api/courses":
                     await CourseApi.HandleAsync(context);
                     break;
 
