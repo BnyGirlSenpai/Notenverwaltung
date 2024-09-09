@@ -8,6 +8,9 @@ namespace App.App.repositorys
         public string CourseCode { get; set; }
 
         [JsonPropertyName("courseName")]
-        public string CourseName { get; set; } 
+        public string CourseName { get; set; }
+
+        [JsonPropertyName("courseId")]
+        public string CourseId { get; set; }
     }
 }

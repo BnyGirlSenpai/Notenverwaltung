@@ -183,12 +183,11 @@ internal class Program
             {
                 var selectedCourse = courses[selectedIndex];
                 Console.WriteLine($"{selectedCourse}");
-
-                var students = await GetAllStudentsForCourse(userId, selectedCourse.CourseCode);
+                var students = await GetAllStudentsForCourse(userId, selectedCourse.CourseId);
                 if (students != null && students.Count > 0)
                 {
-                    var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
-                    studentOptions.Add($"{studentOptions.Count + 1}. Return to Course Menu");
+                    var studentOptions = students.Select((student, index) => $"{index + 1}.{student.FirstName} {student.LastName}").ToList();
+                    studentOptions.Add($"{studentOptions.Count + 1}. Return to Course Menu\n");
 
                     while (true)
                     {
@@ -197,7 +196,18 @@ internal class Program
                         if (studentSelection >= 0 && studentSelection < students.Count)
                         {
                             var selectedStudent = students[studentSelection];
-                            Console.WriteLine($"Selected Student: {selectedStudent.FirstName} {selectedStudent.LastName}");
+                            Console.WriteLine($"Selected Student: {selectedStudent.FirstName} {selectedStudent.LastName}\n");
+
+                            var lessons = await GetAllLessonsForCourse(userId, selectedCourse.CourseId);
+                            if (lessons != null && lessons.Count > 0)
+                            {
+                                foreach (var lesson in lessons)
+                                {     
+                                    Console.WriteLine($"{lesson.LessonName} {lesson.LessonDate}");
+                                    Console.WriteLine($"----------------------------------------\n");
+                                }
+                            }
+
                         }
                         else if (studentSelection == students.Count)
                         {
@@ -249,6 +259,7 @@ internal class Program
         {
             using HttpClient _client = new();
             var response = await _client.SendAsync(request);
+
             response.EnsureSuccessStatusCode();
 
             var responseData = await response.Content.ReadAsStringAsync();
@@ -263,15 +274,14 @@ internal class Program
         }
     }
 
-    static async Task<List<LessonRepository>> GetAllLessonsForCourse(string userId, string courseCode)
+    static async Task<List<LessonRepository>> GetAllLessonsForCourse(string userId, string courseId)
     {
-        Console.WriteLine("Fetching all lessons...");
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/lessons")
         {
             Content = new FormUrlEncodedContent(
             [
                 new KeyValuePair<string, string>("userId", userId),
-                new KeyValuePair<string, string>("courseCode", courseCode)
+                new KeyValuePair<string, string>("courseId", courseId)
             ])
         };
 
@@ -293,7 +303,7 @@ internal class Program
         }
     }
     
-    static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseCode)
+    static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseId)
     {
         Console.WriteLine("Fetching all students...");
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/students")
@@ -301,7 +311,7 @@ internal class Program
             Content = new FormUrlEncodedContent(
             [
                 new KeyValuePair<string, string>("userId", userId),
-                new KeyValuePair<string, string>("courseCode", courseCode),
+                new KeyValuePair<string, string>("courseId", courseId),
             ])
         };
 
@@ -313,6 +323,7 @@ internal class Program
 
             var responseData = await response.Content.ReadAsStringAsync();
             var students = JsonSerializer.Deserialize<List<StudentRepository>>(responseData);
+
             return students;
         }
         catch (HttpRequestException e)
@@ -399,17 +410,17 @@ internal class Program
         }
     }
 
-    static async Task<string> GetNotesForCourse(string userId, string courseCode)
+    static async Task<string> GetNotesForCourse(string userId, string courseId)
     {
         Console.WriteLine("Fetching notes for course...");
 
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/course")
         {
             Content = new FormUrlEncodedContent(
-             [
-                new KeyValuePair<string, string>("courseCode", courseCode),
+            [
+                new KeyValuePair<string, string>("courseCode", courseId),
                 new KeyValuePair<string, string>("userId", userId)
-             ])
+            ])
         };
 
         try
@@ -420,7 +431,7 @@ internal class Program
                 response.EnsureSuccessStatusCode();
 
                 var responseData = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Course {courseCode}: {responseData}");
+                Console.WriteLine($"Course: {responseData}");
                 return responseData;
             }
         }
@@ -479,7 +490,6 @@ internal class Program
         await Task.Delay(1000);
         Console.WriteLine("Attendance for lesson: [Example Attendance Data]");
     }
-
 
     private static async Task<bool> LoginAsync()
     {

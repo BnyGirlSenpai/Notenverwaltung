@@ -9,5 +9,8 @@ namespace App.App.repositorys
 
         [JsonPropertyName("lessonDate")]
         public string LessonDate { get; set; }
+
+        [JsonPropertyName("lessonsId")]
+        public string LessonsId { get; set; }
     }
 }

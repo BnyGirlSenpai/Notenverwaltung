@@ -9,19 +9,66 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             [JsonPropertyName("courseCode")]
             public string CourseCode { get; set; }
+
             [JsonPropertyName("courseName")]
             public string CourseName { get; set; }
+
+            [JsonPropertyName("courseId")]
+            public string CourseId { get; set; }
         }
 
         public class Student
         {
             [JsonPropertyName("firstname")]
             public string FirstName { get; set; }
+
             [JsonPropertyName("lastname")]
             public string LastName { get; set; }
 
             [JsonPropertyName("userId")]
             public string UserId { get; set; }
+        }
+
+        public class Lesson
+        {
+            [JsonPropertyName("lessonId")]
+            public string LessonId { get; set; }
+
+            [JsonPropertyName("lessonName")]
+            public string LessonName { get; set; }
+
+            [JsonPropertyName("lessonDate")]
+            public string LessonDate { get; set; }
+        }
+
+        public class Mark
+        {
+            [JsonPropertyName("markId")]
+            public string MarkId { get; set; }
+
+            [JsonPropertyName("studentId")]
+            public string StudentId { get; set; }
+
+            [JsonPropertyName("lessonDate")]
+            public string lessonDate { get; set; }
+
+            [JsonPropertyName("firstname")]
+            public string FirstName { get; set; }
+
+            [JsonPropertyName("lastname")]
+            public string LastName { get; set; }
+
+            [JsonPropertyName("studentMark")]
+            public string StudentMark { get; set; }
+
+            [JsonPropertyName("teacherMark")]
+            public string TeacherMark { get; set; }
+
+            [JsonPropertyName("markDate")]
+            public string MarkDate { get; set; }
+
+            [JsonPropertyName("teacherName")]
+            public string TeacherName { get; set; }
         }
 
         public static List<Course> GetCoursesByTeacher(string teacherId)
@@ -36,17 +83,17 @@ namespace NotenverwaltungsApp.Server.controllers
                     var connection = db.GetConnection();
 
                     string query = @"
-                        SELECT course_code, course_name
+                        SELECT course_code, course_name ,course_id
                         FROM courses
-                        WHERE teacher_id = @TeacherId";
+                        WHERE teacher_id = @teacherId";
 
                     using var command = connection.CreateCommand();
                     command.CommandText = query;
 
-                    var teacherIdParameter = command.CreateParameter();
-                    teacherIdParameter.ParameterName = "@TeacherId";
-                    teacherIdParameter.Value = teacherId;
-                    command.Parameters.Add(teacherIdParameter);
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = "@teacherId";
+                    parameter.Value = teacherId;
+                    command.Parameters.Add(parameter);
 
                     using var reader = command.ExecuteReader();
 
@@ -54,8 +101,10 @@ namespace NotenverwaltungsApp.Server.controllers
                     {
                         var course = new Course
                         {
-                            CourseCode = reader["course_code"].ToString() ?? "Unknown",
-                            CourseName = reader["course_name"].ToString() ?? "Unknown",
+                            CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
+                            CourseName = reader["course_name"]?.ToString() ?? "Unknown",
+                            CourseId = reader["course_id"]?.ToString() ?? "Unknown",
+
                         };
                         courses.Add(course);
                     }
@@ -73,7 +122,7 @@ namespace NotenverwaltungsApp.Server.controllers
             return courses;
         }
 
-        public static List<Student> GetStudentsByCourse(string courseCode)
+        public static List<Student> GetStudentsByCourse(string courseId)
         {
             var students = new List<Student>();
 
@@ -88,15 +137,15 @@ namespace NotenverwaltungsApp.Server.controllers
                         SELECT u.first_name, u.last_name, u.user_id
                         FROM enrollments e
                         JOIN users u ON e.student_id = u.user_id
-                        WHERE e.course_code = @CourseCode";
+                        WHERE e.course_id = @courseId";
 
                     using var command = connection.CreateCommand();
                     command.CommandText = query;
 
-                    var courseCodeParameter = command.CreateParameter();
-                    courseCodeParameter.ParameterName = "@CourseCode";
-                    courseCodeParameter.Value = courseCode;
-                    command.Parameters.Add(courseCodeParameter);
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = "@courseId";
+                    parameter.Value = courseId;
+                    command.Parameters.Add(parameter);
 
                     using var reader = command.ExecuteReader();
 
@@ -123,6 +172,56 @@ namespace NotenverwaltungsApp.Server.controllers
             }
 
             return students;
+        }
+
+        public static List<Lesson> GetAllLessonsForCourse(string courseId)
+        {
+            var lessons = new List<Lesson>();
+
+            using var db = new Database(DatabaseType.SQLite);
+            {
+                try
+                {
+                    db.Connect_to_Database();
+                    var connection = db.GetConnection();
+
+                    string query = @"
+                        SELECT lesson_id, lesson_name, lesson_date
+                        FROM lessons                     
+                        WHERE course_id = @courseId"; 
+
+                    using var command = connection.CreateCommand();
+                    command.CommandText = query;
+
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = "@courseId";
+                    parameter.Value = courseId;
+                    command.Parameters.Add(parameter);
+
+                    using var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var lesson = new Lesson
+                        {
+                            LessonId = reader["lesson_id"].ToString() ?? "Unknown",
+                            LessonName = reader["lesson_name"].ToString() ?? "Unknown",
+                            LessonDate = reader["lesson_date"].ToString() ?? "Unknown", 
+                        };
+                        lessons.Add(lesson);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] Error fetching lessons: {ex.Message}"); 
+                }
+                finally
+                {
+                    db.Close_Connection();
+                }
+            }
+
+            return lessons;
         }
     }
 }

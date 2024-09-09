@@ -49,14 +49,44 @@ namespace Server.Server.routes
 
                     var formData = ParseFormData(body);
 
-                    if (formData.TryGetValue("courseCode", out string courseCode))
+                    if (formData.TryGetValue("courseId", out string courseId))
                     {
 
-                        var students = CourseController.GetStudentsByCourse(courseCode);
+                        var students = CourseController.GetStudentsByCourse(courseId);
 
                         if (students != null && students.Count > 0)
                         {
                             responseString = JsonSerializer.Serialize(students);
+                        }
+                        else
+                        {
+                            responseString = JsonSerializer.Serialize(new { message = "No users found." });
+                            statusCode = 404;
+                        }
+                    }
+                    else
+                    {
+                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
+                        statusCode = 400;
+                    }
+                }
+
+                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/lessons")
+                {
+
+                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
+                    var body = await reader.ReadToEndAsync();
+
+                    var formData = ParseFormData(body);
+
+                    if (formData.TryGetValue("courseId", out string courseId))
+                    {
+
+                        var lessons = CourseController.GetAllLessonsForCourse(courseId);
+
+                        if (lessons != null && lessons.Count > 0)
+                        {
+                            responseString = JsonSerializer.Serialize(lessons);
                         }
                         else
                         {
