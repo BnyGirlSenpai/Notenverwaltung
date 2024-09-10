@@ -98,6 +98,7 @@ namespace Server.Server.routes
                         statusCode = 400;
                     }
                 }
+
                 else
                 {
                     responseString = JsonSerializer.Serialize(new { message = "Endpoint not found." });

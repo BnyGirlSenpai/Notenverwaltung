@@ -203,12 +203,20 @@ internal class Program
                             var lessons = await GetAllLessonsForCourse(userId, selectedCourse.CourseId);
                             if (lessons != null && lessons.Count > 0)
                             {
-                                var lessonOptions = lessons.Select((lesson, index) =>
-                                {
-                                    var mark = GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
+                                var lessonOptions = new List<string>();
 
-                                    return $"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   Anwesenheit: \n   Note Lehrer: {mark} | Note Schüler: {mark} | End Note: {mark}\n";
-                                }).ToList();
+                                foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
+                                {
+                                    var marks = await GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
+
+                                    var mark = marks?.FirstOrDefault();
+
+                                    var markText = mark != null
+                                        ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
+                                        : "Marks not available";
+
+                                    lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   Anwesenheit:\n   {markText}\n");
+                                }
 
                                 lessonOptions.Add("Return to Student Menu");
 
@@ -220,8 +228,6 @@ internal class Program
                                     {
                                         var selectedLesson = lessons[lessonSelection];
                                         Console.WriteLine($"Selected Lesson: {selectedLesson.LessonName} on {selectedLesson.LessonDate}\n");
-                                     
-                                        
 
                                         // Here you can add additional functionality, such as displaying lesson details, etc.
                                     }
@@ -337,7 +343,6 @@ internal class Program
     
     static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseId)
     {
-        Console.WriteLine("Fetching all students...");
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/students")
         {
             Content = new FormUrlEncodedContent(
@@ -365,31 +370,37 @@ internal class Program
         }
     }
 
-    static async Task<List<MarkRepository>> GetMarksForStudent(string userId, string lessonId)
+    static async Task<List<MarkRepository>> GetMarksForStudent(string studentId, string lessonId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/marks")
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/lesson/student/marks")
         {
             Content = new FormUrlEncodedContent(
             [
-                new KeyValuePair<string, string>("userId", userId),
+                new KeyValuePair<string, string>("studentId", studentId),
                 new KeyValuePair<string, string>("lessonId", lessonId),
-
             ])
         };
 
         try
         {
             using HttpClient _client = new();
+
             var response = await _client.SendAsync(request);
+
             response.EnsureSuccessStatusCode();
 
             var responseData = await response.Content.ReadAsStringAsync();
+
+            // Log the raw response data
+            Console.WriteLine($"Response data: {responseData}");
+
             var marks = JsonSerializer.Deserialize<List<MarkRepository>>(responseData);
 
             return marks;
         }
         catch (HttpRequestException e)
         {
+            // Log the exception message
             Console.WriteLine($"Request error: {e.Message}");
             return null;
         }
@@ -448,6 +459,39 @@ internal class Program
             [
                 new KeyValuePair<string, string>("courseCode", courseId),
                 new KeyValuePair<string, string>("userId", userId)
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            {
+                var response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Course: {responseData}");
+                return responseData;
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
+
+    static async Task<string> GetNotesForUser(string userId, string firstName, string lastName)
+    {
+        Console.WriteLine("Fetching notes for course...");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                 new KeyValuePair<string, string>("userId", userId),
+                 new KeyValuePair<string, string>("courseCode", firstName),
+                 new KeyValuePair<string, string>("courseCode", lastName),
             ])
         };
 

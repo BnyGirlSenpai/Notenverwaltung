@@ -1,8 +1,7 @@
-﻿using NotenverwaltungsApp;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using static NotenverwaltungsApp.Database;
 
-namespace Server.Server.controllers
+namespace NotenverwaltungsApp.Server.controllers
 {
     internal class MarkController
     {
@@ -17,14 +16,17 @@ namespace Server.Server.controllers
             [JsonPropertyName("teacherMark")]
             public string TeacherMark { get; set; }
 
-            [JsonPropertyName("endMark")]
-            public string EndMark { get; set; }
+            [JsonPropertyName("finalMark")]
+            public string FinalMark { get; set; }
 
-            [JsonPropertyName("teacherName")]
-            public string TeacherName { get; set; }
+            [JsonPropertyName("teacherFirstname")]
+            public string TeacherFirstname { get; set; }
+
+            [JsonPropertyName("teacherLastname")]
+            public string TeacherLastname { get; set; }
         }
 
-        public static List<Mark> GetMarksForLessons(string userId, string lessonId)
+        public static List<Mark> GetMarksForLessons(string studentId, string lessonId)
         {
             var marks = new List<Mark>();
 
@@ -36,20 +38,30 @@ namespace Server.Server.controllers
                     var connection = db.GetConnection();
 
                     string query = @"
-                       ";
+                        SELECT m.mark_id, 
+                               m.student_mark, 
+                               m.teacher_mark, 
+                               m.final_mark, 
+                               u.last_name, 
+                               u.first_name
+                        FROM marks m
+                        LEFT JOIN users u ON m.teacher_id = u.user_id
+                        WHERE m.student_id = @studentId
+                          AND m.lesson_id = @lessonId;
+                    ";
 
                     using var command = connection.CreateCommand();
                     command.CommandText = query;
 
-                    var userparameter = command.CreateParameter();
-                    userparameter.ParameterName = "@userId";
-                    userparameter.Value = userId;
-                    command.Parameters.Add(userparameter);
+                    var studentParameter = command.CreateParameter();
+                    studentParameter.ParameterName = "@studentId";
+                    studentParameter.Value = studentId;
+                    command.Parameters.Add(studentParameter);
 
-                    var lessonsparameter = command.CreateParameter();
-                    lessonsparameter.ParameterName = "@lessonId";
-                    lessonsparameter.Value = lessonId;
-                    command.Parameters.Add(lessonsparameter);
+                    var lessonParameter = command.CreateParameter();
+                    lessonParameter.ParameterName = "@lessonId";
+                    lessonParameter.Value = lessonId;
+                    command.Parameters.Add(lessonParameter);
 
                     using var reader = command.ExecuteReader();
 
@@ -57,18 +69,19 @@ namespace Server.Server.controllers
                     {
                         var mark = new Mark
                         {
-                            MarkId = reader["´mark_id"]?.ToString() ?? "Unknown",
+                            MarkId = reader["mark_id"]?.ToString() ?? "Unknown",
                             StudentMark = reader["student_mark"]?.ToString() ?? "Unknown",
                             TeacherMark = reader["teacher_mark"]?.ToString() ?? "Unknown",
-                            EndMark = reader["student_mark"]?.ToString() ?? "Unknown",
-                            TeacherName = reader["teacher_name"]?.ToString() ?? "Unknown",
+                            FinalMark = reader["final_mark"]?.ToString() ?? "Unknown",
+                            TeacherFirstname = reader["first_name"]?.ToString() ?? "Unknown",
+                            TeacherLastname = reader["last_name"]?.ToString() ?? "Unknown",
                         };
                         marks.Add(mark);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error fetching courses: {ex.Message}");
+                    Console.WriteLine($"Error fetching marks: {ex.Message}");
                 }
                 finally
                 {
