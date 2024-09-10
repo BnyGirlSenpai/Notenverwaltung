@@ -1,6 +1,7 @@
 ﻿using App.App.repositorys;
 using App.App.services;
 using App.App.utils;
+using System;
 using System.Text.Json;
 
 internal class Program
@@ -179,15 +180,16 @@ internal class Program
         {
             int selectedIndex = ShowMenu(header, [.. courseOptions]);
 
-            if (selectedIndex >= 0 && selectedIndex < courses.Count - 1)
+            if (selectedIndex >= 0 && selectedIndex < courses.Count)
             {
                 var selectedCourse = courses[selectedIndex];
-                Console.WriteLine($"{selectedCourse}");
+                Console.WriteLine($"Selected Course: {selectedCourse.CourseName}\n");
+
                 var students = await GetAllStudentsForCourse(userId, selectedCourse.CourseId);
                 if (students != null && students.Count > 0)
                 {
-                    var studentOptions = students.Select((student, index) => $"{index + 1}.{student.FirstName} {student.LastName}").ToList();
-                    studentOptions.Add($"{studentOptions.Count + 1}. Return to Course Menu\n");
+                    var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
+                    studentOptions.Add("Return to Course Menu");
 
                     while (true)
                     {
@@ -201,17 +203,49 @@ internal class Program
                             var lessons = await GetAllLessonsForCourse(userId, selectedCourse.CourseId);
                             if (lessons != null && lessons.Count > 0)
                             {
-                                foreach (var lesson in lessons)
-                                {     
-                                    Console.WriteLine($"{lesson.LessonName} {lesson.LessonDate}");
-                                    Console.WriteLine($"----------------------------------------\n");
+                                var lessonOptions = lessons.Select((lesson, index) =>
+                                {
+                                    var mark = GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
+
+                                    return $"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   Anwesenheit: \n   Note Lehrer: {mark} | Note Schüler: {mark} | End Note: {mark}\n";
+                                }).ToList();
+
+                                lessonOptions.Add("Return to Student Menu");
+
+                                while (true)
+                                {   
+                                    int lessonSelection = ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [.. lessonOptions]);
+
+                                    if (lessonSelection >= 0 && lessonSelection < lessons.Count)
+                                    {
+                                        var selectedLesson = lessons[lessonSelection];
+                                        Console.WriteLine($"Selected Lesson: {selectedLesson.LessonName} on {selectedLesson.LessonDate}\n");
+                                     
+                                        
+
+                                        // Here you can add additional functionality, such as displaying lesson details, etc.
+                                    }
+                                    else if (lessonSelection == lessons.Count)
+                                    {
+                                        break;  
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid selection. Please try again.");
+                                    }
+
+                                    Console.WriteLine("\nPress any key to return to the lesson menu...");
+                                    Console.ReadKey();
                                 }
                             }
-
+                            else
+                            {
+                                Console.WriteLine("No lessons found for this course.");
+                            }
                         }
                         else if (studentSelection == students.Count)
                         {
-                            break; 
+                            break;  
                         }
                         else
                         {
@@ -226,10 +260,8 @@ internal class Program
                 {
                     Console.WriteLine("No students found for this course.");
                 }
-
-                //await GetAllLessonsForCourse(userId, selectedCourse.CourseCode);
             }
-            else if (selectedIndex == courses.Count - 1)
+            else if (selectedIndex == courses.Count)  
             {
                 return;
             }
@@ -332,7 +364,36 @@ internal class Program
             return null;
         }
     }
-   
+
+    static async Task<List<MarkRepository>> GetMarksForStudent(string userId, string lessonId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/marks")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("userId", userId),
+                new KeyValuePair<string, string>("lessonId", lessonId),
+
+            ])
+        };
+
+        try
+        {
+            using HttpClient _client = new();
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var marks = JsonSerializer.Deserialize<List<MarkRepository>>(responseData);
+
+            return marks;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
 
 
     private static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
@@ -374,39 +435,6 @@ internal class Program
         {
             Console.WriteLine($"Error parsing user information: {ex.Message}");
             return (string.Empty, string.Empty, string.Empty, string.Empty);
-        }
-    }
-
-    static async Task<string> GetNotesForUser(string userId, string firstName, string lastName)
-    {
-        Console.WriteLine($"Fetching notes for {firstName} {lastName}...");
-
-        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/notes")
-        {
-            Content = new FormUrlEncodedContent(
-            [
-                new KeyValuePair<string, string>("userId", userId),
-                new KeyValuePair<string, string>("firstName", firstName),
-                new KeyValuePair<string, string>("lastName", lastName)
-            ])
-        };
-
-        try
-        {
-            using HttpClient _client = new();
-            {
-                var response = await _client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-                var responseData = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Notes for {firstName} {lastName}: {responseData}");
-                return responseData;
-            }
-        }
-        catch (HttpRequestException e)
-        {
-            Console.WriteLine($"Request error: {e.Message}");
-            return null;
         }
     }
 

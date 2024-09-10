@@ -1,12 +1,11 @@
-﻿using NotenverwaltungsApp.Server.controllers;
+﻿using Server.Server.controllers;
 using Server.Server.utility;
 using System.Net;
 using System.Text;
-using System.Text.Json;
 
 namespace Server.Server.routes
 {
-    internal class AuthApi
+    internal class MarkApi
     {
         public static async Task HandleAsync(HttpListenerContext context)
         {
@@ -15,37 +14,18 @@ namespace Server.Server.routes
 
             try
             {
-                if (context.Request.HttpMethod == "POST" && context.Request.Url.AbsolutePath == "/api/auth/login")
+                if (context.Request.HttpMethod == "POST" && context.Request.Url.AbsolutePath == "/api/user/marks")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();
                     var formDataParser = FormDataParser.Parse(body);
 
-                    if (formDataParser.ContainsKey("username") && formDataParser.ContainsKey("password"))
+                    if (formDataParser.ContainsKey("userId") && formDataParser.ContainsKey("lessonId"))
                     {
-                        string username = formDataParser.GetValue("username");
-                        string password = formDataParser.GetValue("password");
+                        string userId = formDataParser.GetValue("userId");
+                        string lessonId = formDataParser.GetValue("lessonId");
 
-                        var (isAuthenticated, uid, role, firstName, lastName) = AuthController.AuthenticateUser(username, password);
-
-                        if (isAuthenticated)
-                        {
-                            var userInfo = new
-                            {
-                                FirstName = firstName,
-                                LastName = lastName,
-                                UserId = uid,
-                                Role = role,
-                                Message = "User authenticated successfully."
-                            };
-
-                            responseString = JsonSerializer.Serialize(userInfo);
-                        }
-                        else
-                        {
-                            responseString = "Invalid username or password.";
-                            statusCode = 401;
-                        }
+                        var (MarkId, StudentMark, TeacherMark, EndMark, TeacherName) = MarkController.GetMarksForLessons(userId, lessonId);                      
                     }
                     else
                     {

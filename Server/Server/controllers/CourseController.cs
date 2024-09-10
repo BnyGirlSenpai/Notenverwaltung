@@ -41,36 +41,6 @@ namespace NotenverwaltungsApp.Server.controllers
             public string LessonDate { get; set; }
         }
 
-        public class Mark
-        {
-            [JsonPropertyName("markId")]
-            public string MarkId { get; set; }
-
-            [JsonPropertyName("studentId")]
-            public string StudentId { get; set; }
-
-            [JsonPropertyName("lessonDate")]
-            public string lessonDate { get; set; }
-
-            [JsonPropertyName("firstname")]
-            public string FirstName { get; set; }
-
-            [JsonPropertyName("lastname")]
-            public string LastName { get; set; }
-
-            [JsonPropertyName("studentMark")]
-            public string StudentMark { get; set; }
-
-            [JsonPropertyName("teacherMark")]
-            public string TeacherMark { get; set; }
-
-            [JsonPropertyName("markDate")]
-            public string MarkDate { get; set; }
-
-            [JsonPropertyName("teacherName")]
-            public string TeacherName { get; set; }
-        }
-
         public static List<Course> GetCoursesByTeacher(string teacherId)
         {
             var courses = new List<Course>();
