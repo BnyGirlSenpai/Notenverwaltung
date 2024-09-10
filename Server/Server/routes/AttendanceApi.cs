@@ -37,7 +37,7 @@ namespace Server.Server.routes
                         }
                         else
                         {
-                            responseString = JsonSerializer.Serialize(new { message = "No marks found for the given UserId and LessonId." });
+                            responseString = JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
                             statusCode = 404;
                         }
                     }
