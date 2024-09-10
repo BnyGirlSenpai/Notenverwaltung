@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Server.Server.routes
 {
-    internal class MarkApi
+    internal class AttendanceApi
     {
         public static async Task HandleAsync(HttpListenerContext context)
         {
@@ -14,8 +14,8 @@ namespace Server.Server.routes
             int statusCode = 200;
 
             try
-            {
-                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/lesson/student/marks")
+            {           
+                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/lesson/student/attendance")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();
@@ -28,12 +28,12 @@ namespace Server.Server.routes
                         string studentId = formDataParser.GetValue("studentId");
                         string lessonId = formDataParser.GetValue("lessonId");
 
-                        var marks = MarkController.GetMarksForLessons(studentId, lessonId);
+                        var attendances = AttendanceController.GetAttendanceForLesson(studentId, lessonId);
 
 
-                        if (marks != null && marks.Count > 0)
+                        if (attendances != null && attendances.Count > 0)
                         {
-                            responseString = JsonSerializer.Serialize(marks);
+                            responseString = JsonSerializer.Serialize(attendances);
                         }
                         else
                         {

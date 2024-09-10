@@ -30,6 +30,10 @@ namespace Server.Server.handler
                     await MarkApi.HandleAsync(context);
                     break;
 
+                case "/api/lesson/student/attendance":
+                    await AttendanceApi.HandleAsync(context);
+                    break;
+                   
                 default:
                     string responseString = "Endpoint not found.";
                     int statusCode = 404; 

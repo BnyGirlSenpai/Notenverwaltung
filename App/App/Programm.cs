@@ -1,7 +1,6 @@
 ﻿using App.App.repositorys;
 using App.App.services;
 using App.App.utils;
-using System;
 using System.Text.Json;
 
 internal class Program
@@ -208,15 +207,19 @@ internal class Program
                                 foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                                 {
                                     var marks = await GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
-
                                     var mark = marks?.FirstOrDefault();
-
                                     var markText = mark != null
                                         ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
-                                        : "Marks not available";
+                                        : "No Marks available";
 
-                                    lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   Anwesenheit:\n   {markText}\n");
-                                }
+                                    var attendances = await GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId);
+                                    var attendance = attendances?.FirstOrDefault();
+                                    var attendanceText = attendance != null 
+                                        ? $"Anwesenheit : {attendance.Status}" 
+                                        : "No entry available";
+
+                                    lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   {attendanceText}\n   {markText}\n");
+                                }                             
 
                                 lessonOptions.Add("Return to Student Menu");
 
@@ -228,8 +231,6 @@ internal class Program
                                     {
                                         var selectedLesson = lessons[lessonSelection];
                                         Console.WriteLine($"Selected Lesson: {selectedLesson.LessonName} on {selectedLesson.LessonDate}\n");
-
-                                        // Here you can add additional functionality, such as displaying lesson details, etc.
                                     }
                                     else if (lessonSelection == lessons.Count)
                                     {
@@ -280,7 +281,6 @@ internal class Program
             Console.ReadKey();
         }
     }
-
 
     static async Task<List<CourseRepository>> GetAllCourses(string userId)
     {
@@ -386,25 +386,62 @@ internal class Program
             using HttpClient _client = new();
 
             var response = await _client.SendAsync(request);
-
             response.EnsureSuccessStatusCode();
-
             var responseData = await response.Content.ReadAsStringAsync();
-
-            // Log the raw response data
-            Console.WriteLine($"Response data: {responseData}");
-
             var marks = JsonSerializer.Deserialize<List<MarkRepository>>(responseData);
 
             return marks;
         }
         catch (HttpRequestException e)
         {
-            // Log the exception message
             Console.WriteLine($"Request error: {e.Message}");
             return null;
         }
     }
+
+    static async Task<List<AttendanceRepository>> GetAttendanceForStudent(string studentId, string lessonId)
+    {
+        Console.WriteLine("Starting GetAttendanceForStudent method");
+        Console.WriteLine($"Student ID: {studentId}, Lesson ID: {lessonId}");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/lesson/student/attendance")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>("studentId", studentId),
+                new KeyValuePair<string, string>("lessonId", lessonId),
+            ])
+        };
+
+        Console.WriteLine("HTTP request created");
+
+        try
+        {
+            using HttpClient _client = new();
+            Console.WriteLine("Sending HTTP request...");
+
+            var response = await _client.SendAsync(request);
+            Console.WriteLine("HTTP request sent");
+
+            response.EnsureSuccessStatusCode();
+            Console.WriteLine("Response status code: " + response.StatusCode);
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Response data received:");
+            Console.WriteLine(responseData);
+
+            var attendances = JsonSerializer.Deserialize<List<AttendanceRepository>>(responseData);
+            Console.WriteLine("Deserialization completed");
+
+            return attendances;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Request error: {e.Message}");
+            return null;
+        }
+    }
+
 
 
     private static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
