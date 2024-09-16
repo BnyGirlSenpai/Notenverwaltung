@@ -71,6 +71,8 @@ namespace NotenverwaltungsApp.Server.controllers
 
             return attendances;
         }
+
+        //update Attendance
     }
 }
 

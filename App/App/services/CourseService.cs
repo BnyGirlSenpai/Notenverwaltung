@@ -165,5 +165,87 @@ namespace App.App.services
                 return null;
             }
         }
+
+        public static async Task UpdateMarksForStudent(string userId, string lessonId, string newTeacherMark, string newFinalMark)
+        {
+            Console.WriteLine("Starting UpdateMarksForStudent method");
+            Console.WriteLine($"User ID: {userId}, Lesson ID: {lessonId}");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/lesson/student/update-marks")
+            {
+                Content = new FormUrlEncodedContent(
+                [
+                    new KeyValuePair<string, string>("userId", userId),
+                    new KeyValuePair<string, string>("lessonId", lessonId),
+                    new KeyValuePair<string, string>("teacherMark", newTeacherMark ?? string.Empty),
+                    new KeyValuePair<string, string>("finalMark", newFinalMark ?? string.Empty)
+                ])
+            };
+
+            Console.WriteLine("HTTP request created");
+
+            try
+            {
+                using HttpClient _client = new();
+                Console.WriteLine("Sending HTTP request...");
+
+                var response = await _client.SendAsync(request);
+                Console.WriteLine("HTTP request sent");
+
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine("Response status code: " + response.StatusCode);
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Response data received:");
+                Console.WriteLine(responseData);
+
+                Console.WriteLine("Marks updated successfully.");
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine($"Request error: {e.Message}");
+            }
+        }
+
+        public static async Task UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus)
+        {
+            Console.WriteLine("Starting UpdateAttendanceForStudent method");
+            Console.WriteLine($"User ID: {userId}, Lesson ID: {lessonId}");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/lesson/student/update-attendance")
+            {
+                Content = new FormUrlEncodedContent(
+                [
+                    new KeyValuePair<string, string>("userId", userId),
+                    new KeyValuePair<string, string>("lessonId", lessonId),
+                    new KeyValuePair<string, string>("attendanceStatus", newAttendanceStatus ?? string.Empty)
+                ])
+            };
+
+            Console.WriteLine("HTTP request created");
+
+            try
+            {
+                using HttpClient _client = new();
+                Console.WriteLine("Sending HTTP request...");
+
+                var response = await _client.SendAsync(request);
+                Console.WriteLine("HTTP request sent");
+
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine("Response status code: " + response.StatusCode);
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Response data received:");
+                Console.WriteLine(responseData);
+
+                Console.WriteLine("Attendance updated successfully.");
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine($"Request error: {e.Message}");
+            }
+        }
+
     }
 }

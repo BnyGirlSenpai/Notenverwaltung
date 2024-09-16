@@ -73,6 +73,25 @@ namespace App.App.processor
                                         {
                                             var selectedLesson = lessons[lessonSelection];
                                             Console.WriteLine($"Selected Lesson: {selectedLesson.LessonName} on {selectedLesson.LessonDate}\n");
+
+                                            Console.WriteLine("Enter new attendance status (Present, Absent, Excused) (or leave empty to skip): ");
+                                            var newAttendanceStatus = Console.ReadLine();
+
+                                            Console.WriteLine("Enter new teacher mark (or leave empty to skip): ");
+                                            var newTeacherMark = Console.ReadLine();
+
+                                            Console.WriteLine("Enter new final mark (or leave empty to skip): ");
+                                            var newFinalMark = Console.ReadLine();
+
+                                            if (!string.IsNullOrEmpty(newTeacherMark) || !string.IsNullOrEmpty(newFinalMark))
+                                            {
+                                                await CourseService.UpdateMarksForStudent(selectedStudent.UserId, selectedLesson.LessonId, newTeacherMark, newFinalMark);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(newAttendanceStatus))
+                                            {
+                                                await CourseService.UpdateAttendanceForStudent(selectedStudent.UserId, selectedLesson.LessonId, newAttendanceStatus);
+                                            }
                                         }
                                         else if (lessonSelection == lessons.Count)
                                         {
