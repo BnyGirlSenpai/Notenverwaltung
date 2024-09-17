@@ -47,6 +47,41 @@ namespace Server.Server.routes
                         statusCode = 400;
                     }
                 }
+
+                else if (context.Request.HttpMethod == "PUT" && context.Request.Url.AbsolutePath == "/api/lesson/student/update/attendance")
+                {
+                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
+                    var body = await reader.ReadToEndAsync();
+
+                    var formDataParser = FormDataParser.Parse(body);
+
+
+                    if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("attendanceStatus"))
+                    {
+                        string studentId = formDataParser.GetValue("studentId");
+                        string lessonId = formDataParser.GetValue("lessonId");
+                        string attendanceStatus = formDataParser.GetValue("attendanceStatus");
+
+                        var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
+
+
+                        if (message != null)
+                        {
+                            responseString = JsonSerializer.Serialize(message);
+                        }
+                        else
+                        {
+                            responseString = JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
+                            statusCode = 404;
+                        }
+                    }
+                    else
+                    {
+                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
+                        statusCode = 400;
+                    }
+                }
+
                 else
                 {
                     responseString = JsonSerializer.Serialize(new { message = "Endpoint not found." });

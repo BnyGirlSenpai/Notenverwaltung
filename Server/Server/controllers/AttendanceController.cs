@@ -72,7 +72,62 @@ namespace NotenverwaltungsApp.Server.controllers
             return attendances;
         }
 
-        //update Attendance
+        public static string UpdateAttendanceForLesson(string studentId, string lessonId, string attendanceStatus)
+        {
+            string message = "Update successful";
+
+            using var db = new Database(DatabaseType.SQLite);
+            {
+                try
+                {
+                    db.Connect_to_Database();
+                    var connection = db.GetConnection();
+
+                    string query = @"
+                        UPDATE attendance 
+                        SET status = @status 
+                        WHERE student_id = @studentId 
+                        AND lesson_id = @lessonId
+                    ";
+
+                    using var command = connection.CreateCommand();
+                    command.CommandText = query;
+
+                    var studentParameter = command.CreateParameter();
+                    studentParameter.ParameterName = "@studentId";
+                    studentParameter.Value = studentId;
+                    command.Parameters.Add(studentParameter);
+
+                    var lessonParameter = command.CreateParameter();
+                    lessonParameter.ParameterName = "@lessonId";
+                    lessonParameter.Value = lessonId;
+                    command.Parameters.Add(lessonParameter);
+
+                    var statusParameter = command.CreateParameter();
+                    statusParameter.ParameterName = "@status";
+                    statusParameter.Value = attendanceStatus;
+                    command.Parameters.Add(statusParameter);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected == 0)
+                    {
+                        message = "No record found to update";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    message = $"Error updating attendance: {ex.Message}";
+                }
+                finally
+                {
+                    db.Close_Connection();
+                }
+            }
+
+            return message;
+        }
+
     }
 }
 

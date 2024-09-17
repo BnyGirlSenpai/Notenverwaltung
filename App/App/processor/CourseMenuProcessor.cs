@@ -85,7 +85,7 @@ namespace App.App.processor
 
                                             if (!string.IsNullOrEmpty(newTeacherMark) || !string.IsNullOrEmpty(newFinalMark))
                                             {
-                                                await CourseService.UpdateMarksForStudent(selectedStudent.UserId, selectedLesson.LessonId, newTeacherMark, newFinalMark);
+                                                //await CourseService.UpdateMarksForStudent(selectedStudent.UserId, selectedLesson.LessonId, newTeacherMark, newFinalMark);
                                             }
 
                                             if (!string.IsNullOrEmpty(newAttendanceStatus))

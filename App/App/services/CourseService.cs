@@ -166,6 +166,7 @@ namespace App.App.services
             }
         }
 
+        /*
         public static async Task UpdateMarksForStudent(string userId, string lessonId, string newTeacherMark, string newFinalMark)
         {
             Console.WriteLine("Starting UpdateMarksForStudent method");
@@ -206,13 +207,13 @@ namespace App.App.services
                 Console.WriteLine($"Request error: {e.Message}");
             }
         }
+        */
 
         public static async Task UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus)
         {
-            Console.WriteLine("Starting UpdateAttendanceForStudent method");
-            Console.WriteLine($"User ID: {userId}, Lesson ID: {lessonId}");
+            Console.WriteLine($"User ID: {userId}, Lesson ID: {lessonId} , Attendance: {newAttendanceStatus}");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/lesson/student/update-attendance")
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/lesson/student/update/attendance")
             {
                 Content = new FormUrlEncodedContent(
                 [
@@ -222,15 +223,11 @@ namespace App.App.services
                 ])
             };
 
-            Console.WriteLine("HTTP request created");
-
             try
             {
                 using HttpClient _client = new();
-                Console.WriteLine("Sending HTTP request...");
 
                 var response = await _client.SendAsync(request);
-                Console.WriteLine("HTTP request sent");
 
                 response.EnsureSuccessStatusCode();
                 Console.WriteLine("Response status code: " + response.StatusCode);

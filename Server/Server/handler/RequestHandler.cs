@@ -1,6 +1,9 @@
-﻿using Server.Server.routes;
+﻿using Google.Protobuf.WellKnownTypes;
+using Server.Server.routes;
 using System.Net;
 using System.Text;
+using static NotenverwaltungsApp.Server.controllers.AttendanceController;
+using static NotenverwaltungsApp.Server.controllers.CourseController;
 
 namespace Server.Server.handler
 {
@@ -33,7 +36,11 @@ namespace Server.Server.handler
                 case "/api/lesson/student/attendance":
                     await AttendanceApi.HandleAsync(context);
                     break;
-                   
+
+                case "/api/lesson/student/update-attendance":
+                    await AttendanceApi.HandleAsync(context);
+                    break;
+                    
                 default:
                     string responseString = "Endpoint not found.";
                     int statusCode = 404; 
