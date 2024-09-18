@@ -213,7 +213,7 @@ namespace App.App.services
         {
             Console.WriteLine($"User ID: {userId}, Lesson ID: {lessonId} , Attendance: {newAttendanceStatus}");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/lesson/student/update/attendance")
+            var request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:5000/api/lesson/student/update/attendance")
             {
                 Content = new FormUrlEncodedContent(
                 [
