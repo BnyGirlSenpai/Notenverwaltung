@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using static NotenverwaltungsApp.Database;
+using static NotenverwaltungsApp.Server.controllers.MarkController;
 
 namespace NotenverwaltungsApp.Server.controllers
 {
@@ -58,6 +59,15 @@ namespace NotenverwaltungsApp.Server.controllers
                         };
                         attendances.Add(attendance);
                     }
+
+                    if (attendances.Count == 0)
+                    {
+                        attendances.Add(new Attendance
+                        {
+                            AttendanceId = "N.a.N",
+                            Status = "N.a.N",                        
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +78,6 @@ namespace NotenverwaltungsApp.Server.controllers
                     db.Close_Connection();
                 }
             }
-
             return attendances;
         }
 

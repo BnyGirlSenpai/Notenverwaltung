@@ -100,8 +100,8 @@ namespace App.App.services
                 Content = new FormUrlEncodedContent(
                 [
                     new KeyValuePair<string, string>("studentId", studentId),
-                new KeyValuePair<string, string>("lessonId", lessonId),
-            ])
+                    new KeyValuePair<string, string>("lessonId", lessonId),
+                ])
             };
 
             try
@@ -167,9 +167,6 @@ namespace App.App.services
     
         public static async Task UpdateMarksForStudent(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
         {
-            Console.WriteLine("Starting UpdateMarksForStudent method");
-            Console.WriteLine($"User ID: {studentId}, Lesson ID: {lessonId}");
-
             var request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:5000/api/lesson/student/update/marks")
             {
                 Content = new FormUrlEncodedContent(
@@ -182,24 +179,13 @@ namespace App.App.services
                 ])
             };
 
-            Console.WriteLine("HTTP request created");
-
             try
             {
                 using HttpClient _client = new();
-                Console.WriteLine("Sending HTTP request...");
-
+               
                 var response = await _client.SendAsync(request);
-                Console.WriteLine("HTTP request sent");
-
                 response.EnsureSuccessStatusCode();
-                Console.WriteLine("Response status code: " + response.StatusCode);
-
-                var responseData = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Response data received:");
-                Console.WriteLine(responseData);
-
-                Console.WriteLine("Marks updated successfully.");
+                var responseData = await response.Content.ReadAsStringAsync(); 
             }
             catch (HttpRequestException e)
             {

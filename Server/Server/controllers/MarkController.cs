@@ -30,7 +30,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             var marks = new List<Mark>();
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {
@@ -46,9 +46,7 @@ namespace NotenverwaltungsApp.Server.controllers
                                u.first_name
                         FROM marks m
                         LEFT JOIN users u ON m.teacher_id = u.user_id
-                        WHERE m.student_id = @studentId
-                          AND m.lesson_id = @lessonId;
-                    ";
+                        WHERE m.student_id = @studentId AND m.lesson_id = @lessonId;";
 
                     using var command = connection.CreateCommand();
                     command.CommandText = query;
@@ -77,6 +75,19 @@ namespace NotenverwaltungsApp.Server.controllers
                             TeacherLastname = reader["last_name"]?.ToString() ?? "Unknown",
                         };
                         marks.Add(mark);
+                    }
+
+                    if (marks.Count == 0)
+                    {
+                        marks.Add(new Mark
+                        {
+                            MarkId = "N.a.N",
+                            StudentMark = "N.a.N",
+                            TeacherMark = "N.a.N",
+                            FinalMark = "N.a.N",
+                            TeacherFirstname = "N.a.N",
+                            TeacherLastname = "N.a.N",
+                        });
                     }
                 }
                 catch (Exception ex)

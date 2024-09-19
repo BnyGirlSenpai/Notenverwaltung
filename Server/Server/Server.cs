@@ -69,7 +69,7 @@ namespace NotenverwaltungsApp.Server
             context.Response.StatusCode = (int)HttpStatusCode.OK;
             context.Response.ContentType = "text/plain";
             byte[] responseBytes = System.Text.Encoding.UTF8.GetBytes("Pong");
-            await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+            await context.Response.OutputStream.WriteAsync(responseBytes);
             context.Response.Close();
         }
 
