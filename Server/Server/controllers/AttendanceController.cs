@@ -19,7 +19,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             var attendances = new List<Attendance>();
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {
@@ -76,7 +76,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             string message = "Update successful";
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {

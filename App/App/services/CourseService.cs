@@ -13,7 +13,7 @@ namespace App.App.services
                 Content = new FormUrlEncodedContent(
                 [
                     new KeyValuePair<string, string>("userId", userId),
-            ])
+                ])
             };
 
             try

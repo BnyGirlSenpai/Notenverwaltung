@@ -10,8 +10,9 @@ internal class Program
 
         if (isAuthenticated)
         {
+            string ConnectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
             var (role, firstName, lastName, userId) = await UserInfoExtracter.GetUserInfo();
-            string header = $"Logged in as: {firstName} {lastName} ({role})";
+            string header = $"Logged in as: ({ConnectionStatus}) {firstName} {lastName} ({role})";
 
             if (role == "Teacher")
             {

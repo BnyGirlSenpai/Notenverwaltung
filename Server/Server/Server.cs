@@ -17,7 +17,6 @@ namespace NotenverwaltungsApp.Server
         {
             if (!TestDatabaseConnection())
             {
-                Console.WriteLine("Failed to connect to the database. Shutting down server.");
                 return;
             }
 
@@ -29,7 +28,7 @@ namespace NotenverwaltungsApp.Server
                 try
                 {
                     var context = await _listener.GetContextAsync();
-                    _ = Task.Run(() => HandleRequestAsync(context)); 
+                    _ = Task.Run(() => HandleRequestAsync(context));
                 }
                 catch (Exception ex)
                 {
@@ -48,12 +47,30 @@ namespace NotenverwaltungsApp.Server
         {
             try
             {
-                await RequestHandler.HandleRequestAsync(context); 
+                string path = context.Request.Url.AbsolutePath;
+
+                if (path == "/ping")
+                {
+                    await HandlePingRequest(context);
+                }
+                else
+                {
+                    await RequestHandler.HandleRequestAsync(context); 
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error processing request: {ex.Message}");
             }
+        }
+
+        private static async Task HandlePingRequest(HttpListenerContext context)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
+            context.Response.ContentType = "text/plain";
+            byte[] responseBytes = System.Text.Encoding.UTF8.GetBytes("Pong");
+            await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+            context.Response.Close();
         }
 
         static async Task Main()
@@ -74,7 +91,7 @@ namespace NotenverwaltungsApp.Server
         {
             bool connectionSuccess = false;
 
-            using (var db = new Database(Database.DatabaseType.SQLite)) 
+            using (var db = new Database(Database.DatabaseType.MySQL))
             {
                 try
                 {
@@ -83,7 +100,7 @@ namespace NotenverwaltungsApp.Server
 
                     using var command = connection.CreateCommand();
                     {
-                        command.CommandText = "SELECT datetime('now')";
+                        command.CommandText = "SELECT NOW()";
                         var result = command.ExecuteScalar();
                         Console.WriteLine($"Current date and time from database: {result}");
 

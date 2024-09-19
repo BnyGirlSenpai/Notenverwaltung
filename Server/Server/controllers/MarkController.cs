@@ -96,7 +96,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             string message = "Update successful";
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {

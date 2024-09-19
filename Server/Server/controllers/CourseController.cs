@@ -45,7 +45,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             var courses = new List<Course>();
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {
@@ -96,7 +96,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             var students = new List<Student>();
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {
@@ -148,7 +148,7 @@ namespace NotenverwaltungsApp.Server.controllers
         {
             var lessons = new List<Lesson>();
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {

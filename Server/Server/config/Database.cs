@@ -20,27 +20,20 @@ namespace NotenverwaltungsApp
         {
             _dbType = dbType;
 
-            switch (_dbType)
+            _connectionString = _dbType switch
             {
-                case DatabaseType.SQLite:
-                    _connectionString = "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\sqlitespy_1.9.10\\Notenverwaltung.db3";
-                    break;
-
-                case DatabaseType.MySQL:
-                    _connectionString = BuildMySqlConnectionString();
-                    break;
-
-                default:
-                    throw new NotSupportedException("Database type not supported.");
-            }
+                DatabaseType.SQLite => "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\sqlitespy_1.9.10\\Notenverwaltung.db3",
+                DatabaseType.MySQL => BuildMySqlConnectionString(),
+                _ => throw new NotSupportedException("Database type not supported."),
+            };
         }
 
         private static string BuildMySqlConnectionString()
         {
-            string host = Environment.GetEnvironmentVariable("DB_HOST");
-            string user = Environment.GetEnvironmentVariable("DB_USER");
-            string password = Environment.GetEnvironmentVariable("DB_PASSWORD");
-            string database = Environment.GetEnvironmentVariable("DB_NAME");
+            string host = "localhost";
+            string user = "root";
+            string password = "password";
+            string database = "notenverwaltung";
 
             if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(user) ||
                 string.IsNullOrEmpty(password) || string.IsNullOrEmpty(database))
@@ -55,20 +48,12 @@ namespace NotenverwaltungsApp
         {
             try
             {
-                switch (_dbType)
+                _connection = _dbType switch
                 {
-                    case DatabaseType.SQLite:
-                        _connection = new SQLiteConnection(_connectionString);
-                        break;
-
-                    case DatabaseType.MySQL:
-                        _connection = new MySqlConnection(_connectionString);
-                        break;
-
-                    default:
-                        throw new NotSupportedException("Database type not supported.");
-                }
-
+                    DatabaseType.SQLite => new SQLiteConnection(_connectionString),
+                    DatabaseType.MySQL => new MySqlConnection(_connectionString),
+                    _ => throw new NotSupportedException("Database type not supported."),
+                };
                 _connection.Open();
                 Console.WriteLine("Database connection established successfully!");
             }

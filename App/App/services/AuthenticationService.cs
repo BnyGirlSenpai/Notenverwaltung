@@ -9,10 +9,10 @@
             var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/api/auth/login")
             {
                 Content = new FormUrlEncodedContent(
-            [
-                new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password)
-            ])
+                [
+                    new KeyValuePair<string, string>("username", username),
+                    new KeyValuePair<string, string>("password", password)
+                ])
             };
 
             try

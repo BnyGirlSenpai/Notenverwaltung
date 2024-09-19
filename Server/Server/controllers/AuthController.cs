@@ -13,7 +13,7 @@ namespace NotenverwaltungsApp.Server.controllers
             string lastName = null;
 
 
-            using var db = new Database(DatabaseType.SQLite);
+            using var db = new Database(DatabaseType.MySQL);
             {
                 try
                 {
@@ -43,7 +43,7 @@ namespace NotenverwaltungsApp.Server.controllers
 
                     if (reader.Read())
                     {
-                        isAuthenticated = true;
+                        isAuthenticated = true; 
                         userId = reader["user_id"].ToString() ?? "Unknown";
                         firstName = reader["first_name"].ToString() ?? "Unknown";
                         lastName = reader["last_name"].ToString() ?? "Unknown";
