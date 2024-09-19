@@ -55,7 +55,6 @@ namespace Server.Server.routes
 
                     var formDataParser = FormDataParser.Parse(body);
 
-
                     if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("attendanceStatus"))
                     {
                         string studentId = formDataParser.GetValue("studentId");

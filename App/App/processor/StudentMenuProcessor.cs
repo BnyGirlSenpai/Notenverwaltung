@@ -9,13 +9,13 @@ namespace App.App.processor
             while (true)
             {
                 int selectedIndex = MenuProcessor.ShowMenu(header,
-                [
-                    "Option 3: Logout"
+                [               
+                    "Option 1: Logout"
                 ]);
 
                 switch (selectedIndex)
-                {
-                    case 2:
+                {             
+                    case 0:
                         await LoginService.LogoutAsync();
                         Console.WriteLine("You have been logged out. Exiting the program...");
                         return;
