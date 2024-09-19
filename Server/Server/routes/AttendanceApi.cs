@@ -14,73 +14,23 @@ namespace Server.Server.routes
             int statusCode = 200;
 
             try
-            {           
-                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/lesson/student/attendance")
+            {
+                var requestUrl = context.Request.Url.AbsolutePath;
+                var httpMethod = context.Request.HttpMethod;
+
+                using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
+                var body = await reader.ReadToEndAsync();
+
+                var formDataParser = FormDataParser.Parse(body);
+
+                if (httpMethod == "GET" && requestUrl == "/api/lesson/student/attendance")
                 {
-                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
-                    var body = await reader.ReadToEndAsync();
-
-                    var formDataParser = FormDataParser.Parse(body);
-
-
-                    if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId"))
-                    {
-                        string studentId = formDataParser.GetValue("studentId");
-                        string lessonId = formDataParser.GetValue("lessonId");
-
-                        var attendances = AttendanceController.GetAttendanceForLesson(studentId, lessonId);
-
-
-                        if (attendances != null && attendances.Count > 0)
-                        {
-                            responseString = JsonSerializer.Serialize(attendances);
-                        }
-                        else
-                        {
-                            responseString = JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
-                            statusCode = 404;
-                        }
-                    }
-                    else
-                    {
-                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
-                        statusCode = 400;
-                    }
+                    responseString = HandleGetAttendance(formDataParser);
                 }
-
-                else if (context.Request.HttpMethod == "PUT" && context.Request.Url.AbsolutePath == "/api/lesson/student/update/attendance")
+                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/student/update/attendance")
                 {
-                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
-                    var body = await reader.ReadToEndAsync();
-
-                    var formDataParser = FormDataParser.Parse(body);
-
-                    if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("attendanceStatus"))
-                    {
-                        string studentId = formDataParser.GetValue("studentId");
-                        string lessonId = formDataParser.GetValue("lessonId");
-                        string attendanceStatus = formDataParser.GetValue("attendanceStatus");
-
-                        var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
-
-
-                        if (message != null)
-                        {
-                            responseString = JsonSerializer.Serialize(message);
-                        }
-                        else
-                        {
-                            responseString = JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
-                            statusCode = 404;
-                        }
-                    }
-                    else
-                    {
-                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
-                        statusCode = 400;
-                    }
+                    responseString = HandleUpdateAttendance(formDataParser);
                 }
-
                 else
                 {
                     responseString = JsonSerializer.Serialize(new { message = "Endpoint not found." });
@@ -95,10 +45,56 @@ namespace Server.Server.routes
             }
 
             context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json"; 
             byte[] buffer = Encoding.UTF8.GetBytes(responseString);
             context.Response.ContentLength64 = buffer.Length;
             await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
             context.Response.OutputStream.Close();
         }
+
+        private static string HandleGetAttendance(FormDataParser formDataParser)
+        {
+            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId"))
+            {
+                string studentId = formDataParser.GetValue("studentId");
+                string lessonId = formDataParser.GetValue("lessonId");
+
+                var attendances = AttendanceController.GetAttendanceForLesson(studentId, lessonId);
+
+                if (attendances != null && attendances.Count > 0)
+                {
+                    return JsonSerializer.Serialize(attendances);
+                }
+                else
+                {
+                    return JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
+                }
+            }
+            return JsonSerializer.Serialize(new { message = "Invalid request data." });
+        }
+
+        private static string HandleUpdateAttendance(FormDataParser formDataParser)
+        {
+            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("attendanceStatus"))
+            {
+                string studentId = formDataParser.GetValue("studentId");
+                string lessonId = formDataParser.GetValue("lessonId");
+                string attendanceStatus = formDataParser.GetValue("attendanceStatus");
+
+             
+                var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
+
+                if (message != null)
+                {
+                    return JsonSerializer.Serialize(message);
+                }
+                else
+                {                  
+                    return JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
+                }
+            }      
+            return JsonSerializer.Serialize(new { message = "Invalid request data." });
+        }
+
     }
 }

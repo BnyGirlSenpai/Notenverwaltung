@@ -127,7 +127,6 @@ namespace NotenverwaltungsApp.Server.controllers
 
             return message;
         }
-
     }
 }
 

@@ -16,10 +16,7 @@ namespace App.App.repositorys
         [JsonPropertyName("finalMark")]
         public string FinalMark { get; set; }
 
-        [JsonPropertyName("teacherFirstname")]
-        public string TeacherFirstname { get; set; }
-
-        [JsonPropertyName("teacherLastname")]
-        public string TeacherLastname { get; set; }
+        [JsonPropertyName("teacherId")]
+        public string TeacherId { get; set; }
     }
 }

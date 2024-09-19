@@ -1,9 +1,6 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Server.Server.routes;
+﻿using Server.Server.routes;
 using System.Net;
 using System.Text;
-using static NotenverwaltungsApp.Server.controllers.AttendanceController;
-using static NotenverwaltungsApp.Server.controllers.CourseController;
 
 namespace Server.Server.handler
 {
@@ -33,11 +30,15 @@ namespace Server.Server.handler
                     await MarkApi.HandleAsync(context);
                     break;
 
+                case "/api/lesson/student/update/marks":
+                    await MarkApi.HandleAsync(context);
+                    break;
+
                 case "/api/lesson/student/attendance":
                     await AttendanceApi.HandleAsync(context);
                     break;
 
-                case "/api/lesson/student/update-attendance":
+                case "/api/lesson/student/update/attendance":
                     await AttendanceApi.HandleAsync(context);
                     break;
                     
