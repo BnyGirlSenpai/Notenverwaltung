@@ -9,11 +9,6 @@ internal class Program
         bool isAuthenticated = await LoginService.LoginAsync();
         string ConnectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
 
-        var dbSyncService = new DatabaseSyncronisationService();
-        Console.WriteLine("Starting database synchronization...");
-        dbSyncService.SyncAllTables(); 
-        Console.WriteLine("Database synchronization completed.");
-
         if (isAuthenticated)
         {
             var (role, firstName, lastName, userId) = await UserInfoExtracter.GetUserInfo();
@@ -21,11 +16,19 @@ internal class Program
 
             if (role == "Teacher")
             {
+                var dbSyncService = new TeacherDatabaseSyncronisationService();
+                Console.WriteLine("Starting database synchronization...");
+                await dbSyncService.SyncAllTablesAsync();
+                Console.WriteLine("Database synchronization completed.");
                 await TeacherMenuProcessor.ShowTeacherMenu(header, userId);
             }
             else if (role == "Student")
             {
-                await StudentMenuProcessor.ShowStudentMenu(header);
+                var dbSyncService = new StudentDatabaseSyncronisationService();
+                Console.WriteLine("Starting database synchronization...");
+                await dbSyncService.SyncAllTablesAsync();
+                Console.WriteLine("Database synchronization completed.");
+                await StudentMenuProcessor.ShowStudentMenu(header, userId);
             }
             else
             {

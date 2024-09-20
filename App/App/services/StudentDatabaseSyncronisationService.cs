@@ -3,52 +3,51 @@ using System.Data.SQLite;
 
 namespace App.App.services
 {
-    internal class DatabaseSyncronisationService
+    internal class StudentDatabaseSyncronisationService
     {
         private string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
-        private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3"; 
-         
-        public void SyncAllTables()
+        private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3";
+
+        public async Task SyncAllTablesAsync()
         {
             string[] tables = { "users", "roles", "marks", "lessons", "enrollments", "courses", "attendance" };
 
             using var mysqlConn = new MySqlConnection(_mysqlConnStr);
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
-            mysqlConn.Open();
-            sqliteConn.Open();
+            await mysqlConn.OpenAsync();
+            await sqliteConn.OpenAsync();
 
             foreach (var table in tables)
             {
-                SyncTable(mysqlConn, sqliteConn, table);
+                await SyncTableAsync(mysqlConn, sqliteConn, table);
             }
 
             Console.WriteLine("Synchronization of all tables complete.");
         }
 
-        private static void SyncTable(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
+        private static async Task SyncTableAsync(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
         {
             Console.WriteLine($"Synchronizing table: {tableName}");
 
             string mysqlQuery = $"SELECT * FROM {tableName}";
-            using (var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn))
-            using (var mysqlReader = mysqlCmd.ExecuteReader())
+            using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
+            using var mysqlReader = await mysqlCmd.ExecuteReaderAsync();
+
+            var columnNames = GetColumnNames((MySqlDataReader)mysqlReader);
+
+            using var sqliteCmd = new SQLiteCommand(sqliteConn);
+            while (await mysqlReader.ReadAsync())
             {
-                var columnNames = GetColumnNames(mysqlReader);
+                var insertOrUpdateQuery = BuildInsertOrUpdateQuery(tableName, columnNames);
+                sqliteCmd.CommandText = insertOrUpdateQuery;
 
-                using var sqliteCmd = new SQLiteCommand(sqliteConn);
-                while (mysqlReader.Read())
+                for (int i = 0; i < columnNames.Length; i++)
                 {
-                    var insertOrUpdateQuery = BuildInsertOrUpdateQuery(tableName, columnNames);
-                    sqliteCmd.CommandText = insertOrUpdateQuery;
-
-                    for (int i = 0; i < columnNames.Length; i++)
-                    {
-                        sqliteCmd.Parameters.AddWithValue($"@{columnNames[i]}", mysqlReader.GetValue(i));
-                    }
-
-                    sqliteCmd.ExecuteNonQuery();
-                    sqliteCmd.Parameters.Clear();
+                    sqliteCmd.Parameters.AddWithValue($"@{columnNames[i]}", mysqlReader.GetValue(i));
                 }
+
+                await sqliteCmd.ExecuteNonQueryAsync();
+                sqliteCmd.Parameters.Clear();
             }
 
             Console.WriteLine($"Table {tableName} synchronized successfully.");
@@ -77,5 +76,3 @@ namespace App.App.services
         }
     }
 }
-
-

@@ -95,6 +95,5 @@ namespace Server.Server.routes
             }      
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
-
     }
 }
