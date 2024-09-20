@@ -24,6 +24,7 @@ namespace App.App.processor
                     case 0:
                         Console.WriteLine("Vorname:");
                         var firstName = Console.ReadLine();
+                        
                         Console.WriteLine("Nachname:");
                         var lastName = Console.ReadLine();
 

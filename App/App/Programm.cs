@@ -7,10 +7,15 @@ internal class Program
     static async Task Main()
     {
         bool isAuthenticated = await LoginService.LoginAsync();
+        string ConnectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+
+        var dbSyncService = new DatabaseSyncronisationService();
+        Console.WriteLine("Starting database synchronization...");
+        dbSyncService.SyncAllTables(); 
+        Console.WriteLine("Database synchronization completed.");
 
         if (isAuthenticated)
         {
-            string ConnectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
             var (role, firstName, lastName, userId) = await UserInfoExtracter.GetUserInfo();
             string header = $"Logged in as: ({ConnectionStatus}) {firstName} {lastName} ({role})";
 

@@ -18,8 +18,7 @@ namespace App.App.services
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"HTTP Request failed: {ex.Message}");
-                InitializeDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3");
+                InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3");
                 return "Offline";
             }
             catch (Exception ex)
@@ -31,8 +30,7 @@ namespace App.App.services
             return "Not connected at all"; 
         }
 
-
-        public static void InitializeDatabase(string databasePath)
+        public static void InitializeLocalDatabase(string databasePath)
         {
             try
             {

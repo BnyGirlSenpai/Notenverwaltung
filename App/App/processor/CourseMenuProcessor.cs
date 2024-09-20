@@ -1,5 +1,5 @@
-﻿using App.App.repositorys;
-using App.App.services;
+﻿using App.App.api;
+using App.App.repositorys;
 
 namespace App.App.processor
 {
@@ -7,27 +7,27 @@ namespace App.App.processor
     {
         private static async Task<List<CourseRepository>> GetCourses(string userId)
         {
-            return await CourseService.GetAllCourses(userId);
+            return await CourseApi.GetAllCourses(userId);
         }
 
         private static async Task<List<StudentRepository>> GetStudentsForCourse(string userId, string courseId)
         {
-            return await CourseService.GetAllStudentsForCourse(userId, courseId);
+            return await CourseApi.GetAllStudentsForCourse(userId, courseId);
         }
 
         private static async Task<List<LessonRepository>> GetLessonsForCourse(string userId, string courseId)
         {
-            return await CourseService.GetAllLessonsForCourse(userId, courseId);
+            return await CourseApi.GetAllLessonsForCourse(userId, courseId);
         }
 
         private static async Task UpdateMarks(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
         {
-            await CourseService.UpdateMarksForStudent(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
+            await CourseApi.UpdateMarksForStudent(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
         }
 
         private static async Task UpdateAttendance(string userId, string lessonId, string newAttendanceStatus)
         {
-            await CourseService.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus);
+            await CourseApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus);
         }
 
         public static async Task ShowCourseMenu(string header, string userId)
@@ -77,13 +77,13 @@ namespace App.App.processor
 
                                         foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                                         {
-                                            var marks = await CourseService.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
+                                            var marks = await CourseApi.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
                                             var mark = marks?.FirstOrDefault();
                                             var markText = mark != null
                                                 ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
                                                 : "No Marks available";
 
-                                            var attendances = await CourseService.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId);
+                                            var attendances = await CourseApi.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId);
                                             var attendance = attendances?.FirstOrDefault();
                                             var attendanceText = attendance != null
                                                 ? $"Anwesenheit : {attendance.Status}"

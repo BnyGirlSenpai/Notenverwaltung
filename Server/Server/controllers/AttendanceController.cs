@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using static NotenverwaltungsApp.Database;
-using static NotenverwaltungsApp.Server.controllers.MarkController;
 
 namespace NotenverwaltungsApp.Server.controllers
 {
     internal class AttendanceController
     {
-
         public class Attendance
         {
             [JsonPropertyName("attendanceId")]
