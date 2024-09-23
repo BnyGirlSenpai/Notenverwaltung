@@ -117,7 +117,7 @@ namespace App.App.controller
                 using var connection = new SQLiteConnection("Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3;Version=3;");
                 await connection.OpenAsync();
 
-                var command = new SQLiteCommand("SELECT lesson_id, lesson_name, lesson_date FROM lessons WHERE course_id = @courseId", connection);
+                var command = new SQLiteCommand("SELECT lesson_id, lesson_name, lesson_date, lesson_type FROM lessons WHERE course_id = @courseId", connection);
                 command.Parameters.AddWithValue("@courseId", courseId);
 
                 var lessons = new List<LessonRepository>();
@@ -131,6 +131,7 @@ namespace App.App.controller
                             LessonId = reader["lesson_id"].ToString() ?? "Unknown",
                             LessonName = reader["lesson_name"].ToString() ?? "Unknown",
                             LessonDate = reader["lesson_date"].ToString() ?? "Unknown",
+                            LessonType = reader["lesson_type"].ToString() ?? "Unknown",
                         };
                         lessons.Add(lesson);
                     }

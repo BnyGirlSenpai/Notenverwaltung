@@ -83,7 +83,6 @@ namespace App.App.controller
                 {
                     message = "No record found to update";
                 }
-                Console.WriteLine(message);
                 return message;
             }
             catch (Exception ex)

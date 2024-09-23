@@ -12,5 +12,8 @@ namespace App.App.repositorys
 
         [JsonPropertyName("lessonId")]
         public string LessonId { get; set; }
+
+        [JsonPropertyName("lessonType")]
+        public string LessonType { get; set; }
     }
 }

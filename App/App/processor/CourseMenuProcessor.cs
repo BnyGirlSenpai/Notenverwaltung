@@ -79,10 +79,10 @@ namespace App.App.processor
                                 var attendances = await CourseApi.GetAttendanceForStudent(userId, lesson.LessonId);
                                 var attendance = attendances?.FirstOrDefault();
                                 var attendanceText = attendance != null
-                                    ? $"Anwesenheit : {attendance.Status}"
+                                    ? $"Anwesenheit : {attendance.Status}" 
                                     : "No entry available";
 
-                                lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   {attendanceText}\n   {markText}\n");
+                                lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate} - {lesson.LessonType}\n   {attendanceText}\n   {markText}\n");
                             }
 
                             lessonOptions.Add("Return to Student Menu");
@@ -186,7 +186,7 @@ namespace App.App.processor
                                                 ? $"Anwesenheit : {attendance.Status}"
                                                 : "No entry available";
 
-                                            lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate}\n   {attendanceText}\n   {markText}\n");
+                                            lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate} - {lesson.LessonType}\n   {attendanceText}\n   {markText}\n");
                                         }
 
                                         lessonOptions.Add("Return to Student Menu");

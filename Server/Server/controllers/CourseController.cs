@@ -39,6 +39,9 @@ namespace NotenverwaltungsApp.Server.controllers
 
             [JsonPropertyName("lessonDate")]
             public string LessonDate { get; set; }
+
+            [JsonPropertyName("lessonType")]
+            public string LessonType { get; set; }
         }
 
         public static List<Course> GetCoursesByTeacher(string teacherId)
@@ -208,7 +211,7 @@ namespace NotenverwaltungsApp.Server.controllers
                     var connection = db.GetConnection();
 
                     string query = @"
-                        SELECT lesson_id, lesson_name, lesson_date
+                        SELECT lesson_id, lesson_name, lesson_date, lesson_type
                         FROM lessons                     
                         WHERE course_id = @courseId"; 
 
@@ -228,7 +231,8 @@ namespace NotenverwaltungsApp.Server.controllers
                         {
                             LessonId = reader["lesson_id"].ToString() ?? "Unknown",
                             LessonName = reader["lesson_name"].ToString() ?? "Unknown",
-                            LessonDate = reader["lesson_date"].ToString() ?? "Unknown", 
+                            LessonDate = reader["lesson_date"].ToString() ?? "Unknown",
+                            LessonType = reader["lesson_type"].ToString() ?? "Unknown",
                         };
                         lessons.Add(lesson);
                     }
