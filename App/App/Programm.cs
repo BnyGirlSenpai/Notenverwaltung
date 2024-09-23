@@ -7,12 +7,12 @@ internal class Program
     static async Task Main()
     {
         bool isAuthenticated = await LoginService.LoginAsync();
-        string ConnectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+        string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
 
         if (isAuthenticated)
         {
             var (role, firstName, lastName, userId) = await UserInfoExtracter.GetUserInfo();
-            string header = $"Logged in as: ({ConnectionStatus}) {firstName} {lastName} ({role})";
+            string header = $"Logged in as: ({connectionStatus}) {firstName} {lastName} ({role})";
 
             if (role == "Teacher")
             {
@@ -20,7 +20,7 @@ internal class Program
                 Console.WriteLine("Starting database synchronization...");
                 await dbSyncService.SyncAllTablesFromSqliteToMySqlAsync();
                 Console.WriteLine("Database synchronization completed.");
-                await TeacherMenuProcessor.ShowTeacherMenu(header, userId);
+                await TeacherMenuProcessor.ShowTeacherMenu(header, connectionStatus, userId);
             }
             else if (role == "Student")
             {
@@ -28,7 +28,7 @@ internal class Program
                 Console.WriteLine("Starting database synchronization...");
                 await dbSyncService.SyncStudentMarksFromSqliteToMySqlAsync();
                 Console.WriteLine("Database synchronization completed.");
-                await StudentMenuProcessor.ShowStudentMenu(header, userId);
+                await StudentMenuProcessor.ShowStudentMenu(header, connectionStatus, userId);
             }
             else
             {

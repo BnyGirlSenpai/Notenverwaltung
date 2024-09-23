@@ -4,7 +4,7 @@ namespace App.App.processor
 {
     internal class StudentMenuProcessor
     {
-        public static async Task ShowStudentMenu(string header, string userId)
+        public static async Task ShowStudentMenu(string header, string connectionStatus, string userId)
         {
             while (true)
             {
@@ -13,13 +13,13 @@ namespace App.App.processor
                     "Option 1: Get All Courses",
                     "Option 2: Get Notes for Course",
                     "Option 3: Get Notes for Date",
-                    "Option 6: Logout"
+                    "Option 4: Logout"
                 ]);
 
                 switch (selectedIndex)
                 {
                     case 0:
-                        await CourseMenuProcessor.ShowStudentCourseMenu(header, userId);
+                        await CourseMenuProcessor.ShowStudentCourseMenu(header, connectionStatus, userId);
                         break;
                     case 1:
                         Console.WriteLine("Course Code:");
@@ -30,8 +30,7 @@ namespace App.App.processor
                         Console.WriteLine("date:");
                         var date = Console.ReadLine();
                         //await GetNotesForDate(userId);
-                        break;
-             
+                        break;         
                     case 3:
                         await LoginService.LogoutAsync();
                         Console.WriteLine("You have been logged out. Exiting the program...");

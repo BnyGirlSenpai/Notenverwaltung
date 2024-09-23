@@ -1,49 +1,50 @@
 ﻿using App.App.api;
 using App.App.repositorys;
+using System.Data;
 
 namespace App.App.processor
 {
     internal class CourseMenuProcessor
     {
-        private static async Task<List<CourseRepository>> GetCoursesForTeacher(string userId)
+        private static async Task<List<CourseRepository>> GetCoursesForTeacher(string userId, string connectionStatus)
         {
-            return await CourseApi.GetAllCoursesForTeacher(userId);
+            return await CourseApi.GetAllCoursesForTeacher(userId, connectionStatus);
         }
 
-        private static async Task<List<CourseRepository>> GetCoursesForStudent(string userId)
+        private static async Task<List<CourseRepository>> GetCoursesForStudent(string userId, string connectionStatus)
         {
-            return await CourseApi.GetAllCoursesForStudent(userId);
+            return await CourseApi.GetAllCoursesForStudent(userId, connectionStatus);
         }
 
-        private static async Task<List<StudentRepository>> GetStudentsForCourse(string userId, string courseId)
+        private static async Task<List<StudentRepository>> GetStudentsForCourse(string userId, string courseId, string connectionStatus)
         {
-            return await CourseApi.GetAllStudentsForCourse(userId, courseId);
+            return await CourseApi.GetAllStudentsForCourse(userId, courseId, connectionStatus);
         }
 
-        private static async Task<List<LessonRepository>> GetLessonsForCourse(string userId, string courseId)
+        private static async Task<List<LessonRepository>> GetLessonsForCourse(string userId, string courseId, string connectionStatus)
         {
-            return await CourseApi.GetAllLessonsForCourse(userId, courseId);
+            return await CourseApi.GetAllLessonsForCourse(userId, courseId, connectionStatus);
         }
 
-        private static async Task UpdateMarks(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
+        private static async Task UpdateMarks(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark, string connectionStatus)
         {
-            await CourseApi.UpdateMarksAsTeacher(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
+            await CourseApi.UpdateMarksAsTeacher(studentId, teacherId, lessonId, newTeacherMark, newFinalMark, connectionStatus);
         }
-        private static async Task UpdateStudentMark(string studentId, string lessonId, string newStudentMark)
+        private static async Task UpdateStudentMark(string studentId, string lessonId, string newStudentMark, string connectionStatus)
         {
-            await CourseApi.UpdateMarksAsStudent(studentId, lessonId, newStudentMark);
+            await CourseApi.UpdateMarksAsStudent(studentId, lessonId, newStudentMark, connectionStatus);
         }
         
-        private static async Task UpdateAttendance(string userId, string lessonId, string newAttendanceStatus)
+        private static async Task UpdateAttendance(string userId, string lessonId, string newAttendanceStatus, string connectionStatus)
         {
-            await CourseApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus);
+            await CourseApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus, connectionStatus);
         }
 
-        public static async Task ShowStudentCourseMenu(string header, string userId)
+        public static async Task ShowStudentCourseMenu(string header, string connectionStatus, string userId)
         {
             while (true)
             {
-                var courses = await GetCoursesForStudent(userId);
+                var courses = await GetCoursesForStudent(userId, connectionStatus);
 
                 if (courses == null || courses.Count == 0)
                 {
@@ -63,23 +64,23 @@ namespace App.App.processor
 
                     while (true)
                     {
-                        var lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId);
+                        var lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId, connectionStatus);
                         if (lessons != null && lessons.Count > 0)
                         {
                             var lessonOptions = new List<string>();
 
                             foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                             {
-                                var marks = await CourseApi.GetMarksForStudent(userId, lesson.LessonId);
+                                var marks = await CourseApi.GetMarksForStudent(userId, lesson.LessonId, connectionStatus);
                                 var mark = marks?.FirstOrDefault();
                                 var markText = mark != null
                                     ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
                                     : "No Marks available";
 
-                                var attendances = await CourseApi.GetAttendanceForStudent(userId, lesson.LessonId);
+                                var attendances = await CourseApi.GetAttendanceForStudent(userId, lesson.LessonId, connectionStatus);
                                 var attendance = attendances?.FirstOrDefault();
                                 var attendanceText = attendance != null
-                                    ? $"Anwesenheit : {attendance.Status}" 
+                                    ? $"Anwesenheit : {attendance.Status}"
                                     : "No entry available";
 
                                 lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate} - {lesson.LessonType}\n   {attendanceText}\n   {markText}\n");
@@ -99,10 +100,10 @@ namespace App.App.processor
 
                                 if (!string.IsNullOrEmpty(newStudentMark))
                                 {
-                                    await UpdateStudentMark(userId, selectedLesson.LessonId, newStudentMark);                              
+                                    await UpdateStudentMark(userId, selectedLesson.LessonId, newStudentMark, connectionStatus);
                                 }
 
-                                lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId);
+                                lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId, connectionStatus);
                             }
                             else if (lessonSelection == lessons.Count)
                             {
@@ -119,19 +120,30 @@ namespace App.App.processor
                         else
                         {
                             Console.WriteLine("No lessons found for this course.");
+                            Console.ReadKey();
+                            break;
                         }
                     }
                 }
+                else if (selectedIndex == courses.Count)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection.");
+                }
+
                 Console.WriteLine("\nPress any key to return to the menu...");
                 Console.ReadKey();
             }
         }
 
-        public static async Task ShowTeacherCourseMenu(string header, string userId)
+        public static async Task ShowTeacherCourseMenu(string header, string userId, string connectionStatus)
         {
             while (true)
             {
-                var courses = await GetCoursesForTeacher(userId);
+                var courses = await GetCoursesForTeacher(userId, connectionStatus);
                 
                 if (courses == null || courses.Count == 0)
                 {
@@ -151,7 +163,7 @@ namespace App.App.processor
 
                     while (true)
                     {
-                        var students = await GetStudentsForCourse(userId, selectedCourse.CourseId);
+                        var students = await GetStudentsForCourse(userId, selectedCourse.CourseId, connectionStatus);
 
                         if (students != null && students.Count > 0)
                         {
@@ -167,20 +179,20 @@ namespace App.App.processor
 
                                 while (true)
                                 {
-                                    var lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId);
+                                    var lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId, connectionStatus);
                                     if (lessons != null && lessons.Count > 0)
                                     {
                                         var lessonOptions = new List<string>();
 
                                         foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                                         {
-                                            var marks = await CourseApi.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId);
+                                            var marks = await CourseApi.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
                                             var mark = marks?.FirstOrDefault();
                                             var markText = mark != null
                                                 ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
                                                 : "No Marks available";
 
-                                            var attendances = await CourseApi.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId);
+                                            var attendances = await CourseApi.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
                                             var attendance = attendances?.FirstOrDefault();
                                             var attendanceText = attendance != null
                                                 ? $"Anwesenheit : {attendance.Status}"
@@ -209,15 +221,15 @@ namespace App.App.processor
 
                                             if (!string.IsNullOrEmpty(newTeacherMark) || !string.IsNullOrEmpty(newFinalMark))
                                             {
-                                                await UpdateMarks(selectedStudent.UserId, selectedLesson.LessonId, userId, newTeacherMark, newFinalMark);
+                                                await UpdateMarks(selectedStudent.UserId, selectedLesson.LessonId, userId, newTeacherMark, newFinalMark, connectionStatus);
                                             }
 
                                             if (!string.IsNullOrEmpty(newAttendanceStatus))
                                             {
-                                                await UpdateAttendance(selectedStudent.UserId, selectedLesson.LessonId, newAttendanceStatus);
+                                                await UpdateAttendance(selectedStudent.UserId, selectedLesson.LessonId, newAttendanceStatus, connectionStatus);
                                             }
 
-                                            lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId);
+                                            lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId, connectionStatus);
                                         }
                                         else if (lessonSelection == lessons.Count)
                                         {
@@ -252,6 +264,8 @@ namespace App.App.processor
                         else
                         {
                             Console.WriteLine("No students found for this course.");
+                            Console.ReadKey();
+                            break;                         
                         }
                     }
                 }

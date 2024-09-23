@@ -4,7 +4,7 @@ namespace App.App.processor
 {
     internal class TeacherMenuProcessor
     {
-        public static async Task ShowTeacherMenu(string header, string userId)
+        public static async Task ShowTeacherMenu(string header, string connectionStatus, string userId)
         {
             while (true)
             {
@@ -22,9 +22,8 @@ namespace App.App.processor
                 switch (selectedIndex)
                 {
                     case 0:
-                        await CourseMenuProcessor.ShowTeacherCourseMenu(header, userId);
-                        break;
-                       
+                        await CourseMenuProcessor.ShowTeacherCourseMenu(header, userId ,connectionStatus);
+                        break;                     
                     case 1:
                         Console.WriteLine("Course Code:");
                         var courseCode = Console.ReadLine();

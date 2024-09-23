@@ -7,10 +7,8 @@ namespace App.App.api
 {
     internal class CourseApi
     {
-        public static async Task<List<CourseRepository>> GetAllCoursesForTeacher(string userId)
+        public static async Task<List<CourseRepository>> GetAllCoursesForTeacher(string userId, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalCourseController.GetCoursesByTeacherAsync(userId);
@@ -45,10 +43,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<List<CourseRepository>> GetAllCoursesForStudent(string userId)
+        public static async Task<List<CourseRepository>> GetAllCoursesForStudent(string userId, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalCourseController.GetCoursesByStudentAsync(userId);
@@ -83,10 +79,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseId)
+        public static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseId, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalCourseController.GetStudentsByCourseAsync(courseId);
@@ -121,10 +115,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<List<LessonRepository>> GetAllLessonsForCourse(string userId, string courseId)
+        public static async Task<List<LessonRepository>> GetAllLessonsForCourse(string userId, string courseId, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalCourseController.GetAllLessonsForCourseAsync(courseId);
@@ -159,10 +151,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<List<MarkRepository>> GetMarksForStudent(string studentId, string lessonId)
+        public static async Task<List<MarkRepository>> GetMarksForStudent(string studentId, string lessonId,string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalMarkController.GetMarksForLessonsAsync(studentId, lessonId);
@@ -197,10 +187,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<List<AttendanceRepository>> GetAttendanceForStudent(string studentId, string lessonId)
+        public static async Task<List<AttendanceRepository>> GetAttendanceForStudent(string studentId, string lessonId, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalAttendanceController.GetAttendanceForLessonAsync(studentId, lessonId);
@@ -234,10 +222,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<string> UpdateMarksAsTeacher(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
+        public static async Task<string> UpdateMarksAsTeacher(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalMarkController.UpdateMarksForLessonAsync(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
@@ -273,10 +259,8 @@ namespace App.App.api
             }          
         }
 
-        public static async Task<string> UpdateMarksAsStudent(string studentId, string lessonId, string newStudentMark)
+        public static async Task<string> UpdateMarksAsStudent(string studentId, string lessonId, string newStudentMark, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalMarkController.UpdateStudentMarkForLessonAsync(studentId, lessonId, newStudentMark);
@@ -312,10 +296,8 @@ namespace App.App.api
             }
         }
 
-        public static async Task<string> UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus)
+        public static async Task<string> UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus, string connectionStatus)
         {
-            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
-
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
                 return await LocalAttendanceController.UpdateAttendanceForLessonAsync(userId, lessonId, newAttendanceStatus);
