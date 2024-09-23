@@ -14,15 +14,19 @@ namespace Server.Server.handler
                     await AuthApi.HandleAsync(context);
                     break;
 
-                case "/api/courses":
+                case "/api/teacher/courses":
                     await CourseApi.HandleAsync(context);
                     break;
 
-                case "/api/students":
+                case "/api/student/courses":
                     await CourseApi.HandleAsync(context);
                     break;
 
-                case "/api/lessons":
+                case "/api/teacher/students":
+                    await CourseApi.HandleAsync(context);
+                    break;
+
+                case "/api/teacher/lessons":
                     await CourseApi.HandleAsync(context);
                     break;
 
@@ -31,6 +35,10 @@ namespace Server.Server.handler
                     break;
 
                 case "/api/lesson/student/update/marks":
+                    await MarkApi.HandleAsync(context);
+                    break;
+
+                case "/api/lesson/student/update/studentmarks":
                     await MarkApi.HandleAsync(context);
                     break;
 

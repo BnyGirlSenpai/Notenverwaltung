@@ -29,7 +29,11 @@ namespace Server.Server.routes
                 }
                 else if (httpMethod == "PUT" && requestUrl == "/api/lesson/student/update/marks")
                 {
-                    responseString = HandleUpdateMark(formDataParser);
+                    responseString = HandleUpdateMarkAsTeacher(formDataParser);
+                }
+                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/student/update/studentmarks")
+                {
+                    responseString = HandleUpdateMarkAsStudent(formDataParser);
                 }
                 else
                 {
@@ -73,7 +77,7 @@ namespace Server.Server.routes
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
-        private static string HandleUpdateMark(FormDataParser formDataParser)
+        private static string HandleUpdateMarkAsTeacher(FormDataParser formDataParser)
         {
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("teacherId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("teacherMark") && formDataParser.ContainsKey("finalMark"))
             {
@@ -83,10 +87,32 @@ namespace Server.Server.routes
                 string teacherMark = formDataParser.GetValue("teacherMark");
                 string finalMark = formDataParser.GetValue("finalMark");
 
-                var message = MarkController.UpdateMarkForLesson(studentId, teacherId, lessonId, teacherMark, finalMark);
+                var message = MarkController.UpdateMarkAsTeacher(studentId, teacherId, lessonId, teacherMark, finalMark);
 
                 if (message != null)
                 {
+                    return JsonSerializer.Serialize(message);
+                }
+                else
+                {
+                    return JsonSerializer.Serialize(new { message = "Failed to update mark for the given UserId and LessonId." });
+                }
+            }
+            return JsonSerializer.Serialize(new { message = "Invalid request data." });
+        }
+
+        private static string HandleUpdateMarkAsStudent(FormDataParser formDataParser)
+        {
+            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("studentMark"))
+            {
+                string studentId = formDataParser.GetValue("studentId");
+                string lessonId = formDataParser.GetValue("lessonId");
+                string studentMark = formDataParser.GetValue("studentMark");
+                var message = MarkController.UpdateMarkAsStudent(studentId, lessonId, studentMark);
+
+                if (message != null)
+                {
+                    Console.WriteLine(message);
                     return JsonSerializer.Serialize(message);
                 }
                 else

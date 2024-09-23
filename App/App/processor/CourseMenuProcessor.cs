@@ -5,9 +5,14 @@ namespace App.App.processor
 {
     internal class CourseMenuProcessor
     {
-        private static async Task<List<CourseRepository>> GetCourses(string userId)
+        private static async Task<List<CourseRepository>> GetCoursesForTeacher(string userId)
         {
-            return await CourseApi.GetAllCourses(userId);
+            return await CourseApi.GetAllCoursesForTeacher(userId);
+        }
+
+        private static async Task<List<CourseRepository>> GetCoursesForStudent(string userId)
+        {
+            return await CourseApi.GetAllCoursesForStudent(userId);
         }
 
         private static async Task<List<StudentRepository>> GetStudentsForCourse(string userId, string courseId)
@@ -22,9 +27,13 @@ namespace App.App.processor
 
         private static async Task UpdateMarks(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
         {
-            await CourseApi.UpdateMarksForStudent(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
+            await CourseApi.UpdateMarksAsTeacher(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
         }
-
+        private static async Task UpdateStudentMark(string studentId, string lessonId, string newStudentMark)
+        {
+            await CourseApi.UpdateMarksAsStudent(studentId, lessonId, newStudentMark);
+        }
+        
         private static async Task UpdateAttendance(string userId, string lessonId, string newAttendanceStatus)
         {
             await CourseApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus);
@@ -34,7 +43,7 @@ namespace App.App.processor
         {
             while (true)
             {
-                var courses = await GetCourses(userId);
+                var courses = await GetCoursesForStudent(userId);
 
                 if (courses == null || courses.Count == 0)
                 {
@@ -83,13 +92,14 @@ namespace App.App.processor
                             if (lessonSelection >= 0 && lessonSelection < lessons.Count)
                             {
                                 var selectedLesson = lessons[lessonSelection];
+                                Console.WriteLine($"Selected Lesson: {selectedLesson.LessonName} on {selectedLesson.LessonDate}\n");
 
-                                Console.WriteLine("Enter new teacher mark (or leave empty to skip): ");
+                                Console.WriteLine("Enter new student mark (or leave empty to skip): ");
                                 var newStudentMark = Console.ReadLine();
 
                                 if (!string.IsNullOrEmpty(newStudentMark))
                                 {
-                                    await UpdateAttendance(userId, selectedLesson.LessonId, newStudentMark);
+                                    await UpdateStudentMark(userId, selectedLesson.LessonId, newStudentMark);                              
                                 }
 
                                 lessons = await GetLessonsForCourse(userId, selectedCourse.CourseId);
@@ -112,12 +122,6 @@ namespace App.App.processor
                         }
                     }
                 }
-                           
-                else
-                {
-                    Console.WriteLine("Invalid selection. Please try again.");
-                }
-
                 Console.WriteLine("\nPress any key to return to the menu...");
                 Console.ReadKey();
             }
@@ -127,7 +131,7 @@ namespace App.App.processor
         {
             while (true)
             {
-                var courses = await GetCourses(userId);
+                var courses = await GetCoursesForTeacher(userId);
                 
                 if (courses == null || courses.Count == 0)
                 {

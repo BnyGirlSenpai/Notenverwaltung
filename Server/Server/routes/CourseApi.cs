@@ -15,7 +15,7 @@ namespace Server.Server.routes
 
             try
             {
-                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/courses")
+                if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/teacher/courses")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();
@@ -43,7 +43,7 @@ namespace Server.Server.routes
                     }
                 }
 
-                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/students")
+                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/teacher/students")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();
@@ -71,7 +71,7 @@ namespace Server.Server.routes
                     }
                 }
 
-                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/lessons")
+                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/teacher/lessons")
                 {
                     using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
                     var body = await reader.ReadToEndAsync();
@@ -89,6 +89,34 @@ namespace Server.Server.routes
                         else
                         {
                             responseString = JsonSerializer.Serialize(new { message = "No users found." });
+                            statusCode = 404;
+                        }
+                    }
+                    else
+                    {
+                        responseString = JsonSerializer.Serialize(new { message = "Invalid request data." });
+                        statusCode = 400;
+                    }
+                }
+
+                else if (context.Request.HttpMethod == "GET" && context.Request.Url.AbsolutePath == "/api/student/courses")
+                {
+                    using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
+                    var body = await reader.ReadToEndAsync();
+                    var formDataParser = FormDataParser.Parse(body);
+
+                    if (formDataParser.ContainsKey("userId"))
+                    {
+                        string userId = formDataParser.GetValue("userId");
+                        var courses = CourseController.GetCoursesByStudent(userId);
+
+                        if (courses != null && courses.Count > 0)
+                        {
+                            responseString = JsonSerializer.Serialize(courses);
+                        }
+                        else
+                        {
+                            responseString = JsonSerializer.Serialize(new { message = "No courses found for the given UserId." });
                             statusCode = 404;
                         }
                     }

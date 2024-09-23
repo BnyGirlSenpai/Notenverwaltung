@@ -8,7 +8,7 @@ namespace App.App.services
         private string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
         private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3";
 
-        public async Task SyncAllTablesAsync()
+        public async Task SyncAllTablesFromSqliteToMySqlAsync()
         {
             string[] tables = { "users", "roles", "marks", "lessons", "enrollments", "courses", "attendance" };
 
@@ -19,21 +19,17 @@ namespace App.App.services
 
             foreach (var table in tables)
             {
-                await SyncTableAsync(mysqlConn, sqliteConn, table);
+                await SyncFromSqliteToMySqlAsync(mysqlConn, sqliteConn, table);
             }
-
-            Console.WriteLine("Synchronization of all tables complete.");
         }
 
-        private static async Task SyncTableAsync(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
+        private static async Task SyncFromSqliteToMySqlAsync(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
         {
-            Console.WriteLine($"Synchronizing table: {tableName}");
-
             string sqliteQuery = $"SELECT * FROM {tableName}";
             using var sqliteCmd = new SQLiteCommand(sqliteQuery, sqliteConn);
             using var sqliteReader = await sqliteCmd.ExecuteReaderAsync();
 
-            var columnNames = GetColumnNames((SQLiteDataReader)sqliteReader);
+            var columnNames = GetSqlLiteColumnNames((SQLiteDataReader)sqliteReader);
 
             if (tableName == "marks")
             {
@@ -42,7 +38,7 @@ namespace App.App.services
 
             while (await sqliteReader.ReadAsync())
             {
-                var insertOrUpdateQuery = BuildInsertOrUpdateQuery(tableName, columnNames);
+                var insertOrUpdateQuery = BuildInsertOrUpdateQueryForMySQL(tableName, columnNames);
 
                 using var mysqlCmd = new MySqlCommand(insertOrUpdateQuery, mysqlConn);
 
@@ -57,20 +53,15 @@ namespace App.App.services
             }
 
             await SyncStudentMarksAsync(sqliteConn, mysqlConn);
-
-            Console.WriteLine($"Table {tableName} synchronized successfully.");
         }
 
         private static async Task SyncStudentMarksAsync(SQLiteConnection sqliteConn, MySqlConnection mysqlConn)
         {
-            Console.WriteLine("Synchronizing all student_mark fields from SQLite to MySQL");
-
             string sqliteQuery = "SELECT mark_id, student_mark FROM marks";
             using var sqliteCmd = new SQLiteCommand(sqliteQuery, sqliteConn);
             using var sqliteReader = await sqliteCmd.ExecuteReaderAsync();
 
             using var mysqlCmd = new MySqlCommand();
-
             
             mysqlCmd.Connection = mysqlConn;
 
@@ -87,11 +78,68 @@ namespace App.App.services
                 await mysqlCmd.ExecuteNonQueryAsync();
                 mysqlCmd.Parameters.Clear();
             }
-
-            Console.WriteLine("All student_mark fields have been synchronized from SQLite to MySQL successfully.");
         }
 
-        private static string[] GetColumnNames(SQLiteDataReader reader)
+        private static string BuildInsertOrUpdateQueryForMySQL(string tableName, string[] columnNames)
+        {
+            string columns = string.Join(", ", columnNames);
+            string values = string.Join(", ", columnNames.Select(col => $"@{col}"));
+            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values}) ON DUPLICATE KEY UPDATE ";
+
+            var updateParts = columnNames.Select(col => $"{col} = @{col}");
+            query += string.Join(", ", updateParts);
+
+            return query;
+        }
+
+        public async Task SyncAllTablesFromMySqlToSqliteAsync()
+        {
+            string[] tables = { "users", "roles", "marks", "lessons", "enrollments", "courses", "attendance" };
+
+            using var mysqlConn = new MySqlConnection(_mysqlConnStr);
+            using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
+            await mysqlConn.OpenAsync();
+            await sqliteConn.OpenAsync();
+
+            foreach (var table in tables)
+            {
+                await SyncTableFromMySqlToSqliteAsync(mysqlConn, sqliteConn, table);
+            }
+        }
+
+        private static async Task SyncTableFromMySqlToSqliteAsync(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
+        {
+            string mysqlQuery = $"SELECT * FROM {tableName}";
+            using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
+            using var mysqlReader = await mysqlCmd.ExecuteReaderAsync();
+
+            var columnNames = GetMySqlColumnNames((MySqlDataReader)mysqlReader);
+
+            while (await mysqlReader.ReadAsync())
+            {
+                string sqliteQuery = BuildInsertOrUpdateQueryForSqlite(tableName, columnNames);
+                using var sqliteCmd = new SQLiteCommand(sqliteQuery, sqliteConn);
+
+                for (int i = 0; i < columnNames.Length; i++)
+                {
+                    var value = mysqlReader.IsDBNull(i) ? null : mysqlReader.GetValue(i);
+                    sqliteCmd.Parameters.AddWithValue($"@{columnNames[i]}", value);
+                }
+
+                await sqliteCmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        private static string BuildInsertOrUpdateQueryForSqlite(string tableName, string[] columnNames)
+        {
+            string columns = string.Join(", ", columnNames);
+            string values = string.Join(", ", columnNames.Select(col => $"@{col}"));
+            string query = $"INSERT OR REPLACE INTO {tableName} ({columns}) VALUES ({values})";
+
+            return query;
+        }
+
+        private static string[] GetSqlLiteColumnNames(SQLiteDataReader reader)
         {
             int fieldCount = reader.FieldCount;
             string[] columnNames = new string[fieldCount];
@@ -104,16 +152,17 @@ namespace App.App.services
             return columnNames;
         }
 
-        private static string BuildInsertOrUpdateQuery(string tableName, string[] columnNames)
+        private static string[] GetMySqlColumnNames(MySqlDataReader reader)
         {
-            string columns = string.Join(", ", columnNames);
-            string values = string.Join(", ", columnNames.Select(col => $"@{col}"));
-            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values}) ON DUPLICATE KEY UPDATE ";
+            int fieldCount = reader.FieldCount;
+            string[] columnNames = new string[fieldCount];
 
-            var updateParts = columnNames.Select(col => $"{col} = @{col}");
-            query += string.Join(", ", updateParts);
+            for (int i = 0; i < fieldCount; i++)
+            {
+                columnNames[i] = reader.GetName(i);
+            }
 
-            return query;
+            return columnNames;
         }
     }
 }

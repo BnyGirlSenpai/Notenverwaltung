@@ -92,6 +92,58 @@ namespace NotenverwaltungsApp.Server.controllers
             return courses;
         }
 
+        public static List<Course> GetCoursesByStudent(string studentId)
+        {
+            var courses = new List<Course>();
+
+            using var db = new Database(DatabaseType.MySQL);
+            {
+                try
+                {
+                    db.Connect_to_Database();
+                    var connection = db.GetConnection();
+
+                    string query = @"
+                        SELECT e.course_id, c.course_name, c.course_code
+                        FROM enrollments e
+                        LEFT JOIN courses c ON e.course_id = c.course_id
+                        WHERE e.student_id = @studentId";
+
+                    using var command = connection.CreateCommand();
+                    command.CommandText = query;
+
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = "@studentId";
+                    parameter.Value = studentId;
+                    command.Parameters.Add(parameter);
+
+                    using var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var course = new Course
+                        {
+                            CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
+                            CourseName = reader["course_name"]?.ToString() ?? "Unknown",
+                            CourseId = reader["course_id"]?.ToString() ?? "Unknown",
+
+                        };
+                        courses.Add(course);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching courses: {ex.Message}");
+                }
+                finally
+                {
+                    db.Close_Connection();
+                }
+            }
+
+            return courses;
+        }
+
         public static List<Student> GetStudentsByCourse(string courseId)
         {
             var students = new List<Student>();

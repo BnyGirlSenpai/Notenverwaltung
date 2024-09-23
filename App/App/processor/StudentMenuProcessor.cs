@@ -12,8 +12,7 @@ namespace App.App.processor
                 [
                     "Option 1: Get All Courses",
                     "Option 2: Get Notes for Course",
-                    "Option 3: Get Notes for Date and Lesson",
-                    "Option 5: Get Attendance for Lesson",        
+                    "Option 3: Get Notes for Date",
                     "Option 6: Logout"
                 ]);
 
@@ -25,33 +24,15 @@ namespace App.App.processor
                     case 1:
                         Console.WriteLine("Course Code:");
                         var courseCode = Console.ReadLine();
-
                         //await GetNotesForCourse(userId, courseCode);
                         break;
-                    case 2:
-                        //await GetNotesForDateAndLesson(userId);
+                    case 2:                
+                        Console.WriteLine("date:");
+                        var date = Console.ReadLine();
+                        //await GetNotesForDate(userId);
                         break;
+             
                     case 3:
-                        Console.WriteLine("Vorname:");
-                        var firstName = Console.ReadLine();
-                        Console.WriteLine("Nachname:");
-                        var lastName = Console.ReadLine();
-
-                        //await GetAttendanceForUser(userId, firstName, lastName);
-                        break;
-                    case 4:
-                        //await GetAttendanceForLesson(userId);
-                        break;
-                    case 5:
-                        Console.WriteLine("Vorname:");
-                        firstName = Console.ReadLine();
-
-                        Console.WriteLine("Nachname:");
-                        lastName = Console.ReadLine();
-
-                        //await GetNotesForUser(userId, firstName, lastName);
-                        break;
-                    case 6:
                         await LoginService.LogoutAsync();
                         Console.WriteLine("You have been logged out. Exiting the program...");
                         return;

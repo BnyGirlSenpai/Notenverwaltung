@@ -103,7 +103,7 @@ namespace NotenverwaltungsApp.Server.controllers
             return marks;
         }
 
-        public static string UpdateMarkForLesson(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
+        public static string UpdateMarkAsTeacher(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
         {
             string message = "Update successful";
 
@@ -170,5 +170,62 @@ namespace NotenverwaltungsApp.Server.controllers
 
             return message;
         }
+
+        public static string UpdateMarkAsStudent(string studentId, string lessonId, string studentMark)
+        {
+            string message = "Update successful";
+
+            using var db = new Database(DatabaseType.MySQL);
+            {
+                try
+                {
+                    db.Connect_to_Database();
+                    var connection = db.GetConnection();
+
+                    string query = @"
+                        UPDATE marks 
+                        SET student_mark = @studentMark  
+                        WHERE student_id = @studentId
+                        AND lesson_id = @lessonId
+                    ";
+
+                    using var command = connection.CreateCommand();
+                    command.CommandText = query;
+
+                    var studentParameter = command.CreateParameter();
+                    studentParameter.ParameterName = "@studentId";
+                    studentParameter.Value = studentId;
+                    command.Parameters.Add(studentParameter);
+
+                    var lessonParameter = command.CreateParameter();
+                    lessonParameter.ParameterName = "@lessonId";
+                    lessonParameter.Value = lessonId;
+                    command.Parameters.Add(lessonParameter);
+
+                    var studentMarkParameter = command.CreateParameter();
+                    studentMarkParameter.ParameterName = "@studentMark";
+                    studentMarkParameter.Value = studentMark;
+                    command.Parameters.Add(studentMarkParameter);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected == 0)
+                    {
+                        message = "No record found to update";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    message = $"Error updating marks: {ex.Message}";
+                }
+                finally
+                {
+                    db.Close_Connection();
+                }
+            }
+
+            return message;
+        }
+
     }
 }

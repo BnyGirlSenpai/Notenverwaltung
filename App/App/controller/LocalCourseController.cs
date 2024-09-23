@@ -40,6 +40,41 @@ namespace App.App.controller
             }
         }
 
+        public static async Task<List<CourseRepository>> GetCoursesByStudentAsync(string studentId)
+        {
+            try
+            {
+                using var connection = new SQLiteConnection("Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3;Version=3;");
+                await connection.OpenAsync();
+
+                var command = new SQLiteCommand("SELECT e.course_id, c.course_name, c.course_code FROM enrollments e LEFT JOIN courses c ON e.course_id = c.course_id WHERE e.student_id = @studentId", connection);
+                command.Parameters.AddWithValue("@studentId", studentId);
+
+                var courses = new List<CourseRepository>();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var course = new CourseRepository
+                        {
+                            CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
+                            CourseName = reader["course_name"]?.ToString() ?? "Unknown",
+                            CourseId = reader["course_id"]?.ToString() ?? "Unknown",
+                        };
+                        courses.Add(course);
+                    }
+                }
+
+                return courses;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching courses: {ex.Message}");
+                return [];
+            }
+        }
+
         public static async Task<List<StudentRepository>> GetStudentsByCourseAsync(string courseId)
         {
             try

@@ -7,7 +7,7 @@ namespace App.App.api
 {
     internal class CourseApi
     {
-        public static async Task<List<CourseRepository>> GetAllCourses(string userId)
+        public static async Task<List<CourseRepository>> GetAllCoursesForTeacher(string userId)
         {
             string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
 
@@ -17,7 +17,7 @@ namespace App.App.api
             }
             else
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/courses")
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/teacher/courses")
                 {
                     Content = new FormUrlEncodedContent(
                     [
@@ -45,6 +45,44 @@ namespace App.App.api
             }
         }
 
+        public static async Task<List<CourseRepository>> GetAllCoursesForStudent(string userId)
+        {
+            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+
+            if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
+            {
+                return await LocalCourseController.GetCoursesByStudentAsync(userId);
+            }
+            else
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/student/courses")
+                {
+                    Content = new FormUrlEncodedContent(
+                    [
+                        new KeyValuePair<string, string>("userId", userId)
+                    ])
+                };
+
+                try
+                {
+                    using HttpClient _client = new();
+                    var response = await _client.SendAsync(request);
+
+                    response.EnsureSuccessStatusCode();
+
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var courses = JsonSerializer.Deserialize<List<CourseRepository>>(responseData);
+
+                    return courses;
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine($"Request error: {e.Message}");
+                    return [];
+                }
+            }
+        }
+
         public static async Task<List<StudentRepository>> GetAllStudentsForCourse(string userId, string courseId)
         {
             string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
@@ -55,7 +93,7 @@ namespace App.App.api
             }
             else
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/students")
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/teacher/students")
                 {
                     Content = new FormUrlEncodedContent(
                     [
@@ -93,7 +131,7 @@ namespace App.App.api
             }
             else
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/lessons")
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/api/teacher/lessons")
                 {
                     Content = new FormUrlEncodedContent(
                     [
@@ -196,13 +234,13 @@ namespace App.App.api
             }
         }
 
-        public static async Task<string> UpdateMarksForStudent(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
+        public static async Task<string> UpdateMarksAsTeacher(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark)
         {
             string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
 
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
-                return await LocalMarkController.UpdateMarkForLessonAsync(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
+                return await LocalMarkController.UpdateMarksForLessonAsync(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
             }
             else
             {
@@ -235,8 +273,53 @@ namespace App.App.api
             }          
         }
 
-        public static async Task UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus)
+        public static async Task<string> UpdateMarksAsStudent(string studentId, string lessonId, string newStudentMark)
         {
+            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+
+            if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
+            {
+                return await LocalMarkController.UpdateStudentMarkForLessonAsync(studentId, lessonId, newStudentMark);
+            }
+            else
+            {
+                var request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:5000/api/lesson/student/update/studentmarks")
+                {
+                    Content = new FormUrlEncodedContent(
+                    [
+                        new KeyValuePair<string, string>("studentId", studentId),
+                        new KeyValuePair<string, string>("lessonId", lessonId),
+                        new KeyValuePair<string, string>("studentMark", newStudentMark ?? string.Empty),                   
+                    ])
+                };
+
+                try
+                {
+                    using HttpClient _client = new();
+
+                    var response = await _client.SendAsync(request);
+                    response.EnsureSuccessStatusCode();
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var dbSyncService = new StudentDatabaseSyncronisationService();
+                    await dbSyncService.SyncStudentMarksFromMySqlToSqliteAsync();
+                    return responseData;
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine($"Request error: {e.Message}");
+                    return $"Error: {e.Message}";
+                }
+            }
+        }
+
+        public static async Task<string> UpdateAttendanceForStudent(string userId, string lessonId, string newAttendanceStatus)
+        {
+            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+
+            if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
+            {
+                return await LocalAttendanceController.UpdateAttendanceForLessonAsync(userId, lessonId, newAttendanceStatus);
+            }
             var request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:5000/api/lesson/student/update/attendance")
             {
                 Content = new FormUrlEncodedContent(
@@ -253,10 +336,14 @@ namespace App.App.api
                 var response = await _client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var responseData = await response.Content.ReadAsStringAsync();
+                var dbSyncService = new StudentDatabaseSyncronisationService();
+                await dbSyncService.SyncStudentMarksFromMySqlToSqliteAsync();
+                return responseData;
             }
             catch (HttpRequestException e)
             {
                 Console.WriteLine($"Request error: {e.Message}");
+                return $"Error: {e.Message}";
             }
         }
     }

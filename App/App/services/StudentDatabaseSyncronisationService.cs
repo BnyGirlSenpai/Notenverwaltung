@@ -8,71 +8,62 @@ namespace App.App.services
         private string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
         private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3";
 
-        public async Task SyncAllTablesAsync()
+        public async Task SyncStudentMarksFromMySqlToSqliteAsync()
         {
-            string[] tables = { "users", "roles", "marks", "lessons", "enrollments", "courses", "attendance" };
-
             using var mysqlConn = new MySqlConnection(_mysqlConnStr);
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
+
             await mysqlConn.OpenAsync();
             await sqliteConn.OpenAsync();
 
-            foreach (var table in tables)
-            {
-                await SyncTableAsync(mysqlConn, sqliteConn, table);
-            }
-
-            Console.WriteLine("Synchronization of all tables complete.");
-        }
-
-        private static async Task SyncTableAsync(MySqlConnection mysqlConn, SQLiteConnection sqliteConn, string tableName)
-        {
-            Console.WriteLine($"Synchronizing table: {tableName}");
-
-            string mysqlQuery = $"SELECT * FROM {tableName}";
+            string mysqlQuery = "SELECT student_id, lesson_id, student_mark FROM marks";
             using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
             using var mysqlReader = await mysqlCmd.ExecuteReaderAsync();
 
-            var columnNames = GetColumnNames((MySqlDataReader)mysqlReader);
-
-            using var sqliteCmd = new SQLiteCommand(sqliteConn);
             while (await mysqlReader.ReadAsync())
             {
-                var insertOrUpdateQuery = BuildInsertOrUpdateQuery(tableName, columnNames);
-                sqliteCmd.CommandText = insertOrUpdateQuery;
+                string sqliteQuery = @"
+                    UPDATE marks 
+                    SET student_mark = @studentMark 
+                    WHERE student_id = @studentId 
+                    AND lesson_id = @lessonId";
 
-                for (int i = 0; i < columnNames.Length; i++)
-                {
-                    sqliteCmd.Parameters.AddWithValue($"@{columnNames[i]}", mysqlReader.GetValue(i));
-                }
+                using var sqliteCmd = new SQLiteCommand(sqliteQuery, sqliteConn);
+                sqliteCmd.Parameters.AddWithValue("@studentId", mysqlReader["student_id"]);
+                sqliteCmd.Parameters.AddWithValue("@lessonId", mysqlReader["lesson_id"]);
+                sqliteCmd.Parameters.AddWithValue("@studentMark", mysqlReader["student_mark"]);
 
                 await sqliteCmd.ExecuteNonQueryAsync();
-                sqliteCmd.Parameters.Clear();
             }
-
-            Console.WriteLine($"Table {tableName} synchronized successfully.");
         }
 
-        private static string[] GetColumnNames(MySqlDataReader reader)
+        public async Task SyncStudentMarksFromSqliteToMySqlAsync()
         {
-            int fieldCount = reader.FieldCount;
-            string[] columnNames = new string[fieldCount];
+            using var mysqlConn = new MySqlConnection(_mysqlConnStr);
+            using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
 
-            for (int i = 0; i < fieldCount; i++)
+            await mysqlConn.OpenAsync();
+            await sqliteConn.OpenAsync();
+
+            string sqliteQuery = "SELECT student_id, lesson_id, student_mark FROM marks";
+            using var sqliteCmd = new SQLiteCommand(sqliteQuery, sqliteConn);
+            using var sqliteReader = await sqliteCmd.ExecuteReaderAsync();
+
+            while (await sqliteReader.ReadAsync())
             {
-                columnNames[i] = reader.GetName(i);
+                string mysqlQuery = @"
+                    UPDATE marks 
+                    SET student_mark = @studentMark 
+                    WHERE student_id = @studentId 
+                    AND lesson_id = @lessonId";
+
+                using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
+                mysqlCmd.Parameters.AddWithValue("@studentId", sqliteReader["student_id"]);
+                mysqlCmd.Parameters.AddWithValue("@lessonId", sqliteReader["lesson_id"]);
+                mysqlCmd.Parameters.AddWithValue("@studentMark", sqliteReader["student_mark"]);
+
+                await mysqlCmd.ExecuteNonQueryAsync();
             }
-
-            return columnNames;
-        }
-
-        private static string BuildInsertOrUpdateQuery(string tableName, string[] columnNames)
-        {
-            string columns = string.Join(", ", columnNames);
-            string values = string.Join(", ", columnNames.Select(col => $"@{col}"));
-
-            string query = $"INSERT OR REPLACE INTO {tableName} ({columns}) VALUES ({values})";
-            return query;
         }
     }
 }

@@ -18,7 +18,7 @@ internal class Program
             {
                 var dbSyncService = new TeacherDatabaseSyncronisationService();
                 Console.WriteLine("Starting database synchronization...");
-                await dbSyncService.SyncAllTablesAsync();
+                await dbSyncService.SyncAllTablesFromSqliteToMySqlAsync();
                 Console.WriteLine("Database synchronization completed.");
                 await TeacherMenuProcessor.ShowTeacherMenu(header, userId);
             }
@@ -26,7 +26,7 @@ internal class Program
             {
                 var dbSyncService = new StudentDatabaseSyncronisationService();
                 Console.WriteLine("Starting database synchronization...");
-                await dbSyncService.SyncAllTablesAsync();
+                await dbSyncService.SyncStudentMarksFromSqliteToMySqlAsync();
                 Console.WriteLine("Database synchronization completed.");
                 await StudentMenuProcessor.ShowStudentMenu(header, userId);
             }

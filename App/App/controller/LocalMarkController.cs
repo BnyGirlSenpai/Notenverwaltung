@@ -61,7 +61,7 @@ namespace App.App.controller
             }
         }
 
-        public static async Task<string> UpdateMarkForLessonAsync(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
+        public static async Task<string> UpdateMarksForLessonAsync(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
         {
             string message = "Update successful";
 
@@ -83,13 +83,42 @@ namespace App.App.controller
                 {
                     message = "No record found to update";
                 }
-
+                Console.WriteLine(message);
                 return message;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating mark: {ex.Message}");
                 return $"Error: {ex.Message}"; 
+            }
+        }
+
+        public static async Task<string> UpdateStudentMarkForLessonAsync(string studentId, string lessonId,  string studentMark)
+        {
+            string message = "Update successful";
+
+            try
+            {
+                using var connection = new SQLiteConnection("Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3;Version=3;");
+                await connection.OpenAsync();
+
+                var command = new SQLiteCommand("UPDATE marks SET student_Mark = @studentMark WHERE student_id = @studentId AND lesson_id = @lessonId", connection);
+                command.Parameters.AddWithValue("@studentId", studentId);
+                command.Parameters.AddWithValue("@lessonId", lessonId);
+                command.Parameters.AddWithValue("@studentMark", studentMark);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                if (rowsAffected == 0)
+                {
+                    message = "No record found to update";
+                }
+                return message;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating mark: {ex.Message}");
+                return $"Error: {ex.Message}";
             }
         }
     }
