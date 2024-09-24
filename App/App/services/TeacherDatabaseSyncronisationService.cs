@@ -10,7 +10,7 @@ namespace App.App.services
 
         public async Task SyncAllTablesFromSqliteToMySqlAsync()
         {
-            string[] tables = { "users", "roles", "marks", "lessons", "enrollments", "courses", "attendance" };
+            string[] tables = { "marks", "attendance" };
 
             using var mysqlConn = new MySqlConnection(_mysqlConnStr);
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
@@ -33,7 +33,12 @@ namespace App.App.services
 
             if (tableName == "marks")
             {
-                columnNames = columnNames.Where(col => col != "student_mark").ToArray();
+                columnNames = columnNames.Where(col => col != "student_mark" + "mark_id" + "student_id" + "lesson_id" + "teacher_id").ToArray();
+            }
+
+            if (tableName == "attendance")
+            {
+                columnNames = columnNames.Where(col => col != "attendance_id" + "student_id" + "lesson_id" + "attendance_date").ToArray();
             }
 
             while (await sqliteReader.ReadAsync())

@@ -26,9 +26,9 @@ namespace App.App.processor
             return await CourseApi.GetAllLessonsForCourse(userId, courseId, connectionStatus);
         }
 
-        private static async Task UpdateMarks(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark, string connectionStatus)
+        private static async Task UpdateMarks(string studentId, string lessonId, string teacherId, string newTeacherMark, string newFinalMark, string connectionStatus)
         {
-            await CourseApi.UpdateMarksAsTeacher(studentId, teacherId, lessonId, newTeacherMark, newFinalMark, connectionStatus);
+            await CourseApi.UpdateMarksAsTeacher(studentId, lessonId, teacherId,  newTeacherMark, newFinalMark, connectionStatus);
         }
         private static async Task UpdateStudentMark(string studentId, string lessonId, string newStudentMark, string connectionStatus)
         {
@@ -221,6 +221,7 @@ namespace App.App.processor
 
                                             if (!string.IsNullOrEmpty(newTeacherMark) || !string.IsNullOrEmpty(newFinalMark))
                                             {
+                                                Console.WriteLine(selectedLesson.LessonId, userId);
                                                 await UpdateMarks(selectedStudent.UserId, selectedLesson.LessonId, userId, newTeacherMark, newFinalMark, connectionStatus);
                                             }
 
@@ -246,6 +247,8 @@ namespace App.App.processor
                                     else
                                     {
                                         Console.WriteLine("No lessons found for this course.");
+                                        Console.ReadKey();
+                                        break;
                                     }
                                 }
                             }

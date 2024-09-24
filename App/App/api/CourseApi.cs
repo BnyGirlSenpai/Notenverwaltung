@@ -222,11 +222,11 @@ namespace App.App.api
             }
         }
 
-        public static async Task<string> UpdateMarksAsTeacher(string studentId, string teacherId, string lessonId, string newTeacherMark, string newFinalMark, string connectionStatus)
+        public static async Task<string> UpdateMarksAsTeacher(string studentId, string lessonId, string teacherId, string newTeacherMark, string newFinalMark, string connectionStatus)
         {
             if (connectionStatus.Equals("Offline", StringComparison.OrdinalIgnoreCase))
             {
-                return await LocalMarkController.UpdateMarksForLessonAsync(studentId, teacherId, lessonId, newTeacherMark, newFinalMark);
+                return await LocalMarkController.UpdateMarksForLessonAsync(studentId, lessonId, teacherId, newTeacherMark, newFinalMark);
             }
             else
             {
@@ -235,8 +235,8 @@ namespace App.App.api
                     Content = new FormUrlEncodedContent(
                     [
                         new KeyValuePair<string, string>("studentId", studentId),
-                        new KeyValuePair<string, string>("teacherId", teacherId),
                         new KeyValuePair<string, string>("lessonId", lessonId),
+                        new KeyValuePair<string, string>("teacherId", teacherId),
                         new KeyValuePair<string, string>("teacherMark", newTeacherMark ?? string.Empty),
                         new KeyValuePair<string, string>("finalMark", newFinalMark ?? string.Empty)
                     ])
@@ -245,10 +245,13 @@ namespace App.App.api
                 try
                 {
                     using HttpClient _client = new();
+                    Console.WriteLine(lessonId);
 
                     var response = await _client.SendAsync(request);
                     response.EnsureSuccessStatusCode();
                     var responseData = await response.Content.ReadAsStringAsync();
+                    var dbSyncService = new TeacherDatabaseSyncronisationService();  
+                    await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
                     return responseData; 
                 }
                 catch (HttpRequestException e)
@@ -318,8 +321,8 @@ namespace App.App.api
                 var response = await _client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var responseData = await response.Content.ReadAsStringAsync();
-                var dbSyncService = new StudentDatabaseSyncronisationService();
-                await dbSyncService.SyncStudentMarksFromMySqlToSqliteAsync();
+                var dbSyncService = new TeacherDatabaseSyncronisationService();
+                await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
                 return responseData;
             }
             catch (HttpRequestException e)

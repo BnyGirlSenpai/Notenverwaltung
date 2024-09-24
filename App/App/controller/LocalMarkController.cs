@@ -61,7 +61,7 @@ namespace App.App.controller
             }
         }
 
-        public static async Task<string> UpdateMarksForLessonAsync(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
+        public static async Task<string> UpdateMarksForLessonAsync(string studentId, string lessonId, string teacherId, string teacherMark, string finalMark)
         {
             string message = "Update successful";
 
@@ -73,6 +73,7 @@ namespace App.App.controller
                 var command = new SQLiteCommand("UPDATE marks SET teacher_mark = @teacherMark, final_mark = @finalMark, teacher_id = @teacherId WHERE student_id = @studentId AND lesson_id = @lessonId", connection); 
                 command.Parameters.AddWithValue("@studentId", studentId);
                 command.Parameters.AddWithValue("@lessonId", lessonId);
+                command.Parameters.AddWithValue("@teacherId", teacherId);
                 command.Parameters.AddWithValue("@teacherMark", teacherMark);
                 command.Parameters.AddWithValue("@finalMark", finalMark);
                 command.Parameters.AddWithValue("@teacherId", teacherId);

@@ -19,6 +19,7 @@ internal class Program
                 var dbSyncService = new TeacherDatabaseSyncronisationService();
                 Console.WriteLine("Starting database synchronization...");
                 await dbSyncService.SyncAllTablesFromSqliteToMySqlAsync();
+                await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
                 Console.WriteLine("Database synchronization completed.");
                 await TeacherMenuProcessor.ShowTeacherMenu(header, connectionStatus, userId);
             }
