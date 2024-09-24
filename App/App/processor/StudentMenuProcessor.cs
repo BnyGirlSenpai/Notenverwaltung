@@ -11,8 +11,8 @@ namespace App.App.processor
                 int selectedIndex = MenuProcessor.ShowMenu(header,
                 [
                     "Option 1: Get All Courses",
-                    "Option 2: Get Notes for Course",
-                    "Option 3: Get Notes for Date",
+                    "Option 2: Get Notes for Course (not in use)",
+                    "Option 3: Get Notes for Date (not in use)",
                     "Option 4: Logout"
                 ]);
 
