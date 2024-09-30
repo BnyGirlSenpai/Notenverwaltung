@@ -1,4 +1,4 @@
-﻿namespace Server.Server.utility
+﻿namespace WebServer.Server.utility
 {
     internal class FormDataParser
     {

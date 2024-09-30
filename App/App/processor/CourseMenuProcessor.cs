@@ -4,7 +4,7 @@ using System.Data;
 
 namespace App.App.processor
 {
-    internal class CourseMenuProcessor
+    internal class CourseMenuProcessor : BaseMenuProcessor
     {
         private static async Task<List<CourseRepository>> GetCoursesForTeacher(string userId, string connectionStatus)
         {
@@ -28,16 +28,17 @@ namespace App.App.processor
 
         private static async Task UpdateMarks(string studentId, string lessonId, string teacherId, string newTeacherMark, string newFinalMark, string connectionStatus)
         {
-            await CourseApi.UpdateMarksAsTeacher(studentId, lessonId, teacherId,  newTeacherMark, newFinalMark, connectionStatus);
+            await MarkApi.UpdateMarksAsTeacher(studentId, lessonId, teacherId,  newTeacherMark, newFinalMark, connectionStatus);
         }
+
         private static async Task UpdateStudentMark(string studentId, string lessonId, string newStudentMark, string connectionStatus)
         {
-            await CourseApi.UpdateMarksAsStudent(studentId, lessonId, newStudentMark, connectionStatus);
+            await MarkApi.UpdateMarksAsStudent(studentId, lessonId, newStudentMark, connectionStatus);
         }
         
         private static async Task UpdateAttendance(string userId, string lessonId, string newAttendanceStatus, string connectionStatus)
         {
-            await CourseApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus, connectionStatus);
+            await AttendanceApi.UpdateAttendanceForStudent(userId, lessonId, newAttendanceStatus, connectionStatus);
         }
 
         public static async Task ShowStudentCourseMenu(string header, string connectionStatus, string userId)
@@ -55,7 +56,7 @@ namespace App.App.processor
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
                 courseOptions.Add("Return to Previous Menu");
 
-                int selectedIndex = MenuProcessor.ShowMenu(header, [.. courseOptions]);
+                int selectedIndex = BaseMenuProcessor.ShowMenu(header, [.. courseOptions]);
 
                 if (selectedIndex >= 0 && selectedIndex < courses.Count)
                 {
@@ -71,13 +72,13 @@ namespace App.App.processor
 
                             foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                             {
-                                var marks = await CourseApi.GetMarksForStudent(userId, lesson.LessonId, connectionStatus);
+                                var marks = await MarkApi.GetMarksForStudent(userId, lesson.LessonId, connectionStatus);
                                 var mark = marks?.FirstOrDefault();
                                 var markText = mark != null
                                     ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
                                     : "No Marks available";
 
-                                var attendances = await CourseApi.GetAttendanceForStudent(userId, lesson.LessonId, connectionStatus);
+                                var attendances = await AttendanceApi.GetAttendanceForStudent(userId, lesson.LessonId, connectionStatus);
                                 var attendance = attendances?.FirstOrDefault();
                                 var attendanceText = attendance != null
                                     ? $"Anwesenheit : {attendance.Status}"
@@ -88,7 +89,7 @@ namespace App.App.processor
 
                             lessonOptions.Add("Return to Student Menu");
 
-                            int lessonSelection = MenuProcessor.ShowMenu($"Select a lesson for :", [.. lessonOptions]);
+                            int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for :", [.. lessonOptions]);
 
                             if (lessonSelection >= 0 && lessonSelection < lessons.Count)
                             {
@@ -154,7 +155,7 @@ namespace App.App.processor
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
                 courseOptions.Add("Return to Previous Menu");
 
-                int selectedIndex = MenuProcessor.ShowMenu(header, [..courseOptions]);
+                int selectedIndex = BaseMenuProcessor.ShowMenu(header, [..courseOptions]);
 
                 if (selectedIndex >= 0 && selectedIndex < courses.Count)
                 {
@@ -170,7 +171,7 @@ namespace App.App.processor
                             var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
                             studentOptions.Add("Return to Course Menu");
 
-                            int studentSelection = MenuProcessor.ShowMenu("Select a student:", [..studentOptions]);
+                            int studentSelection = BaseMenuProcessor.ShowMenu("Select a student:", [..studentOptions]);
 
                             if (studentSelection >= 0 && studentSelection < students.Count)
                             {
@@ -186,13 +187,13 @@ namespace App.App.processor
 
                                         foreach (var (lesson, index) in lessons.Select((lesson, index) => (lesson, index)))
                                         {
-                                            var marks = await CourseApi.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
+                                            var marks = await MarkApi.GetMarksForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
                                             var mark = marks?.FirstOrDefault();
                                             var markText = mark != null
                                                 ? $"Note Lehrer: {mark.TeacherMark} | Note Schüler: {mark.StudentMark} | End Note: {mark.FinalMark}"
                                                 : "No Marks available";
 
-                                            var attendances = await CourseApi.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
+                                            var attendances = await AttendanceApi.GetAttendanceForStudent(selectedStudent.UserId, lesson.LessonId, connectionStatus);
                                             var attendance = attendances?.FirstOrDefault();
                                             var attendanceText = attendance != null
                                                 ? $"Anwesenheit : {attendance.Status}"
@@ -203,7 +204,7 @@ namespace App.App.processor
 
                                         lessonOptions.Add("Return to Student Menu");
 
-                                        int lessonSelection = MenuProcessor.ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [..lessonOptions]);
+                                        int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [..lessonOptions]);
 
                                         if (lessonSelection >= 0 && lessonSelection < lessons.Count)
                                         {
@@ -221,7 +222,6 @@ namespace App.App.processor
 
                                             if (!string.IsNullOrEmpty(newTeacherMark) || !string.IsNullOrEmpty(newFinalMark))
                                             {
-                                                Console.WriteLine(selectedLesson.LessonId, userId);
                                                 await UpdateMarks(selectedStudent.UserId, selectedLesson.LessonId, userId, newTeacherMark, newFinalMark, connectionStatus);
                                             }
 

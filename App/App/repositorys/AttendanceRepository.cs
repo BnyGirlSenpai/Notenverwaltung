@@ -2,7 +2,7 @@
 
 namespace App.App.repositorys
 {
-    internal class AttendanceRepository
+    internal class AttendanceRepository 
     {
         [JsonPropertyName("attendanceId")]
         public string AttendanceId { get; set; }

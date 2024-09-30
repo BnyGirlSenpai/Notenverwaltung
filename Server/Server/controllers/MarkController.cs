@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using static NotenverwaltungsApp.Database;
+using WebServer.Server.config;
+using static WebServer.Server.config.Database;
 
-namespace NotenverwaltungsApp.Server.controllers
+namespace WebServer.Server.controllers
 {
     internal class MarkController
     {

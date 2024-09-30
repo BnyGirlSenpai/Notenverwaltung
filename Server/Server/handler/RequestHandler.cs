@@ -1,8 +1,8 @@
-﻿using Server.Server.routes;
-using System.Net;
+﻿using System.Net;
 using System.Text;
+using WebServer.Server.routes;
 
-namespace Server.Server.handler
+namespace WebServer.Server.handler
 {
     internal class RequestHandler
     {
@@ -34,7 +34,7 @@ namespace Server.Server.handler
                     await MarkApi.HandleAsync(context);
                     break;
 
-                case "/api/lesson/student/update/marks":
+                case "/api/lesson/teacher/update/marks":
                     await MarkApi.HandleAsync(context);
                     break;
 
@@ -49,10 +49,10 @@ namespace Server.Server.handler
                 case "/api/lesson/student/update/attendance":
                     await AttendanceApi.HandleAsync(context);
                     break;
-                    
+
                 default:
                     string responseString = "Endpoint not found.";
-                    int statusCode = 404; 
+                    int statusCode = 404;
 
                     context.Response.StatusCode = statusCode;
                     byte[] buffer = Encoding.UTF8.GetBytes(responseString);

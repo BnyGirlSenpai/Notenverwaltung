@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using static NotenverwaltungsApp.Database;
+using WebServer.Server.config;
+using static WebServer.Server.config.Database;
 
-namespace NotenverwaltungsApp.Server.controllers
+namespace WebServer.Server.controllers
 {
     internal class AttendanceController
     {
@@ -53,7 +54,7 @@ namespace NotenverwaltungsApp.Server.controllers
                         {
                             AttendanceId = reader["attendance_id"]?.ToString() ?? "Unknown",
                             Status = reader["status"]?.ToString() ?? "Unknown",
-                          
+
                         };
                         attendances.Add(attendance);
                     }
@@ -63,7 +64,7 @@ namespace NotenverwaltungsApp.Server.controllers
                         attendances.Add(new Attendance
                         {
                             AttendanceId = "N.a.N",
-                            Status = "N.a.N",                        
+                            Status = "N.a.N",
                         });
                     }
                 }

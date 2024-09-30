@@ -2,7 +2,7 @@
 using System.Data.SQLite;
 using MySql.Data.MySqlClient;
 
-namespace NotenverwaltungsApp
+namespace WebServer.Server.config
 {
     internal class Database : IDisposable
     {
@@ -60,7 +60,7 @@ namespace NotenverwaltungsApp
             catch (Exception ex)
             {
                 Console.WriteLine($"Error establishing database connection: {ex.Message}");
-                throw; 
+                throw;
             }
         }
 

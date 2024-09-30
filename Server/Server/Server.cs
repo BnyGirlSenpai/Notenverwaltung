@@ -1,7 +1,8 @@
-﻿using Server.Server.handler;
-using System.Net;
+﻿using System.Net;
+using WebServer.Server.config;
+using WebServer.Server.handler;
 
-namespace NotenverwaltungsApp.Server
+namespace WebServer.Server
 {
     internal class Server
     {
@@ -55,7 +56,7 @@ namespace NotenverwaltungsApp.Server
                 }
                 else
                 {
-                    await RequestHandler.HandleRequestAsync(context); 
+                    await RequestHandler.HandleRequestAsync(context);
                 }
             }
             catch (Exception ex)

@@ -1,10 +1,10 @@
-﻿using NotenverwaltungsApp.Server.controllers;
-using Server.Server.utility;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using WebServer.Server.controllers;
+using WebServer.Server.utility;
 
-namespace Server.Server.routes
+namespace WebServer.Server.routes
 {
     internal class CourseApi
     {

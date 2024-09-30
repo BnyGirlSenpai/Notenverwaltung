@@ -1,6 +1,7 @@
-﻿using static NotenverwaltungsApp.Database;
+﻿using WebServer.Server.config;
+using static WebServer.Server.config.Database;
 
-namespace NotenverwaltungsApp.Server.controllers
+namespace WebServer.Server.controllers
 {
     internal class AuthController
     {
@@ -43,7 +44,7 @@ namespace NotenverwaltungsApp.Server.controllers
 
                     if (reader.Read())
                     {
-                        isAuthenticated = true; 
+                        isAuthenticated = true;
                         userId = reader["user_id"].ToString() ?? "Unknown";
                         firstName = reader["first_name"].ToString() ?? "Unknown";
                         lastName = reader["last_name"].ToString() ?? "Unknown";

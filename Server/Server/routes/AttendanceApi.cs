@@ -1,10 +1,10 @@
-﻿using NotenverwaltungsApp.Server.controllers;
-using Server.Server.utility;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using WebServer.Server.controllers;
+using WebServer.Server.utility;
 
-namespace Server.Server.routes
+namespace WebServer.Server.routes
 {
     internal class AttendanceApi
     {
@@ -45,7 +45,7 @@ namespace Server.Server.routes
             }
 
             context.Response.StatusCode = statusCode;
-            context.Response.ContentType = "application/json"; 
+            context.Response.ContentType = "application/json";
             byte[] buffer = Encoding.UTF8.GetBytes(responseString);
             context.Response.ContentLength64 = buffer.Length;
             await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
@@ -81,7 +81,7 @@ namespace Server.Server.routes
                 string lessonId = formDataParser.GetValue("lessonId");
                 string attendanceStatus = formDataParser.GetValue("attendanceStatus");
 
-             
+
                 var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
 
                 if (message != null)
@@ -89,10 +89,10 @@ namespace Server.Server.routes
                     return JsonSerializer.Serialize(message);
                 }
                 else
-                {                  
+                {
                     return JsonSerializer.Serialize(new { message = "No attendances found for the given UserId and LessonId." });
                 }
-            }      
+            }
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
     }

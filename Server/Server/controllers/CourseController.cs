@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using static NotenverwaltungsApp.Database;
+using WebServer.Server.config;
+using static WebServer.Server.config.Database;
 
-namespace NotenverwaltungsApp.Server.controllers
+namespace WebServer.Server.controllers
 {
     internal class CourseController
     {
@@ -213,7 +214,7 @@ namespace NotenverwaltungsApp.Server.controllers
                     string query = @"
                         SELECT lesson_id, lesson_name, lesson_date, lesson_type
                         FROM lessons                     
-                        WHERE course_id = @courseId"; 
+                        WHERE course_id = @courseId";
 
                     using var command = connection.CreateCommand();
                     command.CommandText = query;
@@ -239,7 +240,7 @@ namespace NotenverwaltungsApp.Server.controllers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[ERROR] Error fetching lessons: {ex.Message}"); 
+                    Console.WriteLine($"[ERROR] Error fetching lessons: {ex.Message}");
                 }
                 finally
                 {

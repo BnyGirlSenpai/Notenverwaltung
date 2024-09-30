@@ -3,7 +3,7 @@ using System.Data.SQLite;
 
 namespace App.App.services
 {
-    internal class TeacherDatabaseSyncronisationService
+    internal class TeacherDatabaseSynchronisationService  
     {
         private string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
         private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3";
@@ -67,13 +67,13 @@ namespace App.App.services
             using var sqliteReader = await sqliteCmd.ExecuteReaderAsync();
 
             using var mysqlCmd = new MySqlCommand();
-            
+
             mysqlCmd.Connection = mysqlConn;
 
             while (await sqliteReader.ReadAsync())
             {
                 var mark_id = sqliteReader.GetInt32(0);
-                var studentMark = sqliteReader.IsDBNull(1) ? null : sqliteReader.GetValue(1); 
+                var studentMark = sqliteReader.IsDBNull(1) ? null : sqliteReader.GetValue(1);
 
                 string mysqlUpdateQuery = "UPDATE marks SET student_mark = @studentMark WHERE mark_id = @mark_id";
                 mysqlCmd.CommandText = mysqlUpdateQuery;

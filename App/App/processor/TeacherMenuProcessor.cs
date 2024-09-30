@@ -2,13 +2,13 @@
 
 namespace App.App.processor
 {
-    internal class TeacherMenuProcessor
+    internal class TeacherMenuProcessor : BaseMenuProcessor
     {
         public static async Task ShowTeacherMenu(string header, string connectionStatus, string userId)
         {
             while (true)
             {
-                int selectedIndex = MenuProcessor.ShowMenu(header,
+                string[] menuOptions =
                 [
                     "Option 1: Get All Courses",
                     "Option 2: Get Notes for Course (not in use)",
@@ -17,48 +17,63 @@ namespace App.App.processor
                     "Option 5: Get Attendance for Lesson (not in use)",
                     "Option 6: Get Notes for User (not in use)",
                     "Option 7: Logout"
-                ]);
+                ];
+
+                int selectedIndex = BaseMenuProcessor.ShowMenu(header, menuOptions);
 
                 switch (selectedIndex)
                 {
                     case 0:
-                        await CourseMenuProcessor.ShowTeacherCourseMenu(header, userId ,connectionStatus);
-                        break;                     
+                        await CourseMenuProcessor.ShowTeacherCourseMenu(header, userId, connectionStatus);
+                        break;
+
                     case 1:
-                        Console.WriteLine("Course Code:");
+                        // Handle course notes (not currently in use)
+                        Console.WriteLine("Enter Course Code:");
                         var courseCode = Console.ReadLine();
-
-                        //await GetNotesForCourse(userId, courseCode);
+                        // await GetNotesForCourse(userId, courseCode);
+                        Console.WriteLine("This functionality is not yet implemented.");
                         break;
+
                     case 2:
-                        //await GetNotesForDateAndLesson(userId);
+                        // Handle notes for date and lesson (not currently in use)
+                        // await GetNotesForDateAndLesson(userId);
+                        Console.WriteLine("This functionality is not yet implemented.");
                         break;
+
                     case 3:
-                        Console.WriteLine("Vorname:");
+                        // Handle attendance for a user (not currently in use)
+                        Console.WriteLine("Enter First Name:");
                         var firstName = Console.ReadLine();
-                        Console.WriteLine("Nachname:");
+                        Console.WriteLine("Enter Last Name:");
                         var lastName = Console.ReadLine();
-
-                        //await GetAttendanceForUser(userId, firstName, lastName);
+                        // await GetAttendanceForUser(userId, firstName, lastName);
+                        Console.WriteLine("This functionality is not yet implemented.");
                         break;
+
                     case 4:
-                        //await GetAttendanceForLesson(userId);
+                        // Handle attendance for a lesson (not currently in use)
+                        // await GetAttendanceForLesson(userId);
+                        Console.WriteLine("This functionality is not yet implemented.");
                         break;
+
                     case 5:
-                        Console.WriteLine("Vorname:");
+                        // Handle notes for a user (not currently in use)
+                        Console.WriteLine("Enter First Name:");
                         firstName = Console.ReadLine();
-
-                        Console.WriteLine("Nachname:");
+                        Console.WriteLine("Enter Last Name:");
                         lastName = Console.ReadLine();
-
-                        //await GetNotesForUser(userId, firstName, lastName);
+                        // await GetNotesForUser(userId, firstName, lastName);
+                        Console.WriteLine("This functionality is not yet implemented.");
                         break;
+
                     case 6:
                         await LoginService.LogoutAsync();
                         Console.WriteLine("You have been logged out. Exiting the program...");
                         return;
+
                     default:
-                        Console.WriteLine("Invalid selection.");
+                        Console.WriteLine("Invalid selection. Please try again.");
                         break;
                 }
 

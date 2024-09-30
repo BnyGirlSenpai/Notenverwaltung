@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="App\api\NewFolder\**" />
+    <EmbeddedResource Remove="App\api\NewFolder\**" />
+    <None Remove="App\api\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />

@@ -1,10 +1,10 @@
-﻿using NotenverwaltungsApp.Server.controllers;
-using Server.Server.utility;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using WebServer.Server.controllers;
+using WebServer.Server.utility;
 
-namespace Server.Server.routes
+namespace WebServer.Server.routes
 {
     internal class MarkApi
     {
@@ -27,7 +27,7 @@ namespace Server.Server.routes
                 {
                     responseString = HandleGetMarks(formDataParser);
                 }
-                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/student/update/marks")
+                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/teacher/update/marks") 
                 {
                     responseString = HandleUpdateMarkAsTeacher(formDataParser);
                 }

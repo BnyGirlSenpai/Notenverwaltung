@@ -16,20 +16,27 @@ internal class Program
 
             if (role == "Teacher")
             {
-                var dbSyncService = new TeacherDatabaseSyncronisationService();
-                Console.WriteLine("Starting database synchronization...");
-                await dbSyncService.SyncAllTablesFromSqliteToMySqlAsync();
-                await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
-                Console.WriteLine("Database synchronization completed.");
+                if (connectionStatus == "Online")
+                {
+                    var dbSyncService = new TeacherDatabaseSynchronisationService();
+                    Console.WriteLine("Starting database synchronization...");
+                    await dbSyncService.SyncAllTablesFromSqliteToMySqlAsync();
+                    await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
+                    Console.WriteLine("Database synchronization completed.");
+                }
+        
                 await TeacherMenuProcessor.ShowTeacherMenu(header, connectionStatus, userId);
             }
             else if (role == "Student")
             {
-                var dbSyncService = new StudentDatabaseSyncronisationService();
-                Console.WriteLine("Starting database synchronization...");
-                await dbSyncService.SyncStudentMarksFromSqliteToMySqlAsync();
-                Console.WriteLine("Database synchronization completed.");
-                await StudentMenuProcessor.ShowStudentMenu(header, connectionStatus, userId);
+                if (connectionStatus == "Online")
+                {
+                    var dbSyncService = new StudentDatabaseSyncronisationService();
+                    Console.WriteLine("Starting database synchronization...");
+                    await dbSyncService.SyncStudentMarksFromSqliteToMySqlAsync();
+                    Console.WriteLine("Database synchronization completed.");
+                    await StudentMenuProcessor.ShowStudentMenu(header, connectionStatus, userId);
+                }
             }
             else
             {

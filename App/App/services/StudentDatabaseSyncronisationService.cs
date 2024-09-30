@@ -3,7 +3,7 @@ using System.Data.SQLite;
 
 namespace App.App.services
 {
-    internal class StudentDatabaseSyncronisationService
+    internal class StudentDatabaseSyncronisationService 
     {
         private string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
         private string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3";
