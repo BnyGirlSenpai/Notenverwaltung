@@ -1,104 +1,79 @@
-﻿using System.Text.Json.Serialization;
-using WebServer.Server.config;
+﻿using WebServer.Server.config;
+using WebServer.Server.repositorys;
 using static WebServer.Server.config.Database;
+using System.Data.Common;
 
 namespace WebServer.Server.controllers
 {
-    internal class MarkController
+    internal class MarkController : BaseController
     {
-        public class Mark
+        private static DbCommand CreateCommandWithParameters(DbConnection connection, string query, params (string name, object value)[] parameters)
         {
-            [JsonPropertyName("markId")]
-            public string MarkId { get; set; }
+            var command = connection.CreateCommand();
+            command.CommandText = query;
 
-            [JsonPropertyName("studentMark")]
-            public string StudentMark { get; set; }
+            foreach (var (name, value) in parameters)
+            {
+                AddParameter(command, name, value);
+            }
 
-            [JsonPropertyName("teacherMark")]
-            public string TeacherMark { get; set; }
-
-            [JsonPropertyName("finalMark")]
-            public string FinalMark { get; set; }
-
-            [JsonPropertyName("teacherFirstname")]
-            public string TeacherFirstname { get; set; }
-
-            [JsonPropertyName("teacherLastname")]
-            public string TeacherLastname { get; set; }
+            return command;
         }
 
-        public static List<Mark> GetMarksForLessons(string studentId, string lessonId)
+        public static List<MarkRepository> GetMarksForLessons(string studentId, string lessonId)
         {
-            var marks = new List<Mark>();
+            var marks = new List<MarkRepository>();
+            var db = new Database(DatabaseType.MySQL);
 
-            using var db = new Database(DatabaseType.MySQL);
+            try
             {
-                try
+                db.Connect_to_Database();
+                var connection = db.GetConnection();
+                string query = @"
+                    SELECT m.mark_id, 
+                           m.student_mark, 
+                           m.teacher_mark, 
+                           m.final_mark, 
+                           u.last_name, 
+                           u.first_name
+                    FROM marks m
+                    LEFT JOIN users u ON m.teacher_id = u.user_id
+                    WHERE m.student_id = @studentId AND m.lesson_id = @lessonId;";
+
+                using var command = CreateCommandWithParameters((DbConnection)connection, query,
+                    ("@studentId", studentId),
+                    ("@lessonId", lessonId));
+
+                marks = ExecuteReader(command, reader => new MarkRepository
                 {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
+                    MarkId = reader["mark_id"]?.ToString() ?? "Unknown",
+                    StudentMark = reader["student_mark"]?.ToString() ?? "Unknown",
+                    TeacherMark = reader["teacher_mark"]?.ToString() ?? "Unknown",
+                    FinalMark = reader["final_mark"]?.ToString() ?? "Unknown",
+                    TeacherFirstname = reader["first_name"]?.ToString() ?? "Unknown",
+                    TeacherLastname = reader["last_name"]?.ToString() ?? "Unknown",
+                });
 
-                    string query = @"
-                        SELECT m.mark_id, 
-                               m.student_mark, 
-                               m.teacher_mark, 
-                               m.final_mark, 
-                               u.last_name, 
-                               u.first_name
-                        FROM marks m
-                        LEFT JOIN users u ON m.teacher_id = u.user_id
-                        WHERE m.student_id = @studentId AND m.lesson_id = @lessonId;";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var studentParameter = command.CreateParameter();
-                    studentParameter.ParameterName = "@studentId";
-                    studentParameter.Value = studentId;
-                    command.Parameters.Add(studentParameter);
-
-                    var lessonParameter = command.CreateParameter();
-                    lessonParameter.ParameterName = "@lessonId";
-                    lessonParameter.Value = lessonId;
-                    command.Parameters.Add(lessonParameter);
-
-                    using var reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                if (marks.Count == 0)
+                {
+                    marks.Add(new MarkRepository
                     {
-                        var mark = new Mark
-                        {
-                            MarkId = reader["mark_id"]?.ToString() ?? "Unknown",
-                            StudentMark = reader["student_mark"]?.ToString() ?? "Unknown",
-                            TeacherMark = reader["teacher_mark"]?.ToString() ?? "Unknown",
-                            FinalMark = reader["final_mark"]?.ToString() ?? "Unknown",
-                            TeacherFirstname = reader["first_name"]?.ToString() ?? "Unknown",
-                            TeacherLastname = reader["last_name"]?.ToString() ?? "Unknown",
-                        };
-                        marks.Add(mark);
-                    }
-
-                    if (marks.Count == 0)
-                    {
-                        marks.Add(new Mark
-                        {
-                            MarkId = "N.a.N",
-                            StudentMark = "N.a.N",
-                            TeacherMark = "N.a.N",
-                            FinalMark = "N.a.N",
-                            TeacherFirstname = "N.a.N",
-                            TeacherLastname = "N.a.N",
-                        });
-                    }
+                        MarkId = "N.a.N",
+                        StudentMark = "N.a.N",
+                        TeacherMark = "N.a.N",
+                        FinalMark = "N.a.N",
+                        TeacherFirstname = "N.a.N",
+                        TeacherLastname = "N.a.N",
+                    });
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error fetching marks: {ex.Message}");
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching marks: {ex.Message}");
+            }
+            finally
+            {
+                db.Close_Connection();
             }
 
             return marks;
@@ -107,66 +82,41 @@ namespace WebServer.Server.controllers
         public static string UpdateMarkAsTeacher(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
         {
             string message = "Update successful";
+            var db = new Database(DatabaseType.MySQL);
 
-            using var db = new Database(DatabaseType.MySQL);
+            try
             {
-                try
+                db.Connect_to_Database();
+                var connection = db.GetConnection();
+                string query = @"
+                    UPDATE marks 
+                    SET teacher_mark = @teacherMark,
+                        final_mark = @finalMark,
+                        teacher_id = @teacherId
+                    WHERE student_id = @studentId
+                    AND lesson_id = @lessonId";
+
+                using var command = CreateCommandWithParameters((DbConnection)connection, query,
+                    ("@studentId", studentId),
+                    ("@teacherId", teacherId),
+                    ("@lessonId", lessonId),
+                    ("@teacherMark", teacherMark),
+                    ("@finalMark", finalMark));
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
                 {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
-
-                    string query = @"
-                        UPDATE marks 
-                        SET teacher_mark = @teacherMark,
-                            final_mark = @finalMark,
-                            teacher_id = @teacherId
-                        WHERE student_id = @studentId
-                        AND lesson_id = @lessonId
-                    ";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var studentParameter = command.CreateParameter();
-                    studentParameter.ParameterName = "@studentId";
-                    studentParameter.Value = studentId;
-                    command.Parameters.Add(studentParameter);
-
-                    var teacherParameter = command.CreateParameter();
-                    teacherParameter.ParameterName = "@teacherId";
-                    teacherParameter.Value = teacherId;
-                    command.Parameters.Add(teacherParameter);
-
-                    var lessonParameter = command.CreateParameter();
-                    lessonParameter.ParameterName = "@lessonId";
-                    lessonParameter.Value = lessonId;
-                    command.Parameters.Add(lessonParameter);
-
-                    var teacherMarkParameter = command.CreateParameter();
-                    teacherMarkParameter.ParameterName = "@teacherMark";
-                    teacherMarkParameter.Value = teacherMark;
-                    command.Parameters.Add(teacherMarkParameter);
-
-                    var finalMarkParameter = command.CreateParameter();
-                    finalMarkParameter.ParameterName = "@finalMark";
-                    finalMarkParameter.Value = finalMark;
-                    command.Parameters.Add(finalMarkParameter);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected == 0)
-                    {
-                        message = "No record found to update";
-                    }
+                    message = "No record found to update";
                 }
-                catch (Exception ex)
-                {
-                    message = $"Error updating marks: {ex.Message}";
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
+            }
+            catch (Exception ex)
+            {
+                message = $"Error updating marks: {ex.Message}";
+            }
+            finally
+            {
+                db.Close_Connection();
             }
 
             return message;
@@ -175,54 +125,37 @@ namespace WebServer.Server.controllers
         public static string UpdateMarkAsStudent(string studentId, string lessonId, string studentMark)
         {
             string message = "Update successful";
+            var db = new Database(DatabaseType.MySQL);
 
-            using var db = new Database(DatabaseType.MySQL);
+            try
             {
-                try
+                db.Connect_to_Database();
+                var connection = db.GetConnection();
+                string query = @"
+                    UPDATE marks 
+                    SET student_mark = @studentMark  
+                    WHERE student_id = @studentId
+                    AND lesson_id = @lessonId";
+
+                using var command = CreateCommandWithParameters((DbConnection)connection, query,
+                    ("@studentId", studentId),
+                    ("@lessonId", lessonId),
+                    ("@studentMark", studentMark));
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
                 {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
-
-                    string query = @"
-                        UPDATE marks 
-                        SET student_mark = @studentMark  
-                        WHERE student_id = @studentId
-                        AND lesson_id = @lessonId
-                    ";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var studentParameter = command.CreateParameter();
-                    studentParameter.ParameterName = "@studentId";
-                    studentParameter.Value = studentId;
-                    command.Parameters.Add(studentParameter);
-
-                    var lessonParameter = command.CreateParameter();
-                    lessonParameter.ParameterName = "@lessonId";
-                    lessonParameter.Value = lessonId;
-                    command.Parameters.Add(lessonParameter);
-
-                    var studentMarkParameter = command.CreateParameter();
-                    studentMarkParameter.ParameterName = "@studentMark";
-                    studentMarkParameter.Value = studentMark;
-                    command.Parameters.Add(studentMarkParameter);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected == 0)
-                    {
-                        message = "No record found to update";
-                    }
+                    message = "No record found to update";
                 }
-                catch (Exception ex)
-                {
-                    message = $"Error updating marks: {ex.Message}";
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
+            }
+            catch (Exception ex)
+            {
+                message = $"Error updating marks: {ex.Message}";
+            }
+            finally
+            {
+                db.Close_Connection();
             }
 
             return message;

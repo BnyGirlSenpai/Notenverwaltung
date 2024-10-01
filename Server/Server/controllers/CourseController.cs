@@ -1,253 +1,97 @@
-﻿using System.Text.Json.Serialization;
-using WebServer.Server.config;
-using static WebServer.Server.config.Database;
+﻿using WebServer.Server.repositorys;
 
 namespace WebServer.Server.controllers
 {
-    internal class CourseController
+    internal class CourseController : BaseController
     {
-        public class Course
+        public List<CourseRepository> GetCoursesByTeacher(string teacherId)
         {
-            [JsonPropertyName("courseCode")]
-            public string CourseCode { get; set; }
+            ConnectToDatabase();
+            string query = @"
+                SELECT course_code, course_name ,course_id
+                FROM courses
+                WHERE teacher_id = @teacherId";
 
-            [JsonPropertyName("courseName")]
-            public string CourseName { get; set; }
+            using var command = CreateCommand(query);
+            AddParameter(command, "@teacherId", teacherId);
 
-            [JsonPropertyName("courseId")]
-            public string CourseId { get; set; }
-        }
-
-        public class Student
-        {
-            [JsonPropertyName("firstname")]
-            public string FirstName { get; set; }
-
-            [JsonPropertyName("lastname")]
-            public string LastName { get; set; }
-
-            [JsonPropertyName("userId")]
-            public string UserId { get; set; }
-        }
-
-        public class Lesson
-        {
-            [JsonPropertyName("lessonId")]
-            public string LessonId { get; set; }
-
-            [JsonPropertyName("lessonName")]
-            public string LessonName { get; set; }
-
-            [JsonPropertyName("lessonDate")]
-            public string LessonDate { get; set; }
-
-            [JsonPropertyName("lessonType")]
-            public string LessonType { get; set; }
-        }
-
-        public static List<Course> GetCoursesByTeacher(string teacherId)
-        {
-            var courses = new List<Course>();
-
-            using var db = new Database(DatabaseType.MySQL);
+            var courses = ExecuteReader(command, reader => new CourseRepository
             {
-                try
-                {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
+                CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
+                CourseName = reader["course_name"]?.ToString() ?? "Unknown",
+                CourseId = reader["course_id"]?.ToString() ?? "Unknown",
+            });
 
-                    string query = @"
-                        SELECT course_code, course_name ,course_id
-                        FROM courses
-                        WHERE teacher_id = @teacherId";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = "@teacherId";
-                    parameter.Value = teacherId;
-                    command.Parameters.Add(parameter);
-
-                    using var reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        var course = new Course
-                        {
-                            CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
-                            CourseName = reader["course_name"]?.ToString() ?? "Unknown",
-                            CourseId = reader["course_id"]?.ToString() ?? "Unknown",
-
-                        };
-                        courses.Add(course);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error fetching courses: {ex.Message}");
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
-            }
-
+            CloseConnection();
             return courses;
         }
 
-        public static List<Course> GetCoursesByStudent(string studentId)
+        public List<CourseRepository> GetCoursesByStudent(string studentId)
         {
-            var courses = new List<Course>();
+            ConnectToDatabase();
+            string query = @"
+                SELECT e.course_id, c.course_name, c.course_code
+                FROM enrollments e
+                LEFT JOIN courses c ON e.course_id = c.course_id
+                WHERE e.student_id = @studentId";
 
-            using var db = new Database(DatabaseType.MySQL);
+            using var command = CreateCommand(query);
+            AddParameter(command, "@studentId", studentId);
+
+            var courses = ExecuteReader(command, reader => new CourseRepository
             {
-                try
-                {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
+                CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
+                CourseName = reader["course_name"]?.ToString() ?? "Unknown",
+                CourseId = reader["course_id"]?.ToString() ?? "Unknown",
+            });
 
-                    string query = @"
-                        SELECT e.course_id, c.course_name, c.course_code
-                        FROM enrollments e
-                        LEFT JOIN courses c ON e.course_id = c.course_id
-                        WHERE e.student_id = @studentId";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = "@studentId";
-                    parameter.Value = studentId;
-                    command.Parameters.Add(parameter);
-
-                    using var reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        var course = new Course
-                        {
-                            CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
-                            CourseName = reader["course_name"]?.ToString() ?? "Unknown",
-                            CourseId = reader["course_id"]?.ToString() ?? "Unknown",
-
-                        };
-                        courses.Add(course);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error fetching courses: {ex.Message}");
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
-            }
-
+            CloseConnection();
             return courses;
         }
 
-        public static List<Student> GetStudentsByCourse(string courseId)
+        public List<StudentRepository> GetStudentsByCourse(string courseId)
         {
-            var students = new List<Student>();
+            ConnectToDatabase();
+            string query = @"
+                SELECT u.first_name, u.last_name, u.user_id
+                FROM enrollments e
+                JOIN users u ON e.student_id = u.user_id
+                WHERE e.course_id = @courseId";
 
-            using var db = new Database(DatabaseType.MySQL);
+            using var command = CreateCommand(query);
+            AddParameter(command, "@courseId", courseId);
+
+            var students = ExecuteReader(command, reader => new StudentRepository
             {
-                try
-                {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
+                FirstName = reader["first_name"].ToString() ?? "Unknown",
+                LastName = reader["last_name"].ToString() ?? "Unknown",
+                UserId = reader["user_id"].ToString() ?? "Unknown",
+            });
 
-                    string query = @"
-                        SELECT u.first_name, u.last_name, u.user_id
-                        FROM enrollments e
-                        JOIN users u ON e.student_id = u.user_id
-                        WHERE e.course_id = @courseId";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = "@courseId";
-                    parameter.Value = courseId;
-                    command.Parameters.Add(parameter);
-
-                    using var reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        var student = new Student
-                        {
-                            FirstName = reader["first_name"].ToString() ?? "Unknown",
-                            LastName = reader["last_name"].ToString() ?? "Unknown",
-                            UserId = reader["user_id"].ToString() ?? "Unknown",
-                        };
-                        students.Add(student);
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[ERROR] Error fetching students: {ex.Message}");
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
-            }
-
+            CloseConnection();
             return students;
         }
 
-        public static List<Lesson> GetAllLessonsForCourse(string courseId)
+        public List<LessonRepository> GetAllLessonsForCourse(string courseId)
         {
-            var lessons = new List<Lesson>();
+            ConnectToDatabase();
+            string query = @"
+                SELECT lesson_id, lesson_name, lesson_date, lesson_type
+                FROM lessons                     
+                WHERE course_id = @courseId";
 
-            using var db = new Database(DatabaseType.MySQL);
+            using var command = CreateCommand(query);
+            AddParameter(command, "@courseId", courseId);
+
+            var lessons = ExecuteReader(command, reader => new LessonRepository
             {
-                try
-                {
-                    db.Connect_to_Database();
-                    var connection = db.GetConnection();
+                LessonId = reader["lesson_id"].ToString() ?? "Unknown",
+                LessonName = reader["lesson_name"].ToString() ?? "Unknown",
+                LessonDate = reader["lesson_date"].ToString() ?? "Unknown",
+                LessonType = reader["lesson_type"].ToString() ?? "Unknown",
+            });
 
-                    string query = @"
-                        SELECT lesson_id, lesson_name, lesson_date, lesson_type
-                        FROM lessons                     
-                        WHERE course_id = @courseId";
-
-                    using var command = connection.CreateCommand();
-                    command.CommandText = query;
-
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = "@courseId";
-                    parameter.Value = courseId;
-                    command.Parameters.Add(parameter);
-
-                    using var reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        var lesson = new Lesson
-                        {
-                            LessonId = reader["lesson_id"].ToString() ?? "Unknown",
-                            LessonName = reader["lesson_name"].ToString() ?? "Unknown",
-                            LessonDate = reader["lesson_date"].ToString() ?? "Unknown",
-                            LessonType = reader["lesson_type"].ToString() ?? "Unknown",
-                        };
-                        lessons.Add(lesson);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[ERROR] Error fetching lessons: {ex.Message}");
-                }
-                finally
-                {
-                    db.Close_Connection();
-                }
-            }
-
+            CloseConnection();
             return lessons;
         }
     }

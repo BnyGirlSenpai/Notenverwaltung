@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="NotenverwaltungsApp.Database" BaseTypeListCollapsed="true">
-    <Position X="5.75" Y="3.5" Width="1.5" />
+  <Class Name="WebServer.Server.config.Database" BaseTypeListCollapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Enum Name="NotenverwaltungsApp.Database.DatabaseType">
+      <Enum Name="WebServer.Server.config.Database.DatabaseType" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\config\Database.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -18,13 +18,13 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="NotenverwaltungsApp.Server.controllers.AttendanceController">
+  <Class Name="WebServer.Server.controllers.AttendanceController">
     <Position X="4" Y="1.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="NotenverwaltungsApp.Server.controllers.AttendanceController.Attendance">
+      <Class Name="WebServer.Server.controllers.AttendanceController.Attendance" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\controllers\AttendanceController.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -35,30 +35,30 @@
       <FileName>Server\controllers\AttendanceController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NotenverwaltungsApp.Server.controllers.AuthController">
+  <Class Name="WebServer.Server.controllers.AuthController">
     <Position X="7.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\controllers\AuthController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NotenverwaltungsApp.Server.controllers.CourseController">
+  <Class Name="WebServer.Server.controllers.CourseController">
     <Position X="0.5" Y="2.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="NotenverwaltungsApp.Server.controllers.CourseController.Course">
+      <Class Name="WebServer.Server.controllers.CourseController.Course" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\controllers\CourseController.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="NotenverwaltungsApp.Server.controllers.CourseController.Student">
+      <Class Name="WebServer.Server.controllers.CourseController.Student" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\controllers\CourseController.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="NotenverwaltungsApp.Server.controllers.CourseController.Lesson">
+      <Class Name="WebServer.Server.controllers.CourseController.Lesson" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\controllers\CourseController.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -69,13 +69,13 @@
       <FileName>Server\controllers\CourseController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NotenverwaltungsApp.Server.controllers.MarkController">
+  <Class Name="WebServer.Server.controllers.MarkController">
     <Position X="2.25" Y="1.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="NotenverwaltungsApp.Server.controllers.MarkController.Mark">
+      <Class Name="WebServer.Server.controllers.MarkController.Mark" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Server\controllers\MarkController.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -86,49 +86,49 @@
       <FileName>Server\controllers\MarkController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.handler.RequestHandler">
+  <Class Name="WebServer.Server.handler.RequestHandler">
     <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\handler\RequestHandler.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.routes.AttendanceApi">
+  <Class Name="WebServer.Server.routes.AttendanceApi">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAABAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\routes\AttendanceApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.routes.AuthApi">
+  <Class Name="WebServer.Server.routes.AuthApi">
     <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\routes\AuthApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.routes.CourseApi">
+  <Class Name="WebServer.Server.routes.CourseApi">
     <Position X="9.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\routes\CourseApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.routes.MarkApi">
+  <Class Name="WebServer.Server.routes.MarkApi">
     <Position X="9.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Server\routes\MarkApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Server.utility.FormDataParser">
+  <Class Name="WebServer.Server.utility.FormDataParser">
     <Position X="7.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAIAAEAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\utility\FormDataParser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NotenverwaltungsApp.Server.Server">
+  <Class Name="WebServer.Server.Server">
     <Position X="5.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAACAAAAAAAAAEAAQQABAAAAAAAABAAAAAA=</HashCode>

@@ -12,6 +12,7 @@ namespace WebServer.Server.routes
         {
             string responseString = "";
             int statusCode = 200;
+            var courseController = new CourseController();
 
             try
             {
@@ -24,7 +25,7 @@ namespace WebServer.Server.routes
                     if (formDataParser.ContainsKey("userId"))
                     {
                         string userId = formDataParser.GetValue("userId");
-                        var courses = CourseController.GetCoursesByTeacher(userId);
+                        var courses = courseController.GetCoursesByTeacher(userId);
 
                         if (courses != null && courses.Count > 0)
                         {
@@ -52,7 +53,7 @@ namespace WebServer.Server.routes
                     if (formDataParser.ContainsKey("courseId"))
                     {
                         string courseId = formDataParser.GetValue("courseId");
-                        var students = CourseController.GetStudentsByCourse(courseId);
+                        var students = courseController.GetStudentsByCourse(courseId);
 
                         if (students != null && students.Count > 0)
                         {
@@ -80,7 +81,7 @@ namespace WebServer.Server.routes
                     if (formDataParser.ContainsKey("courseId"))
                     {
                         string courseId = formDataParser.GetValue("courseId");
-                        var lessons = CourseController.GetAllLessonsForCourse(courseId);
+                        var lessons = courseController.GetAllLessonsForCourse(courseId);
 
                         if (lessons != null && lessons.Count > 0)
                         {
@@ -108,7 +109,7 @@ namespace WebServer.Server.routes
                     if (formDataParser.ContainsKey("userId"))
                     {
                         string userId = formDataParser.GetValue("userId");
-                        var courses = CourseController.GetCoursesByStudent(userId);
+                        var courses = courseController.GetCoursesByStudent(userId);
 
                         if (courses != null && courses.Count > 0)
                         {
