@@ -1,12 +1,11 @@
 ﻿using System.Net;
-using System.Text;
 using System.Text.Json;
 using WebServer.Server.controllers;
 using WebServer.Server.utility;
 
 namespace WebServer.Server.routes
 {
-    internal class AttendanceApi
+    internal class AttendanceApi : BaseApi
     {
         public static async Task HandleAsync(HttpListenerContext context)
         {
@@ -39,17 +38,12 @@ namespace WebServer.Server.routes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling request: {ex.Message}");
+                LogError($"Error handling request: {ex.Message}");
                 responseString = JsonSerializer.Serialize(new { message = "Internal Server Error" });
                 statusCode = 500;
             }
 
-            context.Response.StatusCode = statusCode;
-            context.Response.ContentType = "application/json";
-            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-            context.Response.ContentLength64 = buffer.Length;
-            await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-            context.Response.OutputStream.Close();
+            await WriteResponseAsync(context, responseString, statusCode);
         }
 
         private static string HandleGetAttendance(FormDataParser formDataParser)
@@ -80,7 +74,6 @@ namespace WebServer.Server.routes
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
                 string attendanceStatus = formDataParser.GetValue("attendanceStatus");
-
 
                 var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
 

@@ -6,7 +6,7 @@ using WebServer.Server.utility;
 
 namespace WebServer.Server.routes
 {
-    internal class AuthApi
+    internal class AuthApi : BaseApi
     {
         public static async Task HandleAsync(HttpListenerContext context)
         {
@@ -61,16 +61,12 @@ namespace WebServer.Server.routes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling request: {ex.Message}");
+                LogError(ex.Message);
                 responseString = "Internal Server Error";
                 statusCode = 500;
             }
 
-            context.Response.StatusCode = statusCode;
-            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-            context.Response.ContentLength64 = buffer.Length;
-            await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-            context.Response.OutputStream.Close();
+            await WriteResponseAsync(context, responseString, statusCode);
         }
     }
 }

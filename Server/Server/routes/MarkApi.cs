@@ -6,7 +6,7 @@ using WebServer.Server.utility;
 
 namespace WebServer.Server.routes
 {
-    internal class MarkApi
+    internal class MarkApi : BaseApi
     {
         public static async Task HandleAsync(HttpListenerContext context)
         {
@@ -23,37 +23,27 @@ namespace WebServer.Server.routes
 
                 var formDataParser = FormDataParser.Parse(body);
 
-                if (httpMethod == "GET" && requestUrl == "/api/lesson/student/marks")
+                responseString = httpMethod switch
                 {
-                    responseString = HandleGetMarks(formDataParser);
-                }
-                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/teacher/update/marks") 
+                    "GET" when requestUrl == "/api/lesson/student/marks" => HandleGetMarks(formDataParser),
+                    "PUT" when requestUrl == "/api/lesson/teacher/update/marks" => HandleUpdateMarkAsTeacher(formDataParser),
+                    "PUT" when requestUrl == "/api/lesson/student/update/studentmarks" => HandleUpdateMarkAsStudent(formDataParser),
+                    _ => JsonSerializer.Serialize(new { message = "Endpoint not found." })
+                };
+
+                if (responseString.Contains("Endpoint not found."))
                 {
-                    responseString = HandleUpdateMarkAsTeacher(formDataParser);
-                }
-                else if (httpMethod == "PUT" && requestUrl == "/api/lesson/student/update/studentmarks")
-                {
-                    responseString = HandleUpdateMarkAsStudent(formDataParser);
-                }
-                else
-                {
-                    responseString = JsonSerializer.Serialize(new { message = "Endpoint not found." });
                     statusCode = 404;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling request: {ex.Message}");
+                LogError($"Error handling request: {ex.Message}");
                 responseString = JsonSerializer.Serialize(new { message = "Internal Server Error" });
                 statusCode = 500;
             }
 
-            context.Response.StatusCode = statusCode;
-            context.Response.ContentType = "application/json";
-            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-            context.Response.ContentLength64 = buffer.Length;
-            await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-            context.Response.OutputStream.Close();
+            await WriteResponseAsync(context, responseString, statusCode);
         }
 
         private static string HandleGetMarks(FormDataParser formDataParser)
@@ -65,21 +55,18 @@ namespace WebServer.Server.routes
 
                 var marks = MarkController.GetMarksForLessons(studentId, lessonId);
 
-                if (marks != null && marks.Count > 0)
-                {
-                    return JsonSerializer.Serialize(marks);
-                }
-                else
-                {
-                    return JsonSerializer.Serialize(new { message = "No marks found for the given UserId and LessonId." });
-                }
+                return marks != null && marks.Count > 0
+                    ? JsonSerializer.Serialize(marks)
+                    : JsonSerializer.Serialize(new { message = "No marks found for the given UserId and LessonId." });
             }
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
         private static string HandleUpdateMarkAsTeacher(FormDataParser formDataParser)
         {
-            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("teacherId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("teacherMark") && formDataParser.ContainsKey("finalMark"))
+            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("teacherId") &&
+                formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("teacherMark") &&
+                formDataParser.ContainsKey("finalMark"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string teacherId = formDataParser.GetValue("teacherId");
@@ -89,36 +76,26 @@ namespace WebServer.Server.routes
 
                 var message = MarkController.UpdateMarkAsTeacher(studentId, teacherId, lessonId, teacherMark, finalMark);
 
-                if (message != null)
-                {
-                    return JsonSerializer.Serialize(message);
-                }
-                else
-                {
-                    return JsonSerializer.Serialize(new { message = "Failed to update mark for the given UserId and LessonId." });
-                }
+                return message != null
+                    ? JsonSerializer.Serialize(message)
+                    : JsonSerializer.Serialize(new { message = "Failed to update mark for the given UserId and LessonId." });
             }
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
         private static string HandleUpdateMarkAsStudent(FormDataParser formDataParser)
         {
-            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("studentMark"))
+            if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") &&
+                formDataParser.ContainsKey("studentMark"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
                 string studentMark = formDataParser.GetValue("studentMark");
                 var message = MarkController.UpdateMarkAsStudent(studentId, lessonId, studentMark);
 
-                if (message != null)
-                {
-                    Console.WriteLine(message);
-                    return JsonSerializer.Serialize(message);
-                }
-                else
-                {
-                    return JsonSerializer.Serialize(new { message = "Failed to update mark for the given UserId and LessonId." });
-                }
+                return message != null
+                    ? JsonSerializer.Serialize(message)
+                    : JsonSerializer.Serialize(new { message = "Failed to update mark for the given UserId and LessonId." });
             }
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
