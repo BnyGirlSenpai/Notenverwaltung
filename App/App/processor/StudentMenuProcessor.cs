@@ -13,9 +13,9 @@ namespace App.App.processor
                     "Option 1: Get All Courses",
                     "Option 2: Get Notes for Course (not in use)",
                     "Option 3: Get Notes for Date and Lesson (not in use)",
-                    "Option 4: Get Attendance for User (not in use)",
+                    "Option 4: Get Attendance (not in use)",
                     "Option 5: Get Attendance for Lesson (not in use)",
-                    "Option 6: Get Notes for User (not in use)",
+                    "Option 6: Get All Final Notes (not in use)",
                     "Option 7: Logout"
                 ];
 
