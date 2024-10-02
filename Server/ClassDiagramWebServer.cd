@@ -5,13 +5,6 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Enum Name="WebServer.Server.config.Database.DatabaseType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Server\config\Database.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AACIAAAAACAAAAAAAgAAAAAAAAAAAAAoAAAAABAABAA=</HashCode>
       <FileName>Server\config\Database.cs</FileName>
@@ -56,7 +49,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.handler.RequestHandler" Collapsed="true">
-    <Position X="13.25" Y="3" Width="1.5" />
+    <Position X="9.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\handler\RequestHandler.cs</FileName>
@@ -91,14 +84,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.utility.FormDataParser" Collapsed="true">
-    <Position X="13.25" Y="2" Width="1.5" />
+    <Position X="9.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAIAAEAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\utility\FormDataParser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.Server" Collapsed="true">
-    <Position X="11.5" Y="1" Width="1.5" />
+    <Position X="11.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAACAAAAAAAAAEAAQQABAAAAAAAABAAAAAA=</HashCode>
       <FileName>Server\Server.cs</FileName>
@@ -119,28 +112,28 @@
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.repositorys.CourseRepository" Collapsed="true">
-    <Position X="11.5" Y="3" Width="1.5" />
+    <Position X="11.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AACEAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\repositorys\CourseRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.repositorys.LessonRepository" Collapsed="true">
-    <Position X="9.75" Y="2" Width="1.5" />
+    <Position X="11.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAgAAgAA=</HashCode>
       <FileName>Server\repositorys\LessonRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.repositorys.MarkRepository" Collapsed="true">
-    <Position X="9.75" Y="3" Width="1.5" />
+    <Position X="13.25" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAEAACAAAAAEYAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\repositorys\MarkRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WebServer.Server.repositorys.StudentRepository" Collapsed="true">
-    <Position X="11.5" Y="2" Width="1.5" />
+    <Position X="13.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Server\repositorys\StudentRepository.cs</FileName>

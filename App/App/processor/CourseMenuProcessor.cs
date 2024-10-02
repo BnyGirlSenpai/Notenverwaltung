@@ -54,7 +54,7 @@ namespace App.App.processor
                 }
 
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
-                courseOptions.Add("Return to Previous Menu");
+                courseOptions.Add("Return to previous Menu");
 
                 int selectedIndex = BaseMenuProcessor.ShowMenu(header, [.. courseOptions]);
 
@@ -86,8 +86,7 @@ namespace App.App.processor
 
                                 lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate} - {lesson.LessonType}\n   {attendanceText}\n   {markText}\n");
                             }
-
-                            lessonOptions.Add("Return to Student Menu");
+                            lessonOptions.Add("Return to previous Menu");
 
                             int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for :", [.. lessonOptions]);
 
@@ -115,7 +114,7 @@ namespace App.App.processor
                                 Console.WriteLine("Invalid selection. Please try again.");
                             }
 
-                            Console.WriteLine("\nPress any key to return to the lesson menu...");
+                            Console.WriteLine("\nPress any key to return to previous Menu");
                             Console.ReadKey();
                         }
                         else
@@ -153,7 +152,7 @@ namespace App.App.processor
                 }
 
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
-                courseOptions.Add("Return to Previous Menu");
+                courseOptions.Add("Return to previous Menu");
 
                 int selectedIndex = BaseMenuProcessor.ShowMenu(header, [..courseOptions]);
 
@@ -169,7 +168,7 @@ namespace App.App.processor
                         if (students != null && students.Count > 0)
                         {
                             var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
-                            studentOptions.Add("Return to Course Menu");
+                            studentOptions.Add("Return to previous Menu");
 
                             int studentSelection = BaseMenuProcessor.ShowMenu("Select a student:", [..studentOptions]);
 
@@ -202,7 +201,7 @@ namespace App.App.processor
                                             lessonOptions.Add($"{index + 1}. {lesson.LessonName} - {lesson.LessonDate} - {lesson.LessonType}\n   {attendanceText}\n   {markText}\n");
                                         }
 
-                                        lessonOptions.Add("Return to Student Menu");
+                                        lessonOptions.Add("Return to previous Menu");
 
                                         int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [..lessonOptions]);
 
@@ -241,7 +240,7 @@ namespace App.App.processor
                                             Console.WriteLine("Invalid selection. Please try again.");
                                         }
 
-                                        Console.WriteLine("\nPress any key to return to the lesson menu...");
+                                        Console.WriteLine("\nPress any key to return to the previous menu...");
                                         Console.ReadKey();
                                     }
                                     else

@@ -1,203 +1,203 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="App.App.api.CourseApi" Collapsed="true">
-    <Position X="5" Y="7.75" Width="1.5" />
+    <Position X="5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAEAEAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\api\CourseApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Authenticator" Collapsed="true">
-    <Position X="12.25" Y="1" Width="1.5" />
+    <Position X="11" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
       <FileName>App\context\Authenticator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Program" Collapsed="true">
-    <Position X="10.25" Y="1" Width="1.5" />
+    <Position X="12.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>App\Programm.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.controller.LocalAttendanceController" Collapsed="true">
-    <Position X="5" Y="2.25" Width="1.5" />
+    <Position X="5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
       <FileName>App\controller\LocalAttendanceController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.controller.LocalCourseController" Collapsed="true">
-    <Position X="2.75" Y="2.25" Width="1.5" />
+    <Position X="2.75" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAQAEAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\controller\LocalCourseController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.controller.LocalMarkController" Collapsed="true">
-    <Position X="0.5" Y="2.25" Width="1.5" />
+    <Position X="0.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAIgAAAAAAAA=</HashCode>
       <FileName>App\controller\LocalMarkController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.processor.CourseMenuProcessor" Collapsed="true">
-    <Position X="0.5" Y="4.75" Width="1.5" />
+    <Position X="0.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAQAAAgAAAAEAAAEAABABAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>App\processor\CourseMenuProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.processor.StudentMenuProcessor" Collapsed="true">
-    <Position X="2.75" Y="4.75" Width="1.5" />
+    <Position X="2.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\processor\StudentMenuProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.processor.TeacherMenuProcessor" Collapsed="true">
-    <Position X="5" Y="4.75" Width="1.5" />
+    <Position X="5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\processor\TeacherMenuProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.repositorys.AttendanceRepository" Collapsed="true">
-    <Position X="8.25" Y="1.75" Width="1.5" />
+    <Position X="7.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\repositorys\AttendanceRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.repositorys.CourseRepository" Collapsed="true">
-    <Position X="8.25" Y="2.5" Width="1.5" />
+    <Position X="12.75" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AACEAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\repositorys\CourseRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.repositorys.LessonRepository" Collapsed="true">
-    <Position X="8.25" Y="4" Width="1.5" />
+    <Position X="14.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAgAAgAA=</HashCode>
       <FileName>App\repositorys\LessonRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.repositorys.MarkRepository" Collapsed="true">
-    <Position X="8.25" Y="3.25" Width="1.5" />
+    <Position X="11" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAEAACAAAAAEYAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\repositorys\MarkRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.repositorys.StudentRepository" Collapsed="true">
-    <Position X="8.25" Y="1" Width="1.5" />
+    <Position X="7.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>App\repositorys\StudentRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.AuthenticationService" Collapsed="true">
-    <Position X="12.25" Y="1.75" Width="1.5" />
+    <Position X="9.25" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\services\AuthenticationService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.LocalDatabaseService" Collapsed="true">
-    <Position X="12.25" Y="3.25" Width="1.5" />
+    <Position X="7.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\services\LocalDatabaseService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.LoginService" Collapsed="true">
-    <Position X="12.25" Y="2.5" Width="1.5" />
+    <Position X="9.25" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>App\services\LoginService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.StudentDatabaseSyncronisationService" Collapsed="true">
-    <Position X="10.25" Y="1.75" Width="1.5" />
+    <Position X="14.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEAAAAgAAAAAAAACAAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>App\services\StudentDatabaseSyncronisationService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.TeacherDatabaseSynchronisationService" Collapsed="true">
-    <Position X="10.25" Y="2.5" Width="1.5" />
+    <Position X="9.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAQAAAIAJAAiAAgAAAAAAAACBAAACAAA=</HashCode>
       <FileName>App\services\TeacherDatabaseSyncronisationService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.TokenService" Collapsed="true">
-    <Position X="14.25" Y="1" Width="1.5" />
+    <Position X="7.5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAAAAAAAAAAAAIAAAAAQAAAAAAAAAAgAAA=</HashCode>
       <FileName>App\services\TokenService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.utils.TokenExtractor" Collapsed="true">
-    <Position X="14.25" Y="1.75" Width="1.5" />
+    <Position X="12.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\utils\TokenExtractor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.utils.TokenGenerator" Collapsed="true">
-    <Position X="14.25" Y="3.25" Width="1.5" />
+    <Position X="14.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>App\utils\TokenGenerator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.utils.TokenData" Collapsed="true">
-    <Position X="14.25" Y="2.5" Width="1.5" />
+    <Position X="11" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAEAAAAAgAAAAAAAAAAAAAIAAAAAg=</HashCode>
       <FileName>App\utils\TokenGenerator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.utils.UserInfoExtracter" Collapsed="true">
-    <Position X="14.25" Y="4" Width="1.5" />
+    <Position X="9.25" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>App\utils\UserInfoExtracter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.controller.LocalBaseController" Collapsed="true">
-    <Position X="2.75" Y="1" Width="1.5" />
+    <Position X="2.75" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAIAAAAAAAACAA=</HashCode>
       <FileName>App\controller\LocalBaseController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.processor.BaseMenuProcessor" Collapsed="true">
-    <Position X="2.75" Y="3.5" Width="1.5" />
+    <Position X="2.75" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEIAAAQAAAAAAAAEAEAEAAAAAAAAABAAAAAAABAAA=</HashCode>
       <FileName>App\processor\BaseMenuProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.api.AttendanceApi" Collapsed="true">
-    <Position X="0.5" Y="7.75" Width="1.5" />
+    <Position X="0.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
       <FileName>App\api\AttendanceApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.api.MarkApi" Collapsed="true">
-    <Position X="2.75" Y="7.75" Width="1.5" />
+    <Position X="2.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAACAAIAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>App\api\MarkApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.api.BaseApi" Collapsed="true">
-    <Position X="2.75" Y="6.25" Width="1.5" />
+    <Position X="2.75" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAQAAAAAAAIAAAAAAAIAAAAAAAAAAAAAAAAIAAAA=</HashCode>
       <FileName>App\api\BaseApi.cs</FileName>
