@@ -24,7 +24,6 @@ internal class Program
                     await dbSyncService.SyncAllTablesFromMySqlToSqliteAsync();
                     Console.WriteLine("Database synchronization completed.");
                 }
-        
                 await TeacherMenuProcessor.ShowTeacherMenu(header, connectionStatus, userId);
             }
             else if (role == "Student")
@@ -35,8 +34,8 @@ internal class Program
                     Console.WriteLine("Starting database synchronization...");
                     await dbSyncService.SyncStudentMarksFromSqliteToMySqlAsync();
                     Console.WriteLine("Database synchronization completed.");
-                    await StudentMenuProcessor.ShowStudentMenu(header, connectionStatus, userId);
                 }
+                await StudentMenuProcessor.ShowStudentMenu(header, connectionStatus, userId);
             }
             else
             {

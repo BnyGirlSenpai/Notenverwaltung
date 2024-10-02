@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using App.App.repositorys;
 
 namespace App.App.utils
 {
@@ -10,7 +11,7 @@ namespace App.App.utils
     {
         public static string GenerateJwtToken(string tokenJson)
         {
-            var tokenData = JsonSerializer.Deserialize<TokenData>(tokenJson);
+            var tokenData = JsonSerializer.Deserialize<TokenRepository>(tokenJson);
 
             if (tokenData != null)
             {
@@ -38,14 +39,5 @@ namespace App.App.utils
 
             throw new ArgumentException("Invalid token data");
         }
-    }
-
-    public class TokenData
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string UserId { get; set; }
-        public string Role { get; set; }
-        public string Message { get; set; }
     }
 }

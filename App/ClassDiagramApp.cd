@@ -154,13 +154,6 @@
       <FileName>App\utils\TokenGenerator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="App.App.utils.TokenData" Collapsed="true">
-    <Position X="11" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAEAAAAAgAAAAAAAAAAAAAIAAAAAg=</HashCode>
-      <FileName>App\utils\TokenGenerator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="App.App.utils.UserInfoExtracter" Collapsed="true">
     <Position X="9.25" Y="4" Width="1.5" />
     <TypeIdentifier>
