@@ -11,7 +11,6 @@ namespace App.App.services
         public async Task SyncAllTablesFromSqliteToMySqlAsync()
         {
             string[] tables = { "marks", "attendance" };
-
             using var mysqlConn = new MySqlConnection(_mysqlConnStr);
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
             await mysqlConn.OpenAsync();

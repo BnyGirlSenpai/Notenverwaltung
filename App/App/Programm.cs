@@ -7,11 +7,12 @@ internal class Program
     static async Task Main()
     {
         bool isAuthenticated = await LoginService.LoginAsync();
-        string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
 
         if (isAuthenticated)
         {
-            var (role, firstName, lastName, userId) = await UserInfoExtracter.GetUserInfo();
+            string connectionStatus = await LocalDatabaseService.IsServerConnectedAsync();
+
+            var (role, firstName, lastName, userId) = await UserInfoExtractor.GetUserInfo();
             string header = $"Logged in as: ({connectionStatus}) {firstName} {lastName} ({role})";
 
             if (role == "Teacher")

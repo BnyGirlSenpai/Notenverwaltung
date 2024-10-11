@@ -36,7 +36,7 @@ internal class Authenticator
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Fehler bei der Authentifizierung: {ex.Message}");
+                    Console.WriteLine($"Fehler bei der Authentifizierung: {ex.Message}");  
                     if (!RetryAuthentication())
                     {
                         return false;
@@ -45,7 +45,7 @@ internal class Authenticator
             }
             else
             {
-                Console.WriteLine("Authentifizierung erfolgreich.");
+                Console.WriteLine("Authentifizierung erfolgreich."); 
                 authenticated = true;
             }
         }

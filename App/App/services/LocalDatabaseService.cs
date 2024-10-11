@@ -13,6 +13,7 @@ namespace App.App.services
 
                 if (response.IsSuccessStatusCode)
                 {
+                    InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3");
                     return "Online";
                 }
             }

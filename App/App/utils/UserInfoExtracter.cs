@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace App.App.utils
 {
-    internal class UserInfoExtracter
+    internal class UserInfoExtractor
     {
         public static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
         {

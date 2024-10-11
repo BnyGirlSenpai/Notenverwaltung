@@ -14,11 +14,10 @@ namespace App.App.processor
                     "Option 2: Get Notes for Course (not in use)",
                     "Option 3: Get Notes for Date and Lesson (not in use)",
                     "Option 4: Get Attendance (not in use)",
-                    "Option 5: Get Attendance for Lesson (not in use)",
+                    "Option 5: Get Attendance for Course (not in use)",
                     "Option 6: Get All Final Notes (not in use)",
                     "Option 7: Logout"
                 ];
-
 
                 int selectedIndex = BaseMenuProcessor.ShowMenu(header, menuOptions);
 
@@ -47,6 +46,12 @@ namespace App.App.processor
                         break;
 
                     case 3:
+                        // to be implemented
+                    case 4:
+                        // to be implemented
+                    case 5:
+                        // to be implemented
+                    case 6:
                         await LoginService.LogoutAsync();
                         Console.WriteLine("You have been logged out. Exiting the program...");
                         return;
