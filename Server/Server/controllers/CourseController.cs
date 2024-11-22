@@ -2,11 +2,15 @@
 
 namespace WebServer.Server.controllers
 {
-    internal class CourseController : BaseController
+    internal class CourseController : BaseController, IDisposable
     {
-        public List<CourseRepository> GetCoursesByTeacher(string teacherId)
+        public CourseController() 
         {
             ConnectToDatabase();
+        }
+
+        public List<CourseRepository> GetCoursesByTeacher(string teacherId)
+        {
             string query = @"
                 SELECT course_code, course_name ,course_id
                 FROM courses
@@ -22,13 +26,11 @@ namespace WebServer.Server.controllers
                 CourseId = reader["course_id"]?.ToString() ?? "Unknown",
             });
 
-            CloseConnection();
             return courses;
         }
 
         public List<CourseRepository> GetCoursesByStudent(string studentId)
         {
-            ConnectToDatabase();
             string query = @"
                 SELECT e.course_id, c.course_name, c.course_code
                 FROM enrollments e
@@ -45,13 +47,11 @@ namespace WebServer.Server.controllers
                 CourseId = reader["course_id"]?.ToString() ?? "Unknown",
             });
 
-            CloseConnection();
             return courses;
         }
 
         public List<StudentRepository> GetStudentsByCourse(string courseId)
         {
-            ConnectToDatabase();
             string query = @"
                 SELECT u.first_name, u.last_name, u.user_id
                 FROM enrollments e
@@ -68,13 +68,11 @@ namespace WebServer.Server.controllers
                 UserId = reader["user_id"].ToString() ?? "Unknown",
             });
 
-            CloseConnection();
             return students;
         }
 
         public List<LessonRepository> GetAllLessonsForCourse(string courseId)
         {
-            ConnectToDatabase();
             string query = @"
                 SELECT lesson_id, lesson_name, lesson_date, lesson_type
                 FROM lessons                     
@@ -91,8 +89,12 @@ namespace WebServer.Server.controllers
                 LessonType = reader["lesson_type"].ToString() ?? "Unknown",
             });
 
-            CloseConnection();
             return lessons;
         }
+
+        public void Dispose()
+        {
+            CloseConnection();
+        }   
     }
 }

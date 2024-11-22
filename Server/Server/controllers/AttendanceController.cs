@@ -1,22 +1,20 @@
-﻿using System.Data.Common;
-using WebServer.Server.config;
-using WebServer.Server.repositorys;
-using static WebServer.Server.config.Database;
+﻿using WebServer.Server.repositorys;
 
 namespace WebServer.Server.controllers
 {
-    internal class AttendanceController : BaseController
+    internal class AttendanceController : BaseController, IDisposable
     {
-        public static List<AttendanceRepository> GetAttendanceForLesson(string studentId, string lessonId)
+        public AttendanceController() 
+        {
+            ConnectToDatabase();
+        }   
+
+        public List<AttendanceRepository> GetAttendanceForLesson(string studentId, string lessonId)
         {
             var attendances = new List<AttendanceRepository>();
 
-            using var db = new Database(DatabaseType.MySQL);
             try
             {
-                db.Connect_to_Database();
-                var connection = db.GetConnection();
-
                 string query = @"
                     SELECT attendance_id, status 
                     FROM attendance 
@@ -24,11 +22,9 @@ namespace WebServer.Server.controllers
                     AND lesson_id = @lessonId
                 ";
 
-                using var command = CreateCommandWithParameters((DbConnection)connection, query,
-                [
-                    ("@studentId", studentId),
-                    ("@lessonId", lessonId)
-                ]);
+                using var command = CreateCommand(query);          
+                AddParameter(command, "@studentId", studentId);
+                AddParameter(command, "@lessonId", lessonId);
 
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -54,24 +50,16 @@ namespace WebServer.Server.controllers
             {
                 Console.WriteLine($"Error fetching attendance: {ex.Message}");
             }
-            finally
-            {
-                db.Close_Connection();
-            }
-
+        
             return attendances;
         }
 
-        public static string UpdateAttendanceForLesson(string studentId, string lessonId, string attendanceStatus)
+        public string UpdateAttendanceForLesson(string studentId, string lessonId, string attendanceStatus)
         {
             string message = "Update successful";
 
-            using var db = new Database(DatabaseType.MySQL);
             try
-            {
-                db.Connect_to_Database();
-                var connection = db.GetConnection();
-
+            {            
                 string query = @"
                     UPDATE attendance 
                     SET status = @status 
@@ -79,12 +67,10 @@ namespace WebServer.Server.controllers
                     AND lesson_id = @lessonId
                 ";
 
-                using var command = CreateCommandWithParameters((DbConnection)connection, query,
-                [
-                    ("@studentId", studentId),
-                    ("@lessonId", lessonId),
-                    ("@status", attendanceStatus)
-                ]);
+                using var command = CreateCommand(query);
+                AddParameter(command, "@studentId", studentId);
+                AddParameter(command, "@lessonId", lessonId);
+                AddParameter(command, "@status", attendanceStatus);
 
                 int rowsAffected = command.ExecuteNonQuery();
 
@@ -97,28 +83,13 @@ namespace WebServer.Server.controllers
             {
                 message = $"Error updating attendance: {ex.Message}";
             }
-            finally
-            {
-                db.Close_Connection();
-            }
 
             return message;
         }
 
-        private static DbCommand CreateCommandWithParameters(DbConnection connection, string query, (string ParameterName, object Value)[] parameters)
+        public void Dispose()
         {
-            var command = connection.CreateCommand();
-            command.CommandText = query;
-
-            foreach (var parameter in parameters)
-            {
-                var dbParameter = command.CreateParameter();
-                dbParameter.ParameterName = parameter.ParameterName;
-                dbParameter.Value = parameter.Value;
-                command.Parameters.Add(dbParameter);
-            }
-
-            return command;
+            CloseConnection();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WebServer.Server.handler
     {
         public static async Task HandleRequestAsync(HttpListenerContext context)
         {
-            switch (context.Request.Url.AbsolutePath)
+            switch (context.Request?.Url?.AbsolutePath)
             {
                 case "/api/auth/login":
                     await AuthApi.HandleAsync(context);
@@ -57,7 +57,7 @@ namespace WebServer.Server.handler
                     context.Response.StatusCode = statusCode;
                     byte[] buffer = Encoding.UTF8.GetBytes(responseString);
                     context.Response.ContentLength64 = buffer.Length;
-                    await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    await context.Response.OutputStream.WriteAsync(buffer);
                     context.Response.OutputStream.Close();
                     break;
             }

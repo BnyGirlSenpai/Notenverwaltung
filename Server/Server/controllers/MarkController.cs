@@ -1,34 +1,21 @@
-﻿using WebServer.Server.config;
-using WebServer.Server.repositorys;
-using static WebServer.Server.config.Database;
-using System.Data.Common;
+﻿using WebServer.Server.repositorys;
 
 namespace WebServer.Server.controllers
 {
-    internal class MarkController : BaseController
+    internal class MarkController : BaseController, IDisposable
     {
-        private static DbCommand CreateCommandWithParameters(DbConnection connection, string query, params (string name, object value)[] parameters)
+        public MarkController() 
         {
-            var command = connection.CreateCommand();
-            command.CommandText = query;
-
-            foreach (var (name, value) in parameters)
-            {
-                AddParameter(command, name, value);
-            }
-
-            return command;
+           ConnectToDatabase();
         }
 
-        public static List<MarkRepository> GetMarksForLessons(string studentId, string lessonId)
+        public List<MarkRepository> GetMarksForLessons(string studentId, string lessonId)
         {
             var marks = new List<MarkRepository>();
-            var db = new Database(DatabaseType.MySQL);
 
             try
             {
-                db.Connect_to_Database();
-                var connection = db.GetConnection();
+               
                 string query = @"
                     SELECT m.mark_id, 
                            m.student_mark, 
@@ -40,9 +27,9 @@ namespace WebServer.Server.controllers
                     LEFT JOIN users u ON m.teacher_id = u.user_id
                     WHERE m.student_id = @studentId AND m.lesson_id = @lessonId;";
 
-                using var command = CreateCommandWithParameters((DbConnection)connection, query,
-                    ("@studentId", studentId),
-                    ("@lessonId", lessonId));
+                using var command = CreateCommand(query);
+                AddParameter(command, "@studentId", studentId);
+                AddParameter(command, "@lessonId", lessonId);
 
                 marks = ExecuteReader(command, reader => new MarkRepository
                 {
@@ -71,23 +58,16 @@ namespace WebServer.Server.controllers
             {
                 Console.WriteLine($"Error fetching marks: {ex.Message}");
             }
-            finally
-            {
-                db.Close_Connection();
-            }
-
+      
             return marks;
         }
 
-        public static string UpdateMarkAsTeacher(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
+        public string UpdateMarkAsTeacher(string studentId, string teacherId, string lessonId, string teacherMark, string finalMark)
         {
             string message = "Update successful";
-            var db = new Database(DatabaseType.MySQL);
 
             try
             {
-                db.Connect_to_Database();
-                var connection = db.GetConnection();
                 string query = @"
                     UPDATE marks 
                     SET teacher_mark = @teacherMark,
@@ -96,12 +76,12 @@ namespace WebServer.Server.controllers
                     WHERE student_id = @studentId
                     AND lesson_id = @lessonId";
 
-                using var command = CreateCommandWithParameters((DbConnection)connection, query,
-                    ("@studentId", studentId),
-                    ("@teacherId", teacherId),
-                    ("@lessonId", lessonId),
-                    ("@teacherMark", teacherMark),
-                    ("@finalMark", finalMark));
+                using var command = CreateCommand(query);
+                AddParameter(command, "@studentId", studentId);
+                AddParameter(command, "@teacherId", teacherId);
+                AddParameter(command, "@lessonId", lessonId);
+                AddParameter(command, "@teacherMark", teacherMark);
+                AddParameter(command, "@finalMark", finalMark);
 
                 int rowsAffected = command.ExecuteNonQuery();
 
@@ -114,33 +94,26 @@ namespace WebServer.Server.controllers
             {
                 message = $"Error updating marks: {ex.Message}";
             }
-            finally
-            {
-                db.Close_Connection();
-            }
 
             return message;
         }
 
-        public static string UpdateMarkAsStudent(string studentId, string lessonId, string studentMark)
+        public string UpdateMarkAsStudent(string studentId, string lessonId, string studentMark)
         {
             string message = "Update successful";
-            var db = new Database(DatabaseType.MySQL);
 
             try
-            {
-                db.Connect_to_Database();
-                var connection = db.GetConnection();
+            {            
                 string query = @"
                     UPDATE marks 
                     SET student_mark = @studentMark  
                     WHERE student_id = @studentId
                     AND lesson_id = @lessonId";
 
-                using var command = CreateCommandWithParameters((DbConnection)connection, query,
-                    ("@studentId", studentId),
-                    ("@lessonId", lessonId),
-                    ("@studentMark", studentMark));
+                using var command = CreateCommand(query);
+                AddParameter(command, "@studentId", studentId);
+                AddParameter(command, "@lessonId", lessonId);
+                AddParameter(command, "@studentMark", studentMark);
 
                 int rowsAffected = command.ExecuteNonQuery();
 
@@ -153,12 +126,13 @@ namespace WebServer.Server.controllers
             {
                 message = $"Error updating marks: {ex.Message}";
             }
-            finally
-            {
-                db.Close_Connection();
-            }
 
             return message;
+        }
+
+        public void Dispose()
+        {
+            CloseConnection();
         }
     }
 }

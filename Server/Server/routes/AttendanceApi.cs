@@ -48,12 +48,14 @@ namespace WebServer.Server.routes
 
         private static string HandleGetAttendance(FormDataParser formDataParser)
         {
+            using var attendanceController = new AttendanceController();
+
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
 
-                var attendances = AttendanceController.GetAttendanceForLesson(studentId, lessonId);
+                var attendances = attendanceController.GetAttendanceForLesson(studentId, lessonId);
 
                 if (attendances != null && attendances.Count > 0)
                 {
@@ -69,13 +71,14 @@ namespace WebServer.Server.routes
 
         private static string HandleUpdateAttendance(FormDataParser formDataParser)
         {
+            using var attendanceController = new AttendanceController();
+
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("attendanceStatus"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
                 string attendanceStatus = formDataParser.GetValue("attendanceStatus");
-
-                var message = AttendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
+                var message = attendanceController.UpdateAttendanceForLesson(studentId, lessonId, attendanceStatus);
 
                 if (message != null)
                 {

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text;
 using System.Text.Json;
 using WebServer.Server.controllers;
 using WebServer.Server.utility;
@@ -48,12 +47,14 @@ namespace WebServer.Server.routes
 
         private static string HandleGetMarks(FormDataParser formDataParser)
         {
+            using var markController = new MarkController();
+
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
 
-                var marks = MarkController.GetMarksForLessons(studentId, lessonId);
+                var marks = markController.GetMarksForLessons(studentId, lessonId);
 
                 return marks != null && marks.Count > 0
                     ? JsonSerializer.Serialize(marks)
@@ -64,6 +65,8 @@ namespace WebServer.Server.routes
 
         private static string HandleUpdateMarkAsTeacher(FormDataParser formDataParser)
         {
+            using var markController = new MarkController();
+
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("teacherId") &&
                 formDataParser.ContainsKey("lessonId") && formDataParser.ContainsKey("teacherMark") &&
                 formDataParser.ContainsKey("finalMark"))
@@ -74,7 +77,7 @@ namespace WebServer.Server.routes
                 string teacherMark = formDataParser.GetValue("teacherMark");
                 string finalMark = formDataParser.GetValue("finalMark");
 
-                var message = MarkController.UpdateMarkAsTeacher(studentId, teacherId, lessonId, teacherMark, finalMark);
+                var message = markController.UpdateMarkAsTeacher(studentId, teacherId, lessonId, teacherMark, finalMark);
 
                 return message != null
                     ? JsonSerializer.Serialize(message)
@@ -85,13 +88,15 @@ namespace WebServer.Server.routes
 
         private static string HandleUpdateMarkAsStudent(FormDataParser formDataParser)
         {
+            using var markController = new MarkController();
+
             if (formDataParser.ContainsKey("studentId") && formDataParser.ContainsKey("lessonId") &&
                 formDataParser.ContainsKey("studentMark"))
             {
                 string studentId = formDataParser.GetValue("studentId");
                 string lessonId = formDataParser.GetValue("lessonId");
                 string studentMark = formDataParser.GetValue("studentMark");
-                var message = MarkController.UpdateMarkAsStudent(studentId, lessonId, studentMark);
+                var message = markController.UpdateMarkAsStudent(studentId, lessonId, studentMark);
 
                 return message != null
                     ? JsonSerializer.Serialize(message)

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text;
 using System.Text.Json;
 using WebServer.Server.controllers;
 using WebServer.Server.utility;
@@ -26,7 +25,9 @@ namespace WebServer.Server.routes
                         string username = formDataParser.GetValue("username");
                         string password = formDataParser.GetValue("password");
 
-                        var (isAuthenticated, uid, role, firstName, lastName) = AuthController.AuthenticateUser(username, password);
+                        // Correct the use of the 'AuthController' instance
+                        using var authController = new AuthController();
+                        var (isAuthenticated, uid, role, firstName, lastName) = authController.AuthenticateUser(username, password);
 
                         if (isAuthenticated)
                         {

@@ -11,7 +11,7 @@ namespace WebServer.Server.routes
         {
             string responseString = "";
             int statusCode = 200;
-            var courseController = new CourseController();
+            using var courseController = new CourseController();
 
             try
             {
@@ -22,7 +22,7 @@ namespace WebServer.Server.routes
                 switch (context.Request.HttpMethod)
                 {
                     case "GET":
-                        responseString = await HandleGetRequests(context.Request.Url.AbsolutePath, formDataParser, courseController);
+                        responseString = HandleGetRequests(context?.Request?.Url?.AbsolutePath, formDataParser);
                         break;
 
                     default:
@@ -41,25 +41,25 @@ namespace WebServer.Server.routes
             await WriteResponseAsync(context, responseString, statusCode);
         }
 
-        private static async Task<string> HandleGetRequests(string requestUrl, FormDataParser formDataParser, CourseController courseController)
+        private static string HandleGetRequests(string requestUrl, FormDataParser formDataParser)
         {
             string responseString;
 
             if (requestUrl == "/api/teacher/courses")
             {
-                responseString = GetTeacherCourses(formDataParser, courseController);
+                responseString = GetTeacherCourses(formDataParser);
             }
             else if (requestUrl == "/api/teacher/students")
             {
-                responseString = GetStudentsByCourse(formDataParser, courseController);
+                responseString = GetStudentsByCourse(formDataParser);
             }
             else if (requestUrl == "/api/teacher/lessons")
             {
-                responseString = GetLessonsByCourse(formDataParser, courseController);
+                responseString = GetLessonsByCourse(formDataParser);
             }
             else if (requestUrl == "/api/student/courses")
             {
-                responseString = GetStudentCourses(formDataParser, courseController);
+                responseString = GetStudentCourses(formDataParser);
             }
             else
             {
@@ -69,8 +69,10 @@ namespace WebServer.Server.routes
             return responseString;
         }
 
-        private static string GetTeacherCourses(FormDataParser formDataParser, CourseController courseController)
+        private static string GetTeacherCourses(FormDataParser formDataParser)
         {
+            using var courseController = new CourseController();
+
             if (formDataParser.ContainsKey("userId"))
             {
                 string userId = formDataParser.GetValue("userId");
@@ -83,8 +85,10 @@ namespace WebServer.Server.routes
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
-        private static string GetStudentsByCourse(FormDataParser formDataParser, CourseController courseController)
+        private static string GetStudentsByCourse(FormDataParser formDataParser)
         {
+            using var courseController = new CourseController();
+
             if (formDataParser.ContainsKey("courseId"))
             {
                 string courseId = formDataParser.GetValue("courseId");
@@ -97,8 +101,10 @@ namespace WebServer.Server.routes
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
-        private static string GetLessonsByCourse(FormDataParser formDataParser, CourseController courseController)
+        private static string GetLessonsByCourse(FormDataParser formDataParser)
         {
+            using var courseController = new CourseController();
+
             if (formDataParser.ContainsKey("courseId"))
             {
                 string courseId = formDataParser.GetValue("courseId");
@@ -111,8 +117,10 @@ namespace WebServer.Server.routes
             return JsonSerializer.Serialize(new { message = "Invalid request data." });
         }
 
-        private static string GetStudentCourses(FormDataParser formDataParser, CourseController courseController)
+        private static string GetStudentCourses(FormDataParser formDataParser)
         {
+            using var courseController = new CourseController();
+
             if (formDataParser.ContainsKey("userId"))
             {
                 string userId = formDataParser.GetValue("userId");
