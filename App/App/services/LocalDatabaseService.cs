@@ -13,13 +13,13 @@ namespace App.App.services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3");
+                    InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3");
                     return "Online";
                 }
             }
             catch (HttpRequestException ex)
             {
-                InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\Database\\Notenverwaltung.db3");
+                InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3");
                 return "Offline";
             }
             catch (Exception ex)
@@ -83,6 +83,7 @@ namespace App.App.services
                             course_id INTEGER NULL,
                             lesson_name TEXT NOT NULL,
                             lesson_date DATE NULL,
+                            lesson_type TEXT NULL,
                             FOREIGN KEY (course_id) REFERENCES courses (course_id) ON UPDATE NO ACTION ON DELETE NO ACTION
                         );";
 
@@ -95,16 +96,25 @@ namespace App.App.services
                             FOREIGN KEY (teacher_id) REFERENCES users (user_id) ON UPDATE NO ACTION ON DELETE NO ACTION
                         );";
 
+                string createEducationalBranchesTable = @"
+                        CREATE TABLE IF NOT EXISTS educational_branches (
+                            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                            notenskala TEXT NULL DEFAULT NULL,
+                            bezeichnung TEXT NOT NULL
+                        );";
+
                 string createEnrollmentsTable = @"
                         CREATE TABLE IF NOT EXISTS enrollments (
                             enrollment_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                            student_id INTEGER NULL,
+                            student_id INTEGER NULL DEFAULT NULL,
                             course_id INTEGER NOT NULL,
-                            enrollment_date DATE NULL,
+                            enrollment_date DATE NULL DEFAULT NULL,
+                            educational_branch_id INTEGER NOT NULL,
                             FOREIGN KEY (course_id) REFERENCES courses (course_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-                            FOREIGN KEY (student_id) REFERENCES users (user_id) ON UPDATE NO ACTION ON DELETE NO ACTION
+                            FOREIGN KEY (student_id) REFERENCES users (user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+                            FOREIGN KEY (educational_branch_id) REFERENCES educational_branches (id) ON UPDATE NO ACTION ON DELETE NO ACTION
                         );";
-
+                
                 string createAttendanceTable = @"
                         CREATE TABLE IF NOT EXISTS attendance (
                             attendance_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -117,26 +127,27 @@ namespace App.App.services
                         );";
 
                 string createIndexes = @"
-                        CREATE INDEX IF NOT EXISTS idx_attendance_lesson ON attendance (lesson_id);
-                        CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance (student_id);
-                        CREATE INDEX IF NOT EXISTS idx_courses_teacher ON courses (teacher_id);
-                        CREATE UNIQUE INDEX IF NOT EXISTS unique_course_code ON courses (course_code);
-                        CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments (course_id);
-                        CREATE INDEX IF NOT EXISTS idx_enrollments_student ON enrollments (student_id);
-                        CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons (course_id);
-                        CREATE INDEX IF NOT EXISTS idx_marks_teacher ON marks (teacher_id);
-                        CREATE INDEX IF NOT EXISTS idx_marks_lesson ON marks (lesson_id);
-                        CREATE INDEX IF NOT EXISTS idx_marks_student ON marks (student_id);
-                        CREATE INDEX IF NOT EXISTS idx_users_role ON users (role_id);
-                        CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
-                        CREATE UNIQUE INDEX IF NOT EXISTS unique_user_email ON users (email);
-                    ";
+                    CREATE INDEX IF NOT EXISTS idx_attendance_lesson ON attendance (lesson_id);
+                    CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance (student_id);
+                    CREATE INDEX IF NOT EXISTS idx_courses_teacher ON courses (teacher_id);
+                    CREATE UNIQUE INDEX IF NOT EXISTS unique_course_code ON courses (course_code);
+                    CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments (course_id);
+                    CREATE INDEX IF NOT EXISTS idx_enrollments_student ON enrollments (student_id);
+                    CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons (course_id);
+                    CREATE INDEX IF NOT EXISTS idx_marks_teacher ON marks (teacher_id);
+                    CREATE INDEX IF NOT EXISTS idx_marks_lesson ON marks (lesson_id);
+                    CREATE INDEX IF NOT EXISTS idx_marks_student ON marks (student_id);
+                    CREATE INDEX IF NOT EXISTS idx_users_role ON users (role_id);
+                    CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+                    CREATE UNIQUE INDEX IF NOT EXISTS unique_user_email ON users (email);
+                ";
 
                 ExecuteQuery(createUsersTable, connection);
                 ExecuteQuery(createRolesTable, connection);
                 ExecuteQuery(createMarksTable, connection);
                 ExecuteQuery(createLessonsTable, connection);
                 ExecuteQuery(createCoursesTable, connection);
+                ExecuteQuery(createEducationalBranchesTable, connection);
                 ExecuteQuery(createEnrollmentsTable, connection);
                 ExecuteQuery(createAttendanceTable, connection);
                 ExecuteQuery(createIndexes, connection);

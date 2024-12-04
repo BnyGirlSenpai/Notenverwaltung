@@ -18,7 +18,7 @@
             try
             {
                 string query = @"
-                    SELECT users.user_id, users.first_name, users.last_name, roles.role_name
+                    SELECT users.user_id, users.first_name, users.last_name, roles.role_name 
                     FROM users
                     LEFT JOIN roles ON users.role_id = roles.role_id
                     WHERE users.email = @Email AND users.password = @Password";

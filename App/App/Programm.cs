@@ -3,7 +3,7 @@ using App.App.services;
 using App.App.utils;
 
 internal class Program
-{
+{                      
     static async Task Main()
     {
         bool isAuthenticated = await LoginService.LoginAsync();

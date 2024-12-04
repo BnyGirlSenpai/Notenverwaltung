@@ -120,14 +120,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="App.App.services.StudentDatabaseSyncronisationService">
-    <Position X="14.5" Y="3" Width="1.5" />
+    <Position X="8.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEAAAAgAAAAAAAACAAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>App\services\StudentDatabaseSyncronisationService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="App.App.services.TeacherDatabaseSynchronisationService" Collapsed="true">
-    <Position X="12.75" Y="3" Width="1.5" />
+  <Class Name="App.App.services.TeacherDatabaseSynchronisationService">
+    <Position X="10" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAQAAAIAJAAiAAgAAAAAAAACBAAACAAA=</HashCode>
       <FileName>App\services\TeacherDatabaseSyncronisationService.cs</FileName>
@@ -168,10 +168,10 @@
       <FileName>App\controller\LocalBaseController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="App.App.processor.BaseMenuProcessor" Collapsed="true">
-    <Position X="2.75" Y="4" Width="1.5" />
+  <Class Name="App.App.processor.BaseMenuProcessor">
+    <Position X="2.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAEIAAAQAAAAAAAAEAEAEAAAAAAAAABAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
       <FileName>App\processor\BaseMenuProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
