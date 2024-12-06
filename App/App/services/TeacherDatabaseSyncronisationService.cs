@@ -6,7 +6,7 @@ namespace App.App.services
     internal class TeacherDatabaseSynchronisationService  
     {
         private readonly string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
-        private readonly string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3";
+        private readonly string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OfflineNotenverwaltung.db3";
 
         public async Task SyncAllTablesFromSqliteToMySqlAsync()
         {

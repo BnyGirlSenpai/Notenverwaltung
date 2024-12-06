@@ -6,30 +6,36 @@ namespace App.App.services
     {
         public static async Task<string> IsServerConnectedAsync()
         {
+            const string localDatabasePath = "C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OfflineNotenverwaltung.db3";
+
             try
             {
                 using var client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://localhost:5000/ping");
+                var response = await client.GetAsync("http://localhost:5000/ping");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3");
+                    InitializeLocalDatabase(localDatabasePath);
                     return "Online";
                 }
+                else
+                {
+                    Console.WriteLine($"Server responded with status: {response.StatusCode}");
+                }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
-                InitializeLocalDatabase("C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3");
-                return "Offline";
+                Console.WriteLine("Server is unreachable. Falling back to offline mode.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-                return "Not connected at all";
             }
 
-            return "Not connected at all"; 
+            InitializeLocalDatabase(localDatabasePath);
+            return "Offline";
         }
+
 
         public static void InitializeLocalDatabase(string databasePath)
         {

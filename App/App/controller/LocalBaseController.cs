@@ -4,7 +4,7 @@ namespace App.App.controller
 {
     internal class LocalBaseController
     {
-        private static readonly string _connectionString = "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\Notenverwaltung.db3;Version=3;";
+        private static readonly string _connectionString = "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OfflineNotenverwaltung.db3;Version=3;";
 
         protected static async Task<SQLiteConnection> GetOpenConnectionAsync()
         {

@@ -92,7 +92,7 @@ namespace WebServer.Server
         {
             bool connectionSuccess = false;
 
-            using (var db = new Database(Database.DatabaseType.MySQL))
+            using (var db = new Database(Database.DatabaseType.MySQL)) 
             {
                 try
                 {
@@ -101,9 +101,17 @@ namespace WebServer.Server
 
                     using var command = connection.CreateCommand();
                     {
-                        command.CommandText = "SELECT NOW()";
+                        if (db.Type == Database.DatabaseType.SQLite)
+                        {
+                            command.CommandText = "SELECT CURRENT_TIMESTAMP";
+                        }
+                        else if (db.Type == Database.DatabaseType.MySQL)
+                        {
+                            command.CommandText = "SELECT NOW()";
+                        }
+
                         var result = command.ExecuteScalar();
-                        Console.WriteLine($"Current date and time from database: {result}");
+                        Console.WriteLine($"Current date and time from the database: {result}");
 
                         connectionSuccess = true;
                     }

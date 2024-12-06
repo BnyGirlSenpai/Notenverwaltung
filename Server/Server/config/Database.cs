@@ -1,6 +1,6 @@
-﻿using System.Data;
+﻿using MySql.Data.MySqlClient;
+using System.Data;
 using System.Data.SQLite;
-using MySql.Data.MySqlClient;
 
 namespace WebServer.Server.config
 {
@@ -16,13 +16,16 @@ namespace WebServer.Server.config
             MySQL
         }
 
+        public DatabaseType Type { get; private set; }
+
         public Database(DatabaseType dbType)
         {
             _dbType = dbType;
+            Type = dbType; 
 
             _connectionString = _dbType switch
             {
-                DatabaseType.SQLite => "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\SQL\\sqlitespy_1.9.10\\Notenverwaltung.db3",
+                DatabaseType.SQLite => "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OnlineNotenverwaltung.db3 ",
                 DatabaseType.MySQL => BuildMySqlConnectionString(),
                 _ => throw new NotSupportedException("Database type not supported."),
             };
