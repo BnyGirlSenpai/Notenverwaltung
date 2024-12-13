@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WebServer.Server.repositorys
+namespace HttpServer.Server.repositorys
 {
     internal class StudentRepository
     {

@@ -19,7 +19,7 @@ namespace App.App.processor
                     "Option 7: Logout"
                 ];
 
-                int selectedIndex = BaseMenuProcessor.ShowMenu(header, menuOptions);
+                int selectedIndex = ShowMenu(header, menuOptions);
 
                 switch (selectedIndex)
                 {
@@ -28,41 +28,51 @@ namespace App.App.processor
                         break;
 
                     case 1:
+                        // to be implemented
+
                         // Handle course notes (not currently in use)
                         Console.WriteLine("Enter Course Code:");
-                        var courseCode = Console.ReadLine();
+                        _ = Console.ReadLine();
                         // await GetNotesForCourse(userId, courseCode);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;
 
                     case 2:
+                        // to be implemented
+
                         // Handle notes for date and lesson (not currently in use)
                         // await GetNotesForDateAndLesson(userId);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;
 
                     case 3:
+                        // to be implemented
+
                         // Handle attendance for a user (not currently in use)
                         Console.WriteLine("Enter First Name:");
-                        var firstName = Console.ReadLine();
+                        _ = Console.ReadLine();
                         Console.WriteLine("Enter Last Name:");
-                        var lastName = Console.ReadLine();
+                        _ = Console.ReadLine();
                         // await GetAttendanceForUser(userId, firstName, lastName);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;
 
                     case 4:
+                        // to be implemented
+
                         // Handle attendance for a lesson (not currently in use)
                         // await GetAttendanceForLesson(userId);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;
 
                     case 5:
+                        // to be implemented
+
                         // Handle notes for a user (not currently in use)
                         Console.WriteLine("Enter First Name:");
-                        firstName = Console.ReadLine();
+                        _ = Console.ReadLine();
                         Console.WriteLine("Enter Last Name:");
-                        lastName = Console.ReadLine();
+                        _ = Console.ReadLine();
                         // await GetNotesForUser(userId, firstName, lastName);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;

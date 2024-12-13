@@ -25,6 +25,7 @@ namespace App.App.api
             }
         }
 
+        // Für weitere Funktionen wie Notenerstellung usw.
         protected static async Task<string> SendPostRequest(string url, Dictionary<string, string> content)
         {
             using HttpClient client = new();

@@ -6,6 +6,7 @@ namespace App.App.api
 {
     internal class MarkApi : BaseApi
     {
+
         public static async Task<List<MarkRepository>> GetMarksForStudent(string studentId, string lessonId, string connectionStatus)
         {
             if (IsOffline(connectionStatus))

@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Text;
-using WebServer.Server.routes;
+using HttpServer.Server.routes;
 
-namespace WebServer.Server.handler
+namespace HttpServer.Server.handler
 {
     internal class RequestHandler
     {

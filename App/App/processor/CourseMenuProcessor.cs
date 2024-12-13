@@ -56,7 +56,7 @@ namespace App.App.processor
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
                 courseOptions.Add("Return to previous Menu");
 
-                int selectedIndex = BaseMenuProcessor.ShowMenu(header, [.. courseOptions]);
+                int selectedIndex = ShowMenu(header, [.. courseOptions]);
 
                 if (selectedIndex >= 0 && selectedIndex < courses.Count)
                 {
@@ -88,7 +88,7 @@ namespace App.App.processor
                             }
                             lessonOptions.Add("Return to previous Menu");
 
-                            int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for :", [.. lessonOptions]);
+                            int lessonSelection = ShowMenu($"Select a lesson for :", [.. lessonOptions]);
 
                             if (lessonSelection >= 0 && lessonSelection < lessons.Count)
                             {
@@ -154,7 +154,7 @@ namespace App.App.processor
                 var courseOptions = courses.Select(course => $"{course.CourseCode}: {course.CourseName}").ToList();
                 courseOptions.Add("Return to previous Menu");
 
-                int selectedIndex = BaseMenuProcessor.ShowMenu(header, [..courseOptions]);
+                int selectedIndex = ShowMenu(header, [..courseOptions]);
 
                 if (selectedIndex >= 0 && selectedIndex < courses.Count)
                 {
@@ -170,7 +170,7 @@ namespace App.App.processor
                             var studentOptions = students.Select((student, index) => $"{index + 1}. {student.FirstName} {student.LastName}").ToList();
                             studentOptions.Add("Return to previous Menu");
 
-                            int studentSelection = BaseMenuProcessor.ShowMenu("Select a student:", [..studentOptions]);
+                            int studentSelection = ShowMenu("Select a student:", [..studentOptions]);
 
                             if (studentSelection >= 0 && studentSelection < students.Count)
                             {
@@ -203,7 +203,7 @@ namespace App.App.processor
 
                                         lessonOptions.Add("Return to previous Menu");
 
-                                        int lessonSelection = BaseMenuProcessor.ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [..lessonOptions]);
+                                        int lessonSelection = ShowMenu($"Select a lesson for {selectedStudent.FirstName} {selectedStudent.LastName}:", [..lessonOptions]);
 
                                         if (lessonSelection >= 0 && lessonSelection < lessons.Count)
                                         {

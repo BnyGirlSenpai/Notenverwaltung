@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 
-namespace WebServer.Server.config
+namespace HttpServer.Server.config
 {
     internal class Database : IDisposable
     {
@@ -25,7 +25,7 @@ namespace WebServer.Server.config
 
             _connectionString = _dbType switch
             {
-                DatabaseType.SQLite => "Data Source=C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OnlineNotenverwaltung.db3 ",
+                DatabaseType.SQLite => $"Data Source={Path.Combine(Directory.GetCurrentDirectory(), "OnlineNotenverwaltung.db3")}",
                 DatabaseType.MySQL => BuildMySqlConnectionString(),
                 _ => throw new NotSupportedException("Database type not supported."),
             };

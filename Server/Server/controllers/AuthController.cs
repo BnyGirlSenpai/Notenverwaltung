@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.controllers
+﻿namespace HttpServer.Server.controllers
 {
     internal class AuthController : BaseController, IDisposable
     {

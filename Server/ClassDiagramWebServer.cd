@@ -1,145 +1,149 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="WebServer.Server.config.Database" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="HttpServer.Server.config.Database" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="13.25" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AACIAAAAACAAAAAAAgAAAAAAAAAAAAAoAAAAABAABAA=</HashCode>
+      <HashCode>AACIAAAAACAAAAAAAgAAAAAAAAAAAAAoAQAAABAABAA=</HashCode>
       <FileName>Server\config\Database.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="WebServer.Server.controllers.AttendanceController">
+  <Class Name="HttpServer.Server.controllers.AttendanceController" Collapsed="true">
     <Position X="5" Y="5.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAEAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Server\controllers\AttendanceController.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="WebServer.Server.controllers.AuthController">
+  <Class Name="HttpServer.Server.controllers.AuthController" Collapsed="true">
     <Position X="7.25" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAACAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\controllers\AuthController.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="WebServer.Server.controllers.CourseController">
+  <Class Name="HttpServer.Server.controllers.CourseController" Collapsed="true">
     <Position X="0.5" Y="5.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EAAEAAAAAAAEAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>EAAEAAAAACAEAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\controllers\CourseController.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="WebServer.Server.controllers.MarkController">
+  <Class Name="HttpServer.Server.controllers.MarkController" Collapsed="true">
     <Position X="2.75" Y="5.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EAAEAAgAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>EAAEAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\controllers\MarkController.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="WebServer.Server.handler.RequestHandler" Collapsed="true">
+  <Class Name="HttpServer.Server.handler.RequestHandler" Collapsed="true">
     <Position X="9.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\handler\RequestHandler.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.routes.AttendanceApi" Collapsed="true">
+  <Class Name="HttpServer.Server.routes.AttendanceApi" Collapsed="true">
     <Position X="0.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAABAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\routes\AttendanceApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.routes.AuthApi" Collapsed="true">
+  <Class Name="HttpServer.Server.routes.AuthApi" Collapsed="true">
     <Position X="5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\routes\AuthApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.routes.CourseApi" Collapsed="true">
+  <Class Name="HttpServer.Server.routes.CourseApi" Collapsed="true">
     <Position X="7.25" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAABQAAAAAAAAABAAAAAAIAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>Server\routes\CourseApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.routes.MarkApi" Collapsed="true">
+  <Class Name="HttpServer.Server.routes.MarkApi" Collapsed="true">
     <Position X="2.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Server\routes\MarkApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.utility.FormDataParser" Collapsed="true">
+  <Class Name="HttpServer.Server.utility.FormDataParser" Collapsed="true">
     <Position X="9.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAIAAEAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\utility\FormDataParser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.Server" Collapsed="true">
+  <Class Name="HttpServer.Server.Server" Collapsed="true">
     <Position X="11.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAACAAAAAAAAAEAAQQABAAAAAAAABAAAAAA=</HashCode>
       <FileName>Server\Server.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.controllers.BaseController" Collapsed="true">
+  <Class Name="HttpServer.Server.controllers.BaseController" Collapsed="true">
     <Position X="3.75" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAAACAAAAAFABACAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\controllers\BaseController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.repositorys.AttendanceRepository" Collapsed="true">
+  <Class Name="HttpServer.Server.repositorys.AttendanceRepository" Collapsed="true">
     <Position X="9.75" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\repositorys\AttendanceRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.repositorys.CourseRepository" Collapsed="true">
+  <Class Name="HttpServer.Server.repositorys.CourseRepository" Collapsed="true">
     <Position X="11.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AACEAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\repositorys\CourseRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.repositorys.LessonRepository" Collapsed="true">
+  <Class Name="HttpServer.Server.repositorys.LessonRepository" Collapsed="true">
     <Position X="11.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAgAAgAA=</HashCode>
       <FileName>Server\repositorys\LessonRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.repositorys.MarkRepository" Collapsed="true">
+  <Class Name="HttpServer.Server.repositorys.MarkRepository" Collapsed="true">
     <Position X="13.25" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAEAACAAAAAEYAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\repositorys\MarkRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.repositorys.StudentRepository" Collapsed="true">
+  <Class Name="HttpServer.Server.repositorys.StudentRepository" Collapsed="true">
     <Position X="13.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Server\repositorys\StudentRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WebServer.Server.routes.BaseApi" Collapsed="true">
+  <Class Name="HttpServer.Server.routes.BaseApi" Collapsed="true">
     <Position X="3.75" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>

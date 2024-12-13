@@ -11,12 +11,12 @@ namespace App.App.controller
             var command = new SQLiteCommand("SELECT course_code, course_name, course_id FROM courses WHERE teacher_id = @teacherId", connection);
             command.Parameters.AddWithValue("@teacherId", teacherId);
 
-            return await ExecuteQueryAsync(command, async reader => new CourseRepository
+            return await ExecuteQueryAsync(command, reader => Task.FromResult(new CourseRepository
             {
                 CourseCode = reader["course_code"]?.ToString() ?? "Unknown",
                 CourseName = reader["course_name"]?.ToString() ?? "Unknown",
                 CourseId = reader["course_id"]?.ToString() ?? "Unknown"
-            });
+            }));
         }
 
         public static async Task<List<CourseRepository>> GetCoursesByStudentAsync(string studentId)

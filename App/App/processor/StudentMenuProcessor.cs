@@ -19,7 +19,7 @@ namespace App.App.processor
                     "Option 7: Logout"
                 ];
 
-                int selectedIndex = BaseMenuProcessor.ShowMenu(header, menuOptions);
+                int selectedIndex = ShowMenu(header, menuOptions);
 
                 switch (selectedIndex)
                 {
@@ -28,19 +28,23 @@ namespace App.App.processor
                         break;
 
                     case 1:
+                        // to be implemented
+
                         // Handle course notes (not currently in use)
                         Console.WriteLine("Enter Course Code:");
-                        var courseCode = Console.ReadLine();
-                    
+                        _ = Console.ReadLine();
+
                         // await GetNotesForCourse(userId, courseCode);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;
 
                     case 2:
+                        // to be implemented
+
                         // Handle date-specific notes (not currently in use)
                         Console.WriteLine("Enter Date:");
-                        var date = Console.ReadLine();
-                      
+                        _ = Console.ReadLine();
+
                         // await GetNotesForDate(userId, date);
                         Console.WriteLine("This functionality is not yet implemented.");
                         break;

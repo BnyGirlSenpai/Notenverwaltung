@@ -1,23 +1,23 @@
-﻿using MySql.Data.MySqlClient;
+﻿//using MySql.Data.MySqlClient;
 using System.Data.SQLite;
 
 namespace App.App.services
 {
-    internal class StudentDatabaseSyncronisationService 
+    internal class StudentDatabaseSyncronisationService()
     {
-        private readonly string _mysqlConnStr = "Server=localhost;Database=notenverwaltung;User ID=root;Password=password;";
-        private readonly string _sqliteConnStr = "C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OfflineNotenverwaltung.db3";
+        private readonly string _mysqlConnStr = Path.Combine(Directory.GetCurrentDirectory(), "OnlineNotenverwaltung.db3");
+        private readonly string _sqliteConnStr = Path.Combine(Directory.GetCurrentDirectory(), "OfflineNotenverwaltung.db3");
 
         public async Task SyncStudentMarksFromMySqlToSqliteAsync()
         {
-            using var mysqlConn = new MySqlConnection(_mysqlConnStr);
+            using var mysqlConn = new SQLiteConnection($"Data Source={_mysqlConnStr};Version=3;");
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
 
             await mysqlConn.OpenAsync();
             await sqliteConn.OpenAsync();
 
             string mysqlQuery = "SELECT student_id, lesson_id, student_mark FROM marks";
-            using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
+            using var mysqlCmd = new SQLiteCommand(mysqlQuery, mysqlConn);
             using var mysqlReader = await mysqlCmd.ExecuteReaderAsync();
 
             while (await mysqlReader.ReadAsync())
@@ -39,7 +39,7 @@ namespace App.App.services
 
         public async Task SyncStudentMarksFromSqliteToMySqlAsync()
         {
-            using var mysqlConn = new MySqlConnection(_mysqlConnStr);
+            using var mysqlConn = new SQLiteConnection($"Data Source={_mysqlConnStr};Version=3;");
             using var sqliteConn = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
 
             await mysqlConn.OpenAsync();
@@ -57,7 +57,7 @@ namespace App.App.services
                     WHERE student_id = @studentId 
                     AND lesson_id = @lessonId";
 
-                using var mysqlCmd = new MySqlCommand(mysqlQuery, mysqlConn);
+                using var mysqlCmd = new SQLiteCommand(mysqlQuery, mysqlConn);
                 mysqlCmd.Parameters.AddWithValue("@studentId", sqliteReader["student_id"]);
                 mysqlCmd.Parameters.AddWithValue("@lessonId", sqliteReader["lesson_id"]);
                 mysqlCmd.Parameters.AddWithValue("@studentMark", sqliteReader["student_mark"]);

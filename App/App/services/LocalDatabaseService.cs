@@ -2,11 +2,11 @@
 
 namespace App.App.services
 {
-    internal class LocalDatabaseService
+    internal class LocalDatabaseService()
     {
         public static async Task<string> IsServerConnectedAsync()
         {
-            const string localDatabasePath = "C:\\Users\\drebes\\Berufsschule\\SDM\\MyProjects\\Notenverwaltung\\Database\\OfflineNotenverwaltung.db3";
+             string localDatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "OfflineNotenverwaltung.db3");
 
             try
             {
@@ -36,17 +36,16 @@ namespace App.App.services
             return "Offline";
         }
 
-
-        public static void InitializeLocalDatabase(string databasePath)
+        public static void InitializeLocalDatabase(string _sqliteConnStr)
         {
             try
             {
-                if (!File.Exists(databasePath))
+                if (!File.Exists(_sqliteConnStr))
                 {
-                    SQLiteConnection.CreateFile(databasePath);
+                    SQLiteConnection.CreateFile(_sqliteConnStr);
                 }
 
-                using var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;");
+                using var connection = new SQLiteConnection($"Data Source={_sqliteConnStr};Version=3;");
                 connection.Open();
 
                 using var transaction = connection.BeginTransaction();

@@ -12,11 +12,11 @@ namespace App.App.controller
             command.Parameters.AddWithValue("@studentId", studentId);
             command.Parameters.AddWithValue("@lessonId", lessonId);
 
-            var attendances = await ExecuteQueryAsync(command, async reader => new AttendanceRepository
+            var attendances = await ExecuteQueryAsync(command, static reader => Task.FromResult(new AttendanceRepository
             {
                 AttendanceId = reader["attendance_id"]?.ToString() ?? "Unknown",
                 Status = reader["status"]?.ToString() ?? "Unknown"
-            });
+            }));
 
             if (attendances.Count == 0)
             {

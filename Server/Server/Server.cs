@@ -1,12 +1,14 @@
 ﻿using System.Net;
-using WebServer.Server.config;
-using WebServer.Server.handler;
+using HttpServer.Server.config;
+using HttpServer.Server.handler;
+using HttpServer.Server.services;
 
-namespace WebServer.Server
+namespace HttpServer.Server
 {
     internal class Server
     {
         private readonly HttpListener _listener;
+        private static readonly string onlineDatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "OnlineNotenverwaltung.db3");
 
         public Server()
         {
@@ -83,7 +85,6 @@ namespace WebServer.Server
                 Console.WriteLine("Stopping the server...");
                 server.StopServer();
             };
-
             await server.StartServerAsync();
             Console.WriteLine("Press Ctrl+C to stop the server...");
         }
@@ -92,10 +93,11 @@ namespace WebServer.Server
         {
             bool connectionSuccess = false;
 
-            using (var db = new Database(Database.DatabaseType.MySQL)) 
+            using (var db = new Database(Database.DatabaseType.SQLite))
             {
                 try
                 {
+                    OnlineDatabaseService.InitializeOnlineDatabase(onlineDatabasePath);
                     db.Connect_to_Database();
                     var connection = db.GetConnection();
 

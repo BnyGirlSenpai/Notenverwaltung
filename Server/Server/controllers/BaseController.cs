@@ -1,8 +1,8 @@
-﻿using WebServer.Server.config;
+﻿using HttpServer.Server.config;
 using System.Data.Common;
-using static WebServer.Server.config.Database;
+using static HttpServer.Server.config.Database;
 
-namespace WebServer.Server.controllers
+namespace HttpServer.Server.controllers
 {
     internal abstract class BaseController
     {
@@ -10,7 +10,7 @@ namespace WebServer.Server.controllers
 
         protected void ConnectToDatabase()
         {
-            var db = new Database(DatabaseType.MySQL);
+            var db = new Database(DatabaseType.SQLite);
             db.Connect_to_Database();
             connection = (DbConnection)db.GetConnection();
         }

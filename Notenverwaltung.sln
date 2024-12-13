@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "Server\WebServer.csproj", "{946F1424-236D-4FF3-99ED-BCA8691AAE57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpServer", "Server\HttpServer.csproj", "{946F1424-236D-4FF3-99ED-BCA8691AAE57}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App", "App\App.csproj", "{2569088F-6861-4C70-8156-3386E7F2757B}"
 EndProject

@@ -5,7 +5,7 @@ namespace App.App.utils
 {
     internal class UserInfoExtractor
     {
-        public static async Task<(string role, string firstName, string lastName, string userId)> GetUserInfo()
+        public static (string role, string firstName, string lastName, string userId) GetUserInfo()
         {
             string token = TokenService.LoadToken();
             string secretKey = "u3rZ8BaR5WzCnP7GdT3JPEFbL0hG5lWm5F0q9PT0Ri8=\r\n";

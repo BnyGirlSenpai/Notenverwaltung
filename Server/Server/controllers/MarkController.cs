@@ -1,6 +1,6 @@
-﻿using WebServer.Server.repositorys;
+﻿using HttpServer.Server.repositorys;
 
-namespace WebServer.Server.controllers
+namespace HttpServer.Server.controllers
 {
     internal class MarkController : BaseController, IDisposable
     {
